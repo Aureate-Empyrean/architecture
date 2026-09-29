@@ -51,7 +51,15 @@ A credential may conceptually include: type, service/application, username/ident
 ## Integrations
 
 - **Meridian**: `janus://credential/… belongs_to -> meridian://person/123` (or `meridian://organization/42`). See the security rule below.
-- **Nexus** (optional): synchronization infrastructure for encrypted vault state; reference index; backup infrastructure. Nexus should not need plaintext vault contents for any of these.
+- **Nexus** (optional):
+  - Synchronization infrastructure for encrypted vault state.
+  - Backup infrastructure that may store and transport Janus state. For both sync and backup, Nexus should not need plaintext vault contents.
+  - Reference model: Janus participates in cross-module references, but the mechanism for *sensitive* Janus references is Open (see below). It is not established that Janus relations are published to the normal Nexus reference index.
+
+**Vault contents vs. reference metadata.** These are separate concerns.
+- *Vault contents* (passwords, TOTP secrets, API tokens, SSH private keys, recovery codes) are secret material owned and protected by Janus.
+- *Reference metadata* (e.g. "credential X belongs_to Meridian person Y") is not the secret itself, but its existence can reveal information and may be sensitive.
+- "Nexus does not need plaintext vault contents" therefore does not answer what reference metadata Nexus may know. That question is Open.
 - **Backups**: see [backups](../concepts/backups.md).
 - Other modules may be referenced from credentials (e.g. a document or note), subject to the same reference rules.
 
@@ -115,7 +123,7 @@ All of the following require dedicated security design; none is decided.
 **Ownership and references**
 - Exact ownership/custody model. Conceptual ownership values: user/self, Meridian Person, Meridian Organization, multiple/shared, unknown. Conceptual custody/context: mine, entrusted to me, shared with me. Vocabulary and data model are not established.
 - Exact permission model for secret backlinks. The existence of a secret may itself be sensitive; see [cross-module-references](../concepts/cross-module-references.md).
-- Whether and how Janus publishes relations to the Nexus reference index at all, given that the index itself could reveal that a credential exists.
+- Whether Janus publishes sensitive relations to the normal Nexus reference index at all, given that the index itself could reveal that a credential exists; whether some sensitive references are not centrally indexed; whether a stricter protected indexing/discovery mechanism is needed; and what metadata Nexus may know about Janus references.
 - Boundary with Meridian's "accounts/social identities".
 
 **Platform**
