@@ -52,6 +52,7 @@ Responsibilities that are established or expected eventually:
 - Nexus does not become a giant central database.
 - Nexus is not a mandatory runtime dependency for modules that operate local-first (Janus requires this).
 - Nexus updates and module updates are inspectable before they are applied, with manifest/capability changes compared and new privileges never silently granted ([updates](../concepts/updates.md)).
+- Nexus is the control center/homepage; installed modules are full applications with their own navigation and UX, not permanent pages inside the Nexus management sidebar ([architecture](../architecture.md#application-boundary)).
 - Nexus owns the ecosystem locale preference; modules own their translatable messages ([localization](../concepts/localization.md)).
 
 ## Planned direction

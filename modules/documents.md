@@ -23,7 +23,7 @@ Potential long-term capabilities:
 
 - The referenced resources it embeds (people, places, events, conversations, media) — it stores references, not copies.
 - Physical file storage ([storage-and-files](../concepts/storage-and-files.md)).
-- Notes/knowledge base ([Mnemosyne](mnemosyne.md)) — boundary undecided.
+- Notes, tasks, projects and the knowledge base ([Mnemosyne](mnemosyne.md)). Conceptually, Mnemosyne is knowledge the user maintains and works in, while Documents is artifacts for reading, sending, publishing or export. The boundary is not absolute; resources may reference each other.
 
 ## Integrations
 
@@ -48,7 +48,7 @@ Documents and their attachments use shared blob storage.
 ## Open questions
 
 - Product name.
-- Boundary with Mnemosyne; possible merge or shared content model.
+- Exact boundary with Mnemosyne and whether they share a content model (they are conceptually separate modules).
 - Document storage format (must be portable/open).
 - How references render when the target is unavailable or the viewer lacks permission.
 - Whether generic document rendering/PDF export is provided here for other modules, e.g. Meridian's selective Person PDF export ([meridian](meridian.md#selective-pdf-export)); undecided.

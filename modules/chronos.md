@@ -25,6 +25,7 @@ Potential responsibilities:
 - **Meridian**: birthdays, name days, other important dates (projection), people involved in events.
 - **Atlas**, **Argus**, **Hermes**: events referenced by places, media, conversations (e.g. `argus://photo/928 related_to chronos://event/551`).
 - Nexus notifications for reminders.
+- **Mnemosyne**: Mnemosyne owns the semantic intent of reminders on its own resources (Tasks, Notes) and deadlines; Nexus delivers notifications. A Mnemosyne deadline does not automatically become a Chronos event; any projection would have to be explicitly defined ([mnemosyne](mnemosyne.md)).
 - Possible standard calendar interoperability (e.g. iCalendar/CalDAV) — not decided.
 
 ## Established decisions

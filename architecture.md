@@ -35,7 +35,7 @@ Current conceptual modules:
 | Janus | Credentials, secrets, password management; local-first | [janus](modules/janus.md) |
 | Lyra (Planned) | Music library, organization and playback | [lyra](modules/lyra.md) |
 | Chronos | Calendar, dates, events, time-oriented information | [chronos](modules/chronos.md) |
-| Mnemosyne | Personal knowledge, notes | [mnemosyne](modules/mnemosyne.md) |
+| Mnemosyne | Personal knowledge, notes, tasks, projects, workspaces | [mnemosyne](modules/mnemosyne.md) |
 | Documents | Document creation/editing (final name undecided) | [documents](modules/documents.md) |
 
 Some capabilities may exist as **Nexus services** rather than modules (the file explorer/shared storage is the main candidate). Not every capability must be a module.
@@ -65,6 +65,13 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - One public entry point; modules do not expose random user-facing ports.
 - Internal port allocation follows the project's existing convention (not defined here).
 - Single-user first; multi-user may come later.
+
+### Application boundary
+
+- Nexus is the central control plane and homepage of the ecosystem. Installed modules are **full applications**, not permanent pages embedded in Nexus's management sidebar.
+- Illustratively (paths are not fixed): `/` is the Nexus control center; `/modules/mnemosyne/` is the full Mnemosyne application. Entering a module does not leave Nexus management chrome permanently consuming the module UI. A module owns its own navigation and product UX.
+- Nexus remains underneath as infrastructure: authentication, permissions, lifecycle/module management, routing/gateway, references/backlinks, events, shared storage where applicable, notifications, updates and APIs.
+- A common application/module switcher may provide navigation between Nexus and installed modules; its design is Open.
 
 ### Updates
 
@@ -100,20 +107,7 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 
 ### Visual identity (summary)
 
-Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyberpunk, crypto or gaming-launcher; avoid excessive glow, gradients, glass. Current Nexus palette:
-
-| Name | Hex |
-|---|---|
-| Void Black | `#090A0C` |
-| Obsidian | `#101216` |
-| Graphite | `#191C22` |
-| Elevated | `#222630` |
-| Aureate Gold | `#D6AD60` |
-| Solar Gold | `#F0D58A` |
-| Deep Bronze | `#8C6734` |
-| Primary Text | `#F2F0EA` |
-| Secondary Text | `#A7A9AF` |
-| Muted Text | `#70747D` |
+Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyberpunk, crypto or gaming-launcher; avoid excessive glow, gradients, glass. Nexus uses gold as its identity; each major module may carry its own accent (Mnemosyne: purple/violet) on the same shared foundation. Tokens and the module-accent rule are in [design-system.md](concepts/design-system.md).
 
 ## Planned direction
 
@@ -137,4 +131,5 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - How local-first clients relate to the module registry/lifecycle and to Nexus backups when they never connect to Nexus.
 - Localization details (resource format, fallback chain, translation pack trust/distribution): see [localization.md](concepts/localization.md#open-questions).
 - Update metadata, rollback, migration execution and release trust: see [updates.md](concepts/updates.md#open-questions).
+- Application/module switcher design and how a module application is embedded or navigated to from Nexus (see [Application boundary](#application-boundary)).
 - Which capabilities become Nexus services versus modules (files/storage is the leading candidate).

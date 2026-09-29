@@ -31,7 +31,7 @@ Modules that may benefit: password management (Janus), notes (Mnemosyne), docume
 - Sync protocol and conflict resolution model; whether one mechanism serves all modules or each module defines its own.
 - How Nexus stores and versions synchronized state, and whether it can be opaque for some modules and structured for others.
 - Device pairing/authorization and revocation.
-- Which modules adopt the pattern (notes, documents are candidates; none decided).
+- Which modules adopt the pattern (Mnemosyne is a strong candidate but deferred from its V1; documents are a candidate; none decided).
 - How a local-first client participates in ecosystem features that need Nexus: the reference index, backlinks, events, permissions. Data referencing an unreachable resource is an unresolved reference ([cross-module-references](cross-module-references.md)); what a client offline for a long time sees is not defined.
 - How a standalone client (never connected to Nexus) relates to Nexus's module registry/lifecycle and to Nexus backups ([backups](backups.md)).
 - Version compatibility between long-offline clients and an updated Nexus/module API.

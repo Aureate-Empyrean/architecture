@@ -72,6 +72,7 @@ A Janus credential may reference a Meridian person: `janus://credential/… belo
 - Index population: modules push changes, Nexus pulls, or events; consistency and rebuild after restore.
 - Permission model for backlink queries (a backlink may itself reveal information); concretely the permission model for secret backlinks such as Janus → Meridian.
 - Whether sensitive modules (e.g. Janus) publish relations to the normal Nexus index at all, since the index itself could reveal that a secret exists; alternatives (not centrally indexing some references, or a stricter protected index) are undecided, as is what reference metadata Nexus may know. Nexus not needing plaintext vault contents does not by itself answer this.
+- Whether a module's internal scoping boundaries (e.g. Mnemosyne Workspaces) constrain backlink/discovery results, and who enforces that: the owning module is the assumed enforcer, not yet decided ([mnemosyne](../modules/mnemosyne.md)).
 - Reference behavior for local-first clients that are offline or never connected ([local-first-and-sync](local-first-and-sync.md)).
 - Resolution contract: what a module returns for a reference (summary, type, URL, availability) and how third-party modules implement it.
 - Representation of unresolved references and how users repair or clean them.
