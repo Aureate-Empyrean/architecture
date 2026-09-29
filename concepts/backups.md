@@ -47,6 +47,7 @@ Nexus provides backup/export/restore infrastructure; modules participate by expo
 - Module contract: how a module exports a consistent snapshot of its data (e.g. DB dump vs. native export), and how it restores.
 - Consistency across modules: point-in-time snapshot vs. per-module backups.
 - Incremental design: chunking, deduplication interplay with content-addressed storage ([storage-and-files.md](storage-and-files.md)), retention.
+- Backup-before-update: whether/when a backup is recommended or required before updates or migrations ([updates.md](updates.md)).
 - Restore validation: verification, dry-run, partial restore (single module), restore into a different version, disaster-recovery tests.
 - Handling of modules that are absent at restore time (references become unresolved, per [cross-module-references.md](cross-module-references.md)).
 - Handling data held by external systems (e.g. Immich) that Aureate Empyrean does not fully own.

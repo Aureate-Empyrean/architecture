@@ -37,7 +37,8 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 22. **Do not build speculative machinery.** No graph databases, inference engines, or distributed identity systems until a concrete requirement demands them.
 23. **Single-user first.** Multi-user may come later; do not make single-user harder to run in order to prepare for it.
 24. **Localization is an ecosystem concern.** Locale controls presentation only; changing language never rewrites or duplicates user data. Use established i18n standards rather than inventing a translation syntax. See [concepts/localization.md](concepts/localization.md).
+25. **Updates are inspectable before they are applied.** No update changes the installation without review and explicit approval, and new privileges are never silently granted. See [concepts/updates.md](concepts/updates.md).
 
 ## Documentation
 
-25. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.
+26. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.

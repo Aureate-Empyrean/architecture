@@ -37,7 +37,7 @@ How independent modules, Nexus, collectors and third-party software work togethe
 
 ## Open questions
 
-- Module manifest/registration contract and API versioning/compatibility policy.
+- Module manifest/registration contract and API versioning/compatibility policy, including the manifest comparison used for pre-update review ([updates.md](updates.md)).
 - Event model: schema, naming, delivery guarantees, who may subscribe under which permissions.
 - Where cross-module orchestration lives when it is neither Nexus (domain-ignorant) nor a single module (e.g. "show everything about this person").
 - Sandboxing/isolation of community modules and enforcement of the trust categories.

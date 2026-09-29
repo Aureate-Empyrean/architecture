@@ -12,7 +12,7 @@ Responsibilities that are established or expected eventually:
 
 - identity/authentication
 - permissions/capabilities
-- module lifecycle and registry (install, enable, disable, update, uninstall)
+- module lifecycle and registry (install, enable, disable, update, uninstall); updates are reviewed before being applied ([updates](../concepts/updates.md))
 - shared configuration and secrets
 - ecosystem/default locale preference and localization interoperability (see [localization](../concepts/localization.md))
 - gateway/routing
@@ -51,6 +51,7 @@ Responsibilities that are established or expected eventually:
 - Single-user first; multi-user may come later.
 - Nexus does not become a giant central database.
 - Nexus is not a mandatory runtime dependency for modules that operate local-first (Janus requires this).
+- Nexus updates and module updates are inspectable before they are applied, with manifest/capability changes compared and new privileges never silently granted ([updates](../concepts/updates.md)).
 - Nexus owns the ecosystem locale preference; modules own their translatable messages ([localization](../concepts/localization.md)).
 
 ## Planned direction

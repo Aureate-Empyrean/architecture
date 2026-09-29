@@ -37,7 +37,7 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 
 ### Concepts
 
-[Cross-module references](concepts/cross-module-references.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Interoperability](concepts/interoperability.md)
+[Cross-module references](concepts/cross-module-references.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Updates](concepts/updates.md) · [Interoperability](concepts/interoperability.md)
 
 ## Reading order
 
