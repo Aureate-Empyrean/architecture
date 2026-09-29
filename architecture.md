@@ -28,7 +28,7 @@ Current conceptual modules:
 
 | Module | Domain | Document |
 |---|---|---|
-| Meridian | People, organizations, relationships, personal knowledge about them | [meridian](modules/meridian.md) |
+| Meridian | People, organizations, groups, relationships, personal knowledge about them | [meridian](modules/meridian.md) |
 | Hermes | Communications | [hermes](modules/hermes.md) |
 | Atlas | Places and location history | [atlas](modules/atlas.md) |
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |

@@ -28,7 +28,7 @@ Possible sources: Discord, Instagram, Facebook Messenger, WhatsApp, Signal, Tele
 
 ## Integrations
 
-- **Meridian**: several communication identities (Instagram, Discord, WhatsApp, Messenger…) may reference one Meridian person.
+- **Meridian**: several communication identities (Instagram, Discord, WhatsApp, Messenger…) may reference one Meridian person. Hermes owns communication identities and the source-observed metadata (e.g. platform account ID, observed handles) needed to preserve/import communication correctly; Meridian owns the knowledge that an online account belongs to a person. Neither is authoritative over the other; Hermes observations (e.g. a handle change) may serve as provenance for Meridian's account history. Calls, messages and conversations stay in Hermes; a Meridian Interaction only adds person/relationship context and references them. See [Meridian](meridian.md#cross-module-observations).
 - **Collectors**: SMS, call history and (where permitted) RCS from an Android companion arrive through Nexus.
 - **Storage**: attachments share blobs with other modules.
 - **Argus/Chronos/Atlas/Mnemosyne/Documents**: via references (e.g. `hermes://conversation/91` embedded in a document).

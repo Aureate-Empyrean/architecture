@@ -10,6 +10,7 @@ How independent modules, Nexus, collectors and third-party software work togethe
 - Nexus does not understand domain concepts, so it cannot become the place where cross-module domain logic lives.
 - A reference to a resource never grants access to its contents; discovery via references is permission-aware ([cross-module-references.md](cross-module-references.md)).
 - Nexus may synchronize local-first modules' state without owning it; for sensitive modules (Janus) the intended property is that Nexus does not need plaintext ([local-first-and-sync.md](local-first-and-sync.md)).
+- **Modules are authoritative for their own domain meaning, not over each other.** Two modules holding the same real-world value (e.g. an Instagram handle known to both Hermes and Meridian) is not an invalid duplicate, and no global "winner" is chosen. Each module keeps its own meaning, provenance and user control; one module's observation may serve as provenance/evidence for another's records. See [Meridian](../modules/meridian.md#cross-module-observations).
 - Third-party/community modules must be able to participate through the same mechanisms without being hard-coded into Nexus or official modules.
 - Data is portable and APIs are open ([principles](../principles.md)).
 - Module trust categories: Official, Verified, Community. Verified means reviewed, not guaranteed safe.
@@ -37,6 +38,7 @@ How independent modules, Nexus, collectors and third-party software work togethe
 
 ## Open questions
 
+- How observations and changes to shared real-world attributes propagate between modules while preserving each module's domain ownership, provenance and user control (no synchronization engine is designed).
 - Module manifest/registration contract and API versioning/compatibility policy, including the manifest comparison used for pre-update review ([updates.md](updates.md)).
 - Event model: schema, naming, delivery guarantees, who may subscribe under which permissions.
 - Where cross-module orchestration lives when it is neither Nexus (domain-ignorant) nor a single module (e.g. "show everything about this person").

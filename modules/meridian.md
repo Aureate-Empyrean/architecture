@@ -2,25 +2,25 @@
 
 ## Purpose
 
-Meridian is the comprehensive private information system for people, organizations, relationships and what the user knows about them. Conceptually: a private-knowledge counterpart to a social profile, combined with a much more powerful MonicaHQ-style personal relationship manager.
+Meridian is the comprehensive private information system for people, organizations, groups, relationships and what the user knows about them. Conceptually: a private-knowledge counterpart to a social profile, combined with a much more powerful MonicaHQ-style personal relationship manager.
 
-Its breadth is intentional. It holds detailed, evolving information about known people and organizations while preserving history, provenance, uncertainty and the relationships between pieces of information. It stores what the user knows and chooses to record. It is not an OSINT harvesting system and is not designed for covert or non-consensual surveillance.
+Its breadth is intentional. The long-term model below is the architecture; the [V1 boundary](#v1-boundary) is an implementation subset of it, not a redefinition. It holds detailed, evolving information about known people and organizations while preserving history, provenance, uncertainty and the relationships between pieces of information. It stores what the user knows and chooses to record. It is not an OSINT harvesting system and is not designed for covert or non-consensual surveillance.
 
 It must support rich structured information without becoming one giant Person table of hundreds of nullable columns.
 
 ## Owns
 
-- **Person** and **Organization** as first-class entities.
-- Rich domain records around them: identity, contact information, online accounts/identities, appearance, place associations, education, employment/professional activity, relationships, interests/preferences, personal characteristics, life events, personal dates, notes and custom/extensible data. See [Information model](#information-model).
-- Facts, with history, provenance and confidence.
+- **Person**, **Organization** and **Group** as first-class entities.
+- Rich domain records around them: identity, contact information, online accounts/identities, appearance, place associations, education, employment/professional activity, relationships, group memberships, interests/preferences, personal characteristics, life events, interactions (the human meaning/context), stories, quotes, personal dates, notes and custom/extensible data. See [Information model](#information-model).
+- Knowledge with history, sources/provenance and confidence: facts, claims/evidence and observations (conceptual; see [Knowledge](#knowledge-claims-observations-and-provenance)).
 - The Person-facing **timeline** as a derived view (see [Timeline](#timeline)).
 - Selective Person document export: choosing which Meridian information goes into a generated document, and the Meridian-specific semantics of building a Person profile or CV from Person records (see [Selective PDF export](#selective-pdf-export)).
 
-Expected areas that are **not yet designed**: interactions (user↔Person history), stories/anecdotes, quotes, general observations, sources/provenance beyond the existing fact direction, attachments beyond existing module boundaries, Organization taxonomy.
+Not yet designed beyond boundaries: attachments (beyond existing module boundaries), general observations beyond the conceptual model below, exact schemas.
 
 ## Does not own
 
-- Messages, conversations or communication identities' content ([Hermes](hermes.md)). Meridian is referenced *from* them.
+- Communications themselves: messages, conversations, calls, communication identities' content ([Hermes](hermes.md)). Meridian is referenced *from* them and owns only the person/relationship meaning it adds.
 - Photos, video, media library, biometric/recognition representations ([Argus](argus.md)). Meridian may hold a representative/profile image reference, not exact facial geometry, fingerprints, iris templates or similar.
 - Place records and location history ([Atlas](atlas.md)).
 - Calendar events, reminders and calendar projection of dates ([Chronos](chronos.md)).
@@ -54,17 +54,23 @@ Via [cross-module references](../concepts/cross-module-references.md); a Meridia
 
 Meridian discovers related resources through backlinks, not by copying them.
 
+**Meridian in the ecosystem.** Meridian must work independently for manually entered Meridian-owned data. It is also intentionally designed to become substantially richer as the rest of Aureate Empyrean exists: deep integration is a core property, not an afterthought. A Person, Organization or Group profile may aggregate views from several modules (Hermes communications, Argus media, Atlas places, Chronos events, Lyra music, Documents/Mnemosyne knowledge, Janus relationships without secret access) while preserving ownership boundaries. Integration does not mean centralization: a module owns its data, Nexus owns interoperability, and modules cooperate through references, backlinks, observations and provenance.
+
 ## Information model
 
 Conceptual content of the model, not required fields and not a schema. Every item below is optional. Exact schemas, enums and storage are Open. Cross-cutting rules:
 
-- **One source of truth, multiple views.** An Education record may appear in the profile, the education section, the timeline and a generated CV without four copies. The same holds for Employment, Relationships and Lyra-linked preferences. Views derive from authoritative records.
+- **One source of truth, multiple views.** A record is not duplicated because it appears in several views. Education may appear in the profile, the education section, the timeline and a CV. Employment: profile, Organization view, timeline, CV. A Relationship: profile, relationship graph, timeline. Group membership: profile, Group page, timeline/history. An Interaction: Person interaction history, Group context, timeline/feed, and as source/provenance for a fact. A Lyra-linked preference: preferences, profile, timeline if temporal, backlink views. Views derive from authoritative records.
 - **Temporal information preserves change** rather than overwriting history.
-- **Source, date learned and confidence** matter and must distinguish, e.g., "person told me" from "my estimate" (see [Facts](#facts-structured-records-and-custom-fields)).
+- **Source, date learned and confidence** matter and must distinguish, e.g., "person told me" from "my estimate" (see [Knowledge](#knowledge-claims-observations-and-provenance)).
 - **Temporal precision and uncertainty are preserved** (see [Date precision](#date-precision-and-uncertainty)).
 - **Extensible:** custom types/categories remain possible; closed enums are avoided.
 
-### Identity
+### Entities
+
+Meridian has three first-class entities: **Person**, **Organization** and **Group**. All follow the same philosophy: a common structured core, appropriate structured domain records, and facts/custom extensibility. An Organization is not "a Person but a company" (see [Organizations](#organizations)). A **Group** is a meaningful collection of people that is not necessarily an organization, and is deliberately not an Organization subtype: four friends are not an Organization (see [Groups](#groups)).
+
+### Person identity
 
 May include: full/legal name, preferred name, first/middle/last names, former names, nicknames, aliases, profile/representative photos, gender, pronouns, nationality, citizenship, languages, academic/professional/honorific titles, birthplace, hometown, internal Meridian identifier, external identifiers where legitimately known. Names and identity information can change over time. Languages may carry detail (native, understands, speaks, writes, proficiency); no schema is fixed.
 
@@ -131,7 +137,29 @@ Relationships are first-class records, not a field on Person, between Person↔P
 - Relationships are temporal and history is not overwritten (2019–2020 classmates; 2020–2022 friends; 2022–2024 partners; 2024 former partners; 2025 friends).
 - **State vs. event:** "married to Jana" is a relationship state; "wedding on 2024-08-17" is an event.
 - Human context labels ("best friend", "gym friend", "maternal grandmother") must be possible without turning every phrase into a global relationship type.
-- No native numeric pseudo-psychological scores (trust 73%, closeness 91%, toxicity 48%). A user may record their own note.
+- No native numeric pseudo-psychological scores (trust 73%, closeness 91%, toxicity 48%). A user may record their own note. (Real domain quantities, such as an ownership percentage, are unaffected.)
+- Relationships involving Organizations are covered under [Organizations](#organizations); Group membership under [Groups](#groups).
+
+### Organizations
+
+A broad first-class entity, not "Person but company". Organization-specific attributes are not forced on every Organization; different types need different data.
+
+- **Types** are extensible and an Organization may have several: company/business, school/university, government/public institution, nonprofit/charity, club/association, sports organization/team, band/artist organization where appropriate, religious, political, healthcare institution, online community where organizational semantics make sense, criminal organization where legitimately known/recorded, custom.
+- **Identity** may include: legal name, display/common name, former names, aliases, abbreviations, logo (reference), type(s), founded/dissolved dates, status, registration and tax/VAT identifiers, other external identifiers, websites, languages, notes. Historical changes are preserved where relevant.
+- **Structure** (Organization↔Organization): parent/subsidiary, part-of (faculty→university, department→faculty, division), branch, owns/owned-by, member-of, affiliated-with, predecessor/successor, partner, acquired/acquired-by, custom. Examples: University → Faculty → Department; group company → subsidiary; band → label → management agency. A hierarchy does not imply legal ownership. These relationships may be directional, temporal, sourced, confidence-aware and contextual. Real domain quantities such as ownership percentage are allowed.
+- **Places:** Atlas owns Places; Meridian owns Organization↔Place associations (registered office, headquarters, branch, warehouse, campus, venue, former headquarters, custom), which may be temporal. Location is not one address string.
+- **Contact and online presence:** phone numbers, email addresses, websites, mailing/contact addresses, online/social accounts, GitHub organizations/accounts, community/platform identities, with the same temporal/provenance principles as for people. Hermes may own communication identities/channels/messages; Meridian owns the knowledge that an identity/account belongs to the Organization.
+- **People↔Organizations** is broader than Employment: employee, founder, owner, board member, volunteer, student, teacher, member, contractor, client, manager, custom. Employment and Education records remain authoritative for their richer data; an Organization's related People are derived from these records/relationships rather than stored as duplicate lists.
+- **Facts, events, timeline:** Organizations may have generic Facts with provenance/history/confidence and participate in Life Events (founded, dissolved, opened/closed branch, acquisition, merger, rebrand, leadership change, award, custom), without duplicate events where another authoritative record already expresses it. The timeline is derived; Organization timeline support is Planned/Open and not specified.
+
+### Groups
+
+A Group is a meaningful collection of people that is not necessarily an organization: friend group, classmates, gym group, household, family branch, former classmates, informal team, recurring social group, custom. It is lighter-weight than an Organization. May include: name, aliases/former names, description, type/context, members, member roles/context, formed/dissolved dates where meaningful, related places, relationships to People, Organizations and other Groups, facts, events, sources, notes. Schema is Open.
+
+- **Membership is many-to-many.** A Person may belong to any number of Groups at once (e.g. a friend group, a gym group, a family group, former classmates), and a Group has any number of People. It is never `Person.group_id` or any single-group ownership. Membership is a record with its own metadata: Person, Group, role/context, joined, left, current/former, notes, source, confidence. It is temporal, and historical membership is preserved.
+- **Co-membership does not imply a relationship.** If Peter and Jana belong to the same Group, Meridian may know they share membership. It must not infer `friend_of` or any other relationship unless that is separately known and recorded.
+- **Group in interactions and events:** Group is context, not a shortcut that replaces known participants (see [Interactions](#interactions)).
+- Generic Group↔Group and Organization↔Group relationships may be supported; not over-designed here (Open).
 
 ### Interests and preferences
 
@@ -155,7 +183,7 @@ Meridian does **not infer** medical, psychiatric or psychological diagnoses from
 
 ### Life Events
 
-A Life Event is a meaningful event in the history of a Person or other Meridian entity that is not already sufficiently represented by an existing authoritative domain record. Types are not a closed enum; examples: birth, death, wedding, engagement, divorce, graduation, moving, funeral, burial, cremation, accident, award, legal event, joining/leaving an organization, major purchase, trip, hospitalization where legitimately recorded, ceremony, milestone, custom.
+A Life Event is a meaningful event in the history of a Person, Organization or Group that is not already sufficiently represented by an existing authoritative domain record. Types are not a closed enum; examples: birth, death, wedding, engagement, divorce, graduation, moving, funeral, burial, cremation, accident, award, legal event, joining/leaving an organization, major purchase, trip, hospitalization where legitimately recorded, ceremony, milestone, custom.
 
 May include: subject(s), type, title, description, start/end date-time, date precision/uncertainty, place (Atlas reference), involved People and Organizations, participant roles, source, date learned, confidence, notes, attachments/references. Exact schema is future work.
 
@@ -163,13 +191,31 @@ May include: subject(s), type, title, description, start/end date-time, date pre
 
 **Event vs. state/domain record.** Wedding = event; Married to Jana = relationship state. Started job = event; Employment at Company X = Employment record. Moved to Brno = event; Residence in Brno = place association. Graduation = event; Education at University X = Education record. Users are not required to duplicate information to make it appear on a timeline: an Employment record dated 2022-04-01 → 2024-01-31 can yield "Started working at Company X" and "Left Company X" without separately stored LifeEvents. A stored LifeEvent is appropriate when the event carries meaning beyond an existing authoritative record.
 
+### Interactions
+
+An Interaction is a Meridian-owned record of the human meaning/context of contact or activity between people/entities. **Hermes owns the communication itself.**
+
+- Types are extensible, not a closed enum. Examples: in-person meeting, phone/video call, conversation, message or email exchange, activity together, visit, introduction/first meeting, gift, argument/conflict, help/favor, custom.
+- Not restricted to user↔Person. An Interaction may involve several participants, with roles/context where useful.
+- May include: participants, type, date/time or uncertain temporal information, place (Atlas reference), summary, topics, notes/context, related resources, source/provenance, related Hermes communication, related Chronos event, other generic references.
+- **No duplication.** Meridian does not copy a Hermes call, message, conversation or exchange merely to display it. A Meridian Interaction exists only when Meridian has additional person/relationship/contextual meaning to own; otherwise the Hermes resource references the Meridian Person and appears through backlinks/views. Examples: manually recording "had coffee with Peter today" is a Meridian Interaction; an Android call collected into Hermes is a Hermes Call referencing the Person, with no Interaction required; contextual notes the user adds about that call may be a Meridian Interaction referencing the Hermes Call.
+- **Interaction vs. Life Event.** An Interaction is contact/activity between participants; a Life Event is something meaningful in the history of a Person/Organization/Group. Coffee together and a phone call are Interactions; a wedding is a Life Event; starting a job is a domain transition or Life Event where useful; a shared vacation may be a Life Event with participants that also contains or relates to Interactions. Edge cases are not forced into one category; they may reference each other.
+- **Group context.** "The FI group met for drinks" is one Interaction involving the People who took part, optionally referencing the Group, and possibly a Group-related Life Event if significant. A Group reference does not stand in for participants whose identities are known.
+- **Person interaction history is a view.** It may combine Meridian Interactions, Hermes backlinks, and relevant Chronos, Atlas and other referenced resources while preserving ownership boundaries. It is not duplicated storage.
+
+### Stories and quotes
+
+**Stories/anecdotes** preserve human narrative that does not fit key/value Facts ("At school Peter once stole the school bell and hid it in the teacher's car"). May include: title, narrative/content, involved People/Organizations/Groups, exact or approximate time, place (Atlas reference), source/provenance, related Interaction, related Life Event, notes, attachments/references. A story is not automatically decomposed into Facts; it may appear on profiles and timelines while remaining its own information.
+
+**Quotes** are first-class knowledge: quoted Person/entity, quote text, date/time or temporal uncertainty, context, source/provenance (e.g. `hermes://message/9182` or a Meridian Interaction), related Interaction/Hermes resource, notes. The quote is Meridian's record; the source message is referenced, not copied. Exact schema is Open.
+
 ### Date precision and uncertainty
 
 Not every fact or event has an exact timestamp. The model must be able to represent: exact date; month known/day unknown; year known; approximate date; date/time range; unknown date; natural descriptions ("summer 2022"). Examples: `2024-08-17`, `2024-08`, `2024`, "approximately August 2024", "May 2023 → July 2023", "summer 2022", unknown. Precision and uncertainty must not be destroyed by forcing a precise datetime. This applies to temporal Meridian records generally, not only Life Events. The storage representation is Open.
 
 ### Timeline
 
-**The timeline is a view, not an authoritative copy of temporal data.** Anything temporal may participate: Life Events, Education, Employment, professional activity, Relationships, place associations, appearance changes, preference changes, personal dates and other temporal facts/records. No duplicate Timeline records are created to display them. This enables a full Person timeline, category-filtered timelines, relationship history, time-range views and, potentially later, Organization timelines. Query/indexing/materialization is Open.
+**The timeline is a view, not an authoritative copy of temporal data.** Anything temporal may participate: Life Events, Interactions, Stories, Education, Employment, professional activity, Relationships, Group memberships, place associations, appearance changes, preference changes, personal dates and other temporal facts/records. No duplicate Timeline records are created to display them. This enables a full Person timeline, category-filtered timelines, relationship history, time-range views and, potentially later, Organization timelines. Query/indexing/materialization is Open.
 
 **Planned: graphical Person timeline.** Nodes on a time axis (e.g. birth, school, moved, wedding) representing temporal information from any of the sources above; hovering/selecting shows a compact preview and can open the authoritative record; category/type may be visually distinguished. Orientation, colors, components and interaction are not specified. It uses no second data model.
 
@@ -177,9 +223,40 @@ Not every fact or event has an exact timestamp. The model must be able to repres
 
 **Open: Life Periods/Eras** (user-defined, e.g. "Brno years" 2020–2023). Undecided whether this is a first-class primitive or a saved timeline grouping/view.
 
-### Facts, structured records and custom fields
+### Knowledge, claims, observations and provenance
 
-Facts conceptually carry: subject, key/type, value, source, date learned, validity period, current/historical state, confidence, note. Rich domain objects above are **not** forced into a generic key/value Fact. The boundary between generic Facts, structured domain records and custom fields is Open.
+A Fact is **not unquestionable objective truth**. Meridian preserves how the user came to know something, conflicting information, historical knowledge and uncertainty. Three conceptual distinctions, useful where relevant; whether they become separate storage primitives, and their final terminology, are Open:
+
+- **Fact / current knowledge state**: what Meridian currently records about an entity.
+- **Claim / evidence**: a specific assertion from a source that supports, contradicts, qualifies or updates a Fact or domain record.
+- **Observation**: something directly observed by the user or by another module/source.
+
+Example: Peter's employment may have evidence that (a) Peter said "I work at ACME", (b) Jana later said Peter already left ACME, (c) an imported public profile says ACME 2022 → present, (d) the user observed Peter discussing a new job. Meridian must preserve all of these without silently deleting contradictory claims or treating one as automatically objective. A conflict may remain unresolved, and the user can control/override the knowledge state.
+
+**Sources are first-class** and are not limited to a text string such as "Peter". A source may be: a Meridian Person, Interaction or other record; a Hermes message, call or conversation; a Documents or Mnemosyne resource; an Argus photo/media resource; a Chronos or Atlas resource; another module's resource; an imported file; an external source with recorded metadata; direct user observation; manual entry; custom/future types. Cross-module sources use generic Empyrean references rather than copies (`Fact: Peter works at ACME` / `source: hermes://message/9182`). If the referenced module is disabled, unavailable or uninstalled, the provenance reference stays as an unresolved/unavailable reference and does not disappear, per [cross-module-references](../concepts/cross-module-references.md). One Fact or domain record may have multiple sources.
+
+Three separate notions, not to be conflated:
+
+- **Provenance**: where the information came from.
+- **Confidence**: how reliable the user considers it.
+- **Temporal precision**: how precisely its date/time is known.
+
+A direct source may give an uncertain date; a precise claim is not automatically trustworthy. Confidence is not AI scoring and uses no numeric truth scores (no "73.4%"). A small human-readable vocabulary such as unknown/low/medium/high is the conceptual direction; exact semantics are Open. Automated imports may record what they observed, but that does not make it objectively true.
+
+Facts conceptually carry: subject, key/type, value, source(s), date learned, validity period, current/historical state, confidence, note. Rich domain objects above are **not** forced into a generic key/value Fact. The boundary between generic Facts, structured domain records and custom fields is Open.
+
+### Cross-module observations
+
+Modules are authoritative for their own domain meaning, not over each other. Meridian does not choose a global "winner" just because two modules hold the same real-world value.
+
+Example: Meridian may know Person Natália has an Instagram account with current handle `@newname` and previous handle `@oldname`. Hermes may know an Instagram communication identity with platform account ID `123456`, observed handle `@newname`, historically observed handle `@oldname`, and its messages. These are not necessarily invalid duplicates:
+
+- Meridian owns the knowledge that the online identity belongs to a Person, and the known identity/profile history in Meridian's domain.
+- Hermes owns communication identities and the source-observed metadata needed to preserve/import communication correctly.
+- Hermes may observe a handle change and expose it; Meridian may use that as provenance/evidence for its own account history.
+- Meridian may know that several communication identities belong to one Person, letting Hermes present them as related through references.
+
+The real Open question is how observations and changes to shared real-world attributes propagate between modules while preserving each module's domain ownership, provenance and user control. No synchronization engine is designed here; see [interoperability](../concepts/interoperability.md).
 
 ## Selective PDF export
 
@@ -228,16 +305,37 @@ Education                          Employment
 - Whether generated PDFs become managed files/Documents resources or are simply downloaded.
 - Digital signing or document verification, if ever needed.
 
+## V1 boundary
+
+**Planned** implementation scope, not a redefinition of the product. Everything outside V1 remains part of Meridian's intended architecture ("not in V1" never means "not part of Meridian"). The cut aims at the smallest coherent Meridian that proves rich entity modeling, history, provenance, relationships, Groups, interoperability, and one-source-of-truth/multiple-views. It can be revised.
+
+| Layer | Content |
+|---|---|
+| **Established long-term architecture** | Everything in this document marked Established. |
+| **V1 implementation scope (Planned)** | Person, Organization and Group entities; basic relationships (Person↔Person, Person↔Organization, Organization↔Organization) with temporal validity; many-to-many temporal Group membership; extensible Facts/custom information; source/provenance foundation (multiple sources per record, generic references as sources with unresolved handling, human-readable confidence vocabulary, contradictory information not silently deleted); basic contact information; online accounts as records; basic Education and Employment; basic Interests/Preferences (extensible, reference-or-text target); Life Events; Interactions (manual, optionally referencing other modules' resources); temporal/history concepts including date precision; outbound cross-module references with unresolved handling; a derived Person timeline (chronological view, not necessarily graphical); search and basic navigation sufficient to use the model. |
+| **Planned later** | Appearance; personal characteristics; contact preferences; full death/disposition detail; Stories and Quotes; graphical timeline; Organization and Group timelines; richer claim/evidence workflows; selective PDF/CV export; rich Organization type-specific records; deep backlink-driven ecosystem views as other modules appear. |
+| **Open** | See [Open questions](#open-questions). |
+
+V1 must work with manually entered data alone; it does not require any other module to exist.
+
 ## Established decisions
 
-- Person and Organization are first-class entities. Meridian is intentionally capable of rich, comprehensive profiles.
+- Person, Organization and **Group** are first-class entities. Group is not an Organization subtype. Meridian is intentionally capable of rich, comprehensive profiles.
+- Group membership is many-to-many, temporal and historical; co-membership never implies another relationship.
+- Interactions are Meridian-owned human context; Hermes owns the communication itself. Meridian does not copy Hermes communications, and a Meridian Interaction exists only to own additional meaning. Person interaction history is a view. Interactions are extensible in type and may have several participants.
+- Interaction and Life Event are distinct concepts and may reference each other.
+- Facts are not objective truth. Contradictory claims are preserved, may remain unresolved, and the user controls the knowledge state. Sources are first-class (not text strings), may be cross-module references, and may be multiple per record; provenance, confidence and temporal precision are separate notions. No numeric truth scores.
+- Stories/anecdotes and quotes are first-class knowledge, not decomposed into Facts.
+- Modules are authoritative for their own domain meaning, not over each other; Meridian and Hermes may both hold an online identity's handle without either being authoritative over the other.
+- Organizations are a broad first-class entity with extensible types, structure/hierarchy relationships (not implying legal ownership), place associations and online presence; People↔Organization relationships are broader than Employment.
+- Meridian works independently for manually entered data and is intentionally richer with ecosystem integration; integration does not mean centralization.
 - The data model must **not** be a single Person table with hundreds of fixed columns; it must be extensible.
 - Historical change is preserved where relevant; provenance, source and confidence matter.
 - Knowledge about people is representable as **facts** that capture changing knowledge over time (subject, key/type, value, source, date learned, validity period, current/historical state, confidence, note).
 - Identity may include aliases, former names, titles, languages and similar.
 - Online accounts are richer records, not username strings.
 - Contact information may be temporal.
-- Atlas owns Places; Meridian owns Person/Organization relationships to Places. Hermes owns communications; Meridian may link an online account to a Hermes identity. Janus owns secret material. Argus owns the photo/media library and recognition. Lyra owns music. Chronos owns calendar/reminder projection. Meridian never duplicates their data.
+- Atlas owns Places; Meridian owns Person/Organization/Group relationships to Places. Hermes owns communications; Meridian may link an online account to a Hermes identity. Janus owns secret material. Argus owns the photo/media library and recognition. Lyra owns music. Chronos owns calendar/reminder projection. Meridian never duplicates their data.
 - Meridian is authoritative for personal facts/dates such as birthdays; Chronos projects them, and there is no duplicate authoritative truth.
 - Meridian must never receive secret material merely because a Janus credential references a Meridian person or organization.
 - Education and Employment/professional activity are rich temporal domain records; professional activity is not limited to employment.
@@ -254,29 +352,35 @@ Education                          Employment
 
 ## Planned direction
 
-- Rich Person identity, contact, account and appearance capabilities based on the concepts above, built incrementally rather than all at once.
-- Life Event support.
+- Rich Person identity, contact, account and appearance capabilities based on the concepts above, built incrementally rather than all at once, starting with the [V1 boundary](#v1-boundary).
+- Life Event and Interaction support.
 - Broad support for historical appearance, preferences, relationships and similar temporal data.
-- Graphical Person-specific timeline derived from temporal records; timeline filtering/category views.
-- Integration with other modules through references and backlinks.
-- Provenance/source tracking for facts.
+- Graphical Person-specific timeline derived from temporal records; timeline filtering/category views. Organization timeline support (Planned/Open).
+- Integration with other modules through references and backlinks; profiles aggregating views across modules.
+- Provenance/source tracking, including claims/evidence, for facts and domain records.
+- Stories and quotes.
 
 ## Open questions
 
 - Exact schemas for all of the above, and the boundary between generic Facts, structured domain records and custom fields.
 - Extensibility mechanism for custom data (user-defined types, module-contributed types).
-- Confidence semantics and how conflicting facts are presented.
 - Exact inverse-relationship implementation; relationship type vocabulary details (the vocabulary is extensible; how custom types and inverses are defined is not).
 - Exact temporal uncertainty representation and how it interacts with [Chronos](chronos.md) date handling.
 - Exact preference target/rank/qualifier schema; exact language-proficiency schema.
 - Exact funeral/burial/cremation split between the death record and Life Events.
-- Exact online-account ↔ Hermes communication identity linkage model, and which module is authoritative for a handle that both know about.
+- Exact online-account ↔ Hermes communication identity linkage model.
+- **How observations and changes to shared real-world attributes propagate between modules** while preserving each module's domain ownership, provenance and user control (not "which module wins"). No synchronization engine is designed.
+- Whether claims/evidence/observations become separate storage primitives, their terminology, and confidence semantics; how unresolved conflicts are presented. Whether provenance/evidence becomes an ecosystem-wide concept (e.g. for Hermes raw-source data) rather than Meridian-specific is undecided and not assumed.
+- Exact Interaction, Story and Quote schemas; participant-role vocabulary; when an Interaction wrapper is warranted vs. a plain Hermes backlink.
+- Exact Group schema; Group↔Group and Organization↔Group relationship support; Group timeline/history views.
+- Organization type-specific records, hierarchy semantics and type vocabulary; Organization timeline.
 - Life Period/Era as first-class primitive vs. saved/grouped view.
 - Meridian-wide multi-Person/Organization timeline UX and visualization.
 - Storage, indexing and materialization of timeline views.
 - Mechanism for Chronos projection of personal dates (Chronos-side question; see [Chronos](chronos.md)).
 - Merging/deduplicating people (e.g. when several communication identities turn out to be the same person) and how references follow a merge.
 - Privacy controls within Meridian: handling of especially sensitive categories (health/medical, beliefs, appearance, death details, personal characteristics) and visibility once multi-user exists.
-- Interactions, quotes, stories/observations, source/provenance architecture, attachments, Organization taxonomy: not yet designed.
+- Attachments beyond existing module boundaries.
 - Search architecture.
+- Final V1 cut (the [V1 boundary](#v1-boundary) is Planned and revisable).
 - Import from existing tools (e.g. contact formats, MonicaHQ).
