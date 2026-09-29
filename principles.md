@@ -36,7 +36,8 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 21. **Local-first where practical.** Modules where offline operation matters may keep authoritative usable state on the device; Nexus is not a mandatory runtime dependency for them. See [concepts/local-first-and-sync.md](concepts/local-first-and-sync.md).
 22. **Do not build speculative machinery.** No graph databases, inference engines, or distributed identity systems until a concrete requirement demands them.
 23. **Single-user first.** Multi-user may come later; do not make single-user harder to run in order to prepare for it.
+24. **Localization is an ecosystem concern.** Locale controls presentation only; changing language never rewrites or duplicates user data. Use established i18n standards rather than inventing a translation syntax. See [concepts/localization.md](concepts/localization.md).
 
 ## Documentation
 
-24. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.
+25. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.

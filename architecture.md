@@ -65,6 +65,10 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - Internal port allocation follows the project's existing convention (not defined here).
 - Single-user first; multi-user may come later.
 
+### Localization
+
+- Localization is ecosystem-wide. Nexus owns the installation/user locale preference and localization interoperability; modules own their translatable messages. Official and community translations are supported without forking module source, and standalone clients stay localizable without Nexus. See [localization.md](concepts/localization.md).
+
 ### Local-first modules
 
 - Local-first operation is a pattern available to modules where it makes product sense; not every module is local-first. Nexus is optional synchronization/interoperability for such modules, not a mandatory runtime dependency. Janus is the first module for which this is an explicit requirement. See [local-first-and-sync.md](concepts/local-first-and-sync.md).
@@ -114,6 +118,7 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Optional encrypted synchronization for local-first modules ([local-first-and-sync.md](concepts/local-first-and-sync.md)).
 - Content-addressed shared storage ([storage-and-files.md](concepts/storage-and-files.md)).
 - Portable, restorable backup/export ([backups.md](concepts/backups.md)).
+- Nexus-communicated locale, module-declared supported locales and portable translation packs ([localization.md](concepts/localization.md)).
 - Third-party module participation through the same public mechanisms official modules use ([interoperability.md](concepts/interoperability.md)).
 
 ## Open questions
@@ -124,4 +129,5 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Whether/when multi-user is introduced and its effect on ownership and permissions.
 - Trust-category review process for Verified modules.
 - How local-first clients relate to the module registry/lifecycle and to Nexus backups when they never connect to Nexus.
+- Localization details (resource format, fallback chain, translation pack trust/distribution): see [localization.md](concepts/localization.md#open-questions).
 - Which capabilities become Nexus services versus modules (files/storage is the leading candidate).

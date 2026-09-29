@@ -25,6 +25,7 @@ How independent modules, Nexus, collectors and third-party software work togethe
 | Optional sync for local-first modules | Keep client state usable offline and synchronized | Planned; see [local-first-and-sync.md](local-first-and-sync.md) |
 | Connectors / plugins | Bring external services/sources in | Planned; see [Hermes](../modules/hermes.md) |
 | Collectors | Device-side ingestion | Planned; see [collectors.md](collectors.md) |
+| Locale preference and module localization metadata | Nexus communicates preferred locale; modules declare supported locales | Planned; see [localization.md](localization.md) |
 
 ## Guidance for module authors
 
@@ -44,4 +45,5 @@ How independent modules, Nexus, collectors and third-party software work togethe
 - Standard external protocols to offer for outside tools (e.g. CalDAV, CardDAV, WebDAV, IMAP): none decided.
 - Extension of existing modules' data by other modules (e.g. a module adding a custom Meridian data type), if at all.
 - How modules mark data as opaque to Nexus (e.g. encrypted state) and what interoperability features remain available for it.
+- Localization-related module metadata (supported/fallback locales, translation pack compatibility): fields undefined; see [localization.md](localization.md).
 - Import/export interchange formats between ecosystem modules and the outside world.
