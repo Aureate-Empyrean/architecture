@@ -14,6 +14,7 @@ hermes://conversation/91
 argus://photo/928
 atlas://place/17
 chronos://event/551
+lyra://track/77
 ```
 
 A **relation** connects two references:
@@ -24,6 +25,8 @@ argus://photo/928
     taken_at   -> atlas://place/17
     related_to -> chronos://event/551
 ```
+
+A reference may also point to a resource owned by a module the referring module knows nothing about, e.g. a Meridian favorite-song preference pointing at `lyra://track/77`. Meridian owns the preference; [Lyra](../modules/lyra.md) owns the track.
 
 Given `meridian://person/42`, the ecosystem should be able to discover resources that reference it (Argus photos, Hermes conversations/messages, Chronos events, Atlas places/visits). This is **reverse lookup / backlinks**.
 

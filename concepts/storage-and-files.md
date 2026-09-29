@@ -24,7 +24,7 @@ one image blob
 
 - Investigate **content-addressed storage** and deduplication: `SHA-256(file) -> blob`, with multiple logical resources referencing the same blob.
 - A user-facing file explorer offering: normal folders, recent files, search, module-based views, entity/reference-based views, metadata, tags.
-- Modules store file content as blob references rather than private copies.
+- Modules store file content as blob references rather than private copies (e.g. a [Lyra](../modules/lyra.md) track references a shared audio blob while owning the music meaning).
 - Standard access/sync (WebDAV or a dedicated sync client) may be considered later.
 
 ## Open questions

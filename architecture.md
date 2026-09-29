@@ -19,7 +19,7 @@ Aureate Empyrean consists of:
                  │ references · storage · backup│
                  └───┬─────┬─────┬─────┬────────┘
                      │     │     │     │      (APIs, events, references)
-                 Meridian Hermes Atlas Argus Janus Chronos Mnemosyne Documents … community modules
+                 Meridian Hermes Atlas Argus Janus Lyra Chronos Mnemosyne Documents … community modules
 
   Collectors (e.g. Android companion) ──► Nexus APIs/events ──► owning module
 ```
@@ -33,6 +33,7 @@ Current conceptual modules:
 | Atlas | Places and location history | [atlas](modules/atlas.md) |
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |
 | Janus | Credentials, secrets, password management; local-first | [janus](modules/janus.md) |
+| Lyra (Planned) | Music library, organization and playback | [lyra](modules/lyra.md) |
 | Chronos | Calendar, dates, events, time-oriented information | [chronos](modules/chronos.md) |
 | Mnemosyne | Personal knowledge, notes | [mnemosyne](modules/mnemosyne.md) |
 | Documents | Document creation/editing (final name undecided) | [documents](modules/documents.md) |

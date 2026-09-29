@@ -35,6 +35,7 @@ Via [cross-module references](../concepts/cross-module-references.md); Meridian 
 - Atlas: places/visits associated with the person.
 - Chronos: events involving the person; birthday/name-day projection.
 - Janus: a credential may belong to a person or organization (`janus://… belongs_to -> meridian://person/123`). This gives Meridian no access to secret material, and Meridian must not automatically be able to discover that a person has credentials in Janus without explicit permission.
+- Lyra: music preferences (favorite track/artist) may reference `lyra://…` resources. Meridian owns the preference; Lyra owns the music. A preference must remain representable as textual/external information when no Lyra resource exists, so Meridian does not require Lyra. See [Lyra](lyra.md).
 - Documents/Mnemosyne: mentions of the person.
 
 Meridian discovers related resources through backlinks, not by copying them.
