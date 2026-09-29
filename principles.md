@@ -22,7 +22,7 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 ## Structure
 
 12. **Ownership follows domains.** A module owns its domain data. Nexus owns interoperability. See [architecture.md](architecture.md).
-13. **No back doors between modules.** Modules never access each other's databases; they use documented APIs, events, shared primitives and references.
+13. **No back doors between modules.** Modules never access each other's databases; they use documented APIs, events, shared primitives and references. A reference to a resource never grants access to its contents.
 14. **Modules stay independently understandable** while participating in one coherent ecosystem.
 15. **Nexus stays small.** It provides infrastructure and does not learn domain concepts.
 16. **Do not force everything into a module.** Some capabilities belong in Nexus as services.
@@ -33,7 +33,7 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 18. **Prefer boring, maintainable technology** over unnecessary infrastructure. Introduce a new moving part only when a concrete need justifies it.
 19. **Reuse strong open-source work** (e.g. Immich for photos) where appropriate rather than rebuilding it.
 20. **Use established formats and components** (e.g. tar, zstd, standard encryption) rather than inventing proprietary ones.
-21. **Local-first where practical.**
+21. **Local-first where practical.** Modules where offline operation matters may keep authoritative usable state on the device; Nexus is not a mandatory runtime dependency for them. See [concepts/local-first-and-sync.md](concepts/local-first-and-sync.md).
 22. **Do not build speculative machinery.** No graph databases, inference engines, or distributed identity systems until a concrete requirement demands them.
 23. **Single-user first.** Multi-user may come later; do not make single-user harder to run in order to prepare for it.
 

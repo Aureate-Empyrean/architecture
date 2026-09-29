@@ -19,7 +19,7 @@ Aureate Empyrean consists of:
                  │ references · storage · backup│
                  └───┬─────┬─────┬─────┬────────┘
                      │     │     │     │      (APIs, events, references)
-                 Meridian Hermes Atlas Argus Chronos Mnemosyne Documents … community modules
+                 Meridian Hermes Atlas Argus Janus Chronos Mnemosyne Documents … community modules
 
   Collectors (e.g. Android companion) ──► Nexus APIs/events ──► owning module
 ```
@@ -32,6 +32,7 @@ Current conceptual modules:
 | Hermes | Communications | [hermes](modules/hermes.md) |
 | Atlas | Places and location history | [atlas](modules/atlas.md) |
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |
+| Janus | Credentials, secrets, password management; local-first | [janus](modules/janus.md) |
 | Chronos | Calendar, dates, events, time-oriented information | [chronos](modules/chronos.md) |
 | Mnemosyne | Personal knowledge, notes | [mnemosyne](modules/mnemosyne.md) |
 | Documents | Document creation/editing (final name undecided) | [documents](modules/documents.md) |
@@ -63,6 +64,11 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - One public entry point; modules do not expose random user-facing ports.
 - Internal port allocation follows the project's existing convention (not defined here).
 - Single-user first; multi-user may come later.
+
+### Local-first modules
+
+- Local-first operation is a pattern available to modules where it makes product sense; not every module is local-first. Nexus is optional synchronization/interoperability for such modules, not a mandatory runtime dependency. Janus is the first module for which this is an explicit requirement. See [local-first-and-sync.md](concepts/local-first-and-sync.md).
+- Secret material remains owned by Janus. Nexus may synchronize encrypted Janus state; the intended security property is that it needs no plaintext vault access to do so. See [janus.md](modules/janus.md).
 
 ### Naming
 
@@ -105,6 +111,7 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Module lifecycle managed through Nexus (install / enable / disable / update / uninstall).
 - Versioned APIs and a lightweight event mechanism as the standard inter-module channels.
 - Collectors as an ingestion layer feeding modules through Nexus ([collectors.md](concepts/collectors.md)).
+- Optional encrypted synchronization for local-first modules ([local-first-and-sync.md](concepts/local-first-and-sync.md)).
 - Content-addressed shared storage ([storage-and-files.md](concepts/storage-and-files.md)).
 - Portable, restorable backup/export ([backups.md](concepts/backups.md)).
 - Third-party module participation through the same public mechanisms official modules use ([interoperability.md](concepts/interoperability.md)).
@@ -116,4 +123,5 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Event delivery guarantees, ordering and persistence.
 - Whether/when multi-user is introduced and its effect on ownership and permissions.
 - Trust-category review process for Verified modules.
+- How local-first clients relate to the module registry/lifecycle and to Nexus backups when they never connect to Nexus.
 - Which capabilities become Nexus services versus modules (files/storage is the leading candidate).

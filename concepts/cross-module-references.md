@@ -46,8 +46,14 @@ Responsibilities:
 - **Owning modules** remain authoritative for resource data and decide how references to their resources are presented.
 - References survive temporary module disablement or unavailability as **unresolved references**; they are never silently destroyed.
 - Cross-module access **respects permissions**.
+- **A reference does not imply access to the referenced resource's private contents.** Knowing or holding a reference is not authorization to read the resource.
+- **Backlink/discovery queries respect permissions.** The existence of a relation can itself be sensitive information (see the Janus example below).
 - **Third-party/community modules** can participate without being hard-coded into Nexus or official modules.
 - Not a graph database, semantic knowledge graph, AI inference engine or distributed identity system.
+
+## Example: why discovery must be permission-aware
+
+A Janus credential may reference a Meridian person: `janus://credential/… belongs_to -> meridian://person/123`. Meridian must not receive secret material merely because of this, and must also not automatically be able to answer "does Janus hold a credential belonging to this person?", because that fact may itself be sensitive. A backlink query is therefore authorized like any other read: only contexts explicitly permitted to know that the relation exists may discover it. See [Janus](../modules/janus.md).
 
 ## Planned direction
 
@@ -61,7 +67,9 @@ Responsibilities:
 - Identifier stability: what happens on module reinstall, ID migration, import into a fresh installation, and merging (e.g. two Meridian persons merged — do references redirect?).
 - Relation vocabulary: free-form, registered, or namespaced (`depicts`, `taken_at`); who defines them; whether relations have direction/inverse/metadata.
 - Index population: modules push changes, Nexus pulls, or events; consistency and rebuild after restore.
-- Permission checks for backlink queries (a backlink may itself reveal information).
+- Permission model for backlink queries (a backlink may itself reveal information); concretely the permission model for secret backlinks such as Janus → Meridian.
+- Whether sensitive modules publish relations to the Nexus index at all, since the index itself could reveal that a secret exists; alternatives (not indexing, or indexing under stricter access) are undecided.
+- Reference behavior for local-first clients that are offline or never connected ([local-first-and-sync](local-first-and-sync.md)).
 - Resolution contract: what a module returns for a reference (summary, type, URL, availability) and how third-party modules implement it.
 - Representation of unresolved references and how users repair or clean them.
 - Interaction with backup/restore (references must round-trip; see [backups.md](backups.md)).

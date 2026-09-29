@@ -5,6 +5,7 @@ Aureate Empyrean may hold a large portion of a user's personal digital history. 
 ## Established decisions
 
 - **Restore is as important as backup creation.** A backup that cannot be reliably restored is not a valid backup system.
+- **Backups must not casually convert module data that is locally or end-to-end encrypted into plaintext.** For [Janus](../modules/janus.md), a Nexus system backup must not turn an encrypted vault into plaintext merely because Nexus is creating the backup. How this is achieved is not decided.
 - Do not invent proprietary compression algorithms.
 - Already-compressed media (JPEG, modern video, compressed audio) must not waste significant CPU on ineffective recompression.
 
@@ -38,6 +39,9 @@ Nexus provides backup/export/restore infrastructure; modules participate by expo
 
 ## Open questions
 
+- Module contract for data that Nexus cannot or should not read (e.g. encrypted Janus state): how it is exported, whether it is included opaquely, and how integrity is checked without plaintext.
+- Recovery vs. confidentiality for Janus: key-loss recovery is essential for a password manager but must not undermine vault confidentiality. This tension is unresolved and requires dedicated security design.
+- Standalone local-first clients that never connect to Nexus are not covered by Nexus backups; how they back up and restore is undefined ([local-first-and-sync.md](local-first-and-sync.md)).
 - Archive format specification and versioning, and whether it is "tar + zstd + X" or something else.
 - Encryption scheme and key management (passphrase, key files), and recovery story.
 - Module contract: how a module exports a consistent snapshot of its data (e.g. DB dump vs. native export), and how it restores.

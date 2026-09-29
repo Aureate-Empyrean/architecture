@@ -33,11 +33,11 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 
 ### Modules
 
-[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md)
+[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md)
 
 ### Concepts
 
-[Cross-module references](concepts/cross-module-references.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Interoperability](concepts/interoperability.md)
+[Cross-module references](concepts/cross-module-references.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Interoperability](concepts/interoperability.md)
 
 ## Reading order
 

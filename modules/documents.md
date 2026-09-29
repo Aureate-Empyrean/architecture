@@ -51,5 +51,6 @@ Documents and their attachments use shared blob storage.
 - Boundary with Mnemosyne; possible merge or shared content model.
 - Document storage format (must be portable/open).
 - How references render when the target is unavailable or the viewer lacks permission.
+- Whether generic document rendering/PDF export is provided here for other modules, e.g. Meridian's selective Person PDF export ([meridian](meridian.md#selective-pdf-export)); undecided.
 - Whether spreadsheets/presentations are in scope at all.
 - Collaboration/real-time editing (out of scope for single-user first).
