@@ -10,7 +10,7 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 4. **No data harvesting.** No telemetry or analytics leaves the installation without explicit, informed user opt-in.
 5. **No artificial paywalls around core functionality.**
 6. **Privacy and explicit user control are architectural requirements**, not features. They constrain design; they are not added afterwards.
-7. **The system remembers what the user chooses to give it. It does not observe.** Any collection of data (device collectors, connectors, imports, recognition) must be opt-in, transparent, locally controlled and revocable. No covert monitoring. No design that is meaningfully usable as surveillance software.
+7. **The system remembers what the user chooses to give it. It does not observe.** Any collection of data (device collectors, connectors, imports, recognition) must be opt-in, transparent, locally controlled and revocable. No covert monitoring. The ecosystem may hold extremely detailed information about the user's own life, communications, location, media and known people; that is intentional. It must not be designed for covert or non-consensual surveillance. Collection features must operate on the user's own devices and data, or information the user legitimately provides, with explicit user control, visibility and revocability.
 8. **Personal, not adversarial.** Features operate on the user's own data and known people. Meridian is not an OSINT tool; Argus is not for identifying strangers.
 
 ## Openness and portability
