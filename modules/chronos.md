@@ -42,5 +42,5 @@ Potential responsibilities:
 - **Boundary between module-owned dates and Chronos projections**: how a source module publishes dates, whether Chronos stores copies or computes them on demand, how edits flow back to the owner. Must be designed carefully.
 - Standard protocol support (CalDAV/iCalendar) and two-way sync with external calendars.
 - Recurrence, time zones, and historical/uncertain dates (e.g. "year unknown").
-- Whether cross-ecosystem timelines belong in Chronos or Nexus.
+- Whether cross-ecosystem timelines belong in Chronos or Nexus. Module-specific timelines, e.g. Meridian's Person timeline, are views derived from that module's own records ([meridian](meridian.md#timeline)) and are not Chronos-owned copies.
 - Product scope and priorities.

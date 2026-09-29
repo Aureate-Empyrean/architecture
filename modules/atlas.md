@@ -42,6 +42,6 @@ Current direction:
 - Product scope and priorities.
 - Data model for raw points vs. derived stays/visits, and retention of raw points.
 - Map tiles/geocoding providers consistent with "no mandatory cloud" (self-hosted or optional).
-- Relationship between Meridian addresses and Atlas places.
+- Granularity of Atlas Places versus Meridian address/place associations. Ownership is established: Atlas owns the Place; Meridian owns a Person's/Organization's relationship to it ([meridian](meridian.md#places)).
 - Import formats (e.g. existing location-history exports).
 - Precision/privacy controls (e.g. retention, redaction, sensitive places).
