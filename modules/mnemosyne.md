@@ -6,6 +6,8 @@ Mnemosyne is the personal knowledge, memory, organization and work module: where
 
 Its long-term conceptual model centers on **Workspaces, Notes, Tasks, Projects, Collections and Canvases**, with cross-cutting capabilities: Daily Notes, Inbox/Quick Capture, Today/Upcoming/Overdue, boards, tags, references, backlinks, attachments, search, history, reminders, recurrence, integrations and customization.
 
+Mnemosyne exposes **workflows, not its database schema**: it must not present itself as a generic CRUD/resource manager (see [Interaction model](#interaction-model)).
+
 The long-term model below is the architecture. The [V1 boundary](#v1-boundary) is an implementation subset of it, not a redefinition; deferred items are deferred, not rejected.
 
 **Relationship to Documents.** Mnemosyne is primarily knowledge the user maintains and thinks/works in. [Documents](documents.md) is primarily artifacts created for reading, sending, publishing or export. The boundary is not absolute; resources may reference one another.
@@ -107,15 +109,28 @@ Search is scoped to the active Workspace by default. Long-term scope: Notes, not
 
 ### Inbox, Quick Capture, Today
 
-Quick Capture records something before deciding where it belongs; the Inbox is the unorganized landing area. **Today / Upcoming / Overdue are derived views over Tasks, not copies.** A home experience may combine today's Tasks, overdue Tasks, today's Daily Note and recent resources, without analytics/dashboard clutter.
+Quick Capture records something before deciding where it belongs; the Inbox is the unorganized landing area. **Today / Upcoming / Overdue are derived views over Tasks, not copies.** Home is a working surface, described under [Interaction model](#interaction-model).
 
 ### History, archive and trash
 
 - **Archive**: the resource stays valid, is hidden from normal active workflows, remains discoverable where appropriate, and references keep working.
-- **Trash**: pending deletion, restorable, permanent deletion per configurable policy.
+- **Trash**: a complete recoverable-deletion model, defined under [Trash](#trash).
 - Deleting a referenced resource does not silently destroy incoming references.
 - Long-term content/version history supports viewing and restoring previous versions and potentially diffs.
 - **Content/version history is distinct from user/resource activity history.** Mnemosyne Activity is domain/user-work activity; Nexus Activity is ecosystem/system operational activity. Individual keystrokes are not meaningful activity.
+
+### Trash
+
+Moving a resource to Trash is a reversible action, distinct from permanent deletion.
+
+- **Move to Trash** is reversible and does not generally require a destructive confirmation dialog. A short-lived Undo after moving to Trash is a desirable UX direction.
+- Trash supports: viewing trashed resources with their deletion timestamp; restoring resources; permanently deleting individual resources; multi-select where useful, with restore and permanent delete of the selection; and Empty Trash.
+- **Permanent deletion and Empty Trash are destructive and require explicit confirmation.**
+- **Automatic permanent deletion** is based on time in Trash and is configurable. **Default retention: 30 days** (Established). The policy direction includes at least Never, 7, 14, 30, 60 and 90 days (Planned; the configuration surface is not specified). Retention is calculated from `trashed_at`, not from creation or last-edit time. With Never, nothing is deleted automatically. The UI may communicate remaining retention where useful ("Deleted 4 days ago · permanently deleted in 26 days").
+- **Restore** returns the resource to its original Workspace and preserves its valid relationships where possible.
+- Moving to Trash does not silently destroy references to the resource, and the resource stays recoverable during retention. After permanent deletion, incoming cross-module references follow the reference lifecycle in [cross-module-references](../concepts/cross-module-references.md) (unresolved, not silently removed).
+- Permanent deletion follows shared-storage ownership/reference rules and never blindly deletes a blob still referenced elsewhere ([storage-and-files](../concepts/storage-and-files.md)).
+- The mechanism that schedules and runs automatic cleanup is an implementation detail, but behavior must be deterministic and testable.
 
 ### Integrations and connectors
 
@@ -135,6 +150,53 @@ Resources may support icon, accent/color and pin/favorite. These are user resour
 
 Mnemosyne is a strong candidate for future offline-capable/local-first clients, since knowledge and tasks may need capture without connectivity. No synchronization protocol is designed, and not every module must be local-first. Keep the possibility architecturally open, following [local-first-and-sync](../concepts/local-first-and-sync.md).
 
+## Interaction model
+
+Interaction semantics and product principles. Layouts, components, icons and labels named here are illustrative directions, not pixel-level requirements.
+
+### Core principle
+
+**Shared data primitives do not imply shared interaction models.** A Note behaves like a Note, a Task like a Task, a Project like a Project, a Collection like a Collection. Resources may share underlying capabilities (tags, references, attachments, icons, accents, timestamps, archive/trash semantics) but are not all exposed through one generic editor or form. Mnemosyne exposes workflows, not its schema. **Progressive disclosure** is preferred: the information and actions relevant to the current workflow come first; other properties stay accessible without dominating.
+
+### Navigation
+
+Primary navigation is small and stable, centered on **Home, Notes, Tasks, Projects, Collections**. Workspace switching is prominent; the Daily Note is immediately reachable; Search is available everywhere within the active Workspace; switching back to Nexus/other modules stays available. Today, Inbox, Upcoming, Overdue, Completed and Trash are **not** required to be permanent top-level destinations: task views belong inside Tasks, and Trash is secondary management functionality.
+
+### Home
+
+A practical working surface, not an analytics dashboard. It answers: what needs my attention now, what can I quickly capture, what was I recently working with. It may surface quick capture, today's Tasks, overdue Tasks, today's Daily Note and recent resources. No meaningless statistics, resource-count cards or decorative dashboards; it optimizes for doing work.
+
+### Tasks
+
+Tasks are first-class actionable resources, not Notes with a Task icon.
+
+- An open Task's primary representation includes an actionable completion control (such as a checkbox). Activating it completes the Task immediately; completing must not require opening the Task, finding a lifecycle property, selecting Completed and saving.
+- Creation is low-friction: add task → enter title → Enter. The Task exists immediately with sensible defaults. Deadline, priority and Project may optionally be supplied during quick creation without a mandatory form.
+- Task lists show useful information only: completion state, title, and deadline, priority and Project/context when relevant. They do not expose the whole schema.
+- Detailed editing uses progressive disclosure. Primary: title, description, checklist/subtasks, deadline, priority, Project, tags. Secondary: attachments, references/backlinks, resource identity, icon/accent, other metadata. A detail may be a panel/drawer or other efficient pattern; a Task need not feel like a full document editor.
+- Lifecycle stays Open/Completed/Cancelled; board column stays distinct from lifecycle.
+- **Task views** live inside the Tasks area: Inbox, Today, Upcoming, Completed, and All Tasks where useful. Overdue Tasks are clearly visible and actionable, e.g. prominently within Today/Tasks, without a permanent top-level item. These are derived views over the same Task resources, never duplicate objects.
+
+### Notes
+
+Optimized for rapid reading, switching and writing. Opening Notes makes existing Notes immediately browsable and easy to move between. A list/detail (multi-pane) model on desktop is a preferred direction: navigation/list on one side, the active Note/editor on the other. Creating a Note puts the user directly into writing. The editor and content are primary; metadata and shared resource capabilities are secondary; formatting controls stay visually subordinate to writing. Presenting Note editing as a database-record form, or requiring notes → generic resource list → open row → separate CRUD editor for ordinary note-taking, is explicitly discouraged.
+
+### Projects
+
+Active work contexts, not generic resources or folders. A Project makes its relevant work immediately understandable. Possible views: Overview, Board, Tasks, Notes. The simple Kanban direction remains, and cards represent the same Task resources, never copies. Lifecycle stays Active/On Hold/Completed/Archived. No Jira-style complexity.
+
+### Collections
+
+Knowledge organization, not Projects and not filesystem folders. Interaction emphasizes hierarchy, browsing and Note membership; a tree/navigation representation is a natural direction. Opening a Collection primarily reveals the Notes/resources organized in it, not a generic metadata editor. A Note can remain in several Collections without duplication.
+
+### Workspace UX
+
+Workspace stays a visible first-class context. Switching is understandable, without hidden or ambiguous controls. Management exposes create, rename, archive and switch without relying on unexplained UI (e.g. unlabeled ellipsis menus) for essential behavior. All isolation/scoping decisions are unchanged.
+
+### Information density and copy
+
+Mnemosyne makes productive use of desktop space. Avoid: giant cards holding little information, huge empty dashboard areas, one-resource-per-screen CRUD patterns where unnecessary, excessive card nesting, exposing all metadata at once, decorative resource counts. Prefer compact actionable lists, list/detail layouts where appropriate, useful grouping, strong hierarchy, progressive disclosure, and enough density to scan many Notes/Tasks, without being cramped. UI text communicates state, identifies content, explains non-obvious actions or warns about consequences; it avoids filler such as "1 resource in this Workspace" unless the count helps the current workflow, and avoids exposing implementation terminology unnecessarily. Mnemosyne does not imitate another application; familiar patterns are referenced conceptually only. See also [design-system](../concepts/design-system.md).
+
 ## V1 boundary
 
 **Planned** implementation scope: a deliberately small but genuinely usable real module, intended to replace the Example Module as the first meaningful everyday test of Nexus. A subset of the long-term vision, not a redefinition.
@@ -142,8 +204,10 @@ Mnemosyne is a strong candidate for future offline-capable/local-first clients, 
 **Included**
 
 - **Workspaces**: create, rename, switch, archive; strict default scoping.
-- **Notes**: rich Markdown-oriented editing, autosave, title, tags, Collections, icon/accent, pin/favorite, Note-to-Note links, backlinks, attachments, trash.
-- **Tasks**: quick create, Inbox, title, description, Open/Completed/Cancelled, priority, start date, deadline, completion date, subtasks/basic checklist, tags, related Note, Today, Upcoming, Overdue, All Tasks.
+- **Notes**: rich Markdown-oriented editing, autosave, title, tags, Collections, icon/accent, pin/favorite, Note-to-Note links, backlinks, attachments.
+- **Trash** (for V1 resources): recoverable deletion as defined under [Trash](#trash): restore, permanent delete with confirmation, Empty Trash, and configurable retention (default 30 days).
+- **Tasks**: quick create, Inbox, title, description, Open/Completed/Cancelled, priority, start date, deadline, completion date, subtasks/basic checklist, tags, related Note, Today (with Overdue clearly visible), Upcoming, Completed, All Tasks; direct completion control.
+- **Interaction model**: the workflows described under [Interaction model](#interaction-model) (small stable navigation, working-surface Home, list/detail Notes, progressive-disclosure Task detail) rather than generic resource CRUD.
 - **Projects**: title, description, icon/accent, Active/On Hold/Completed/Archived, related Tasks and Notes, simple Kanban view.
 - **Collections**: hierarchical; a Note may belong to several.
 - **Daily Notes**: one per Workspace/date, immediate open/create, consistent with normal Notes.
@@ -167,6 +231,13 @@ Mnemosyne is a strong candidate for future offline-capable/local-first clients, 
 - A Canvas stores layout/presentation/references, never copies, and its connections do not create semantic relationships elsewhere.
 - Today/Upcoming/Overdue are derived views.
 - Archive and Trash are distinct; deleting a referenced resource does not destroy incoming references.
+- Shared data primitives do not imply shared interaction models; Mnemosyne exposes workflows, not its schema, and is not a generic CRUD/resource manager. Progressive disclosure is preferred.
+- Primary navigation is small and stable; Today/Inbox/Upcoming/Overdue/Completed/Trash are not required as top-level destinations.
+- Home is a working surface, not an analytics dashboard.
+- Open Tasks have a direct completion control; quick creation is low-friction; Task views are derived views inside Tasks.
+- Creating a Note leads directly into writing; the editor is primary.
+- Kanban cards are the same Task resources, never copies.
+- Move to Trash is reversible without destructive confirmation; permanent deletion and Empty Trash require explicit confirmation. Default Trash retention is 30 days, calculated from `trashed_at`; Never means no automatic deletion. Restore returns the resource to its original Workspace. Permanent deletion never blindly deletes a shared blob still referenced elsewhere.
 - Content/version history is distinct from activity history; Mnemosyne Activity is distinct from Nexus Activity.
 - Mnemosyne does not own external integration resources (e.g. GitHub Issues/PRs); a Task created from one is owned by Mnemosyne and preserves provenance. Mnemosyne is not a communications archive.
 - Mnemosyne is a full application, not a page inside the Nexus sidebar.
@@ -184,6 +255,7 @@ Mnemosyne is a strong candidate for future offline-capable/local-first clients, 
 - Task dependencies/blocking.
 - Offline-capable/local-first clients.
 - Reminders on Notes.
+- Trash retention options Never, 7, 14, 30, 60 and 90 days (default 30 is Established).
 
 ## Open questions
 
@@ -198,6 +270,7 @@ Mnemosyne is a strong candidate for future offline-capable/local-first clients, 
 - Ecosystem-wide search: which module or Nexus service owns it.
 - Local-first/offline design and sync ([local-first-and-sync](../concepts/local-first-and-sync.md)).
 - Exact boundary with [Documents](documents.md), including content model sharing.
-- Retention and permanent-deletion policy for Trash; interaction of trash/archive with shared blobs.
+- Trash: configuration surface and exact retention options beyond the default, how references to a trashed (not yet deleted) resource resolve for other modules, and the cleanup scheduling mechanism (behavior must be deterministic and testable).
+- Exact layouts, components and labels (illustrative in this document); where the module accent tokens are centralized.
 - Template model.
 - Whether the Example Module is retired once Mnemosyne V1 exists.

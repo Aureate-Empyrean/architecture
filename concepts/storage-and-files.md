@@ -19,6 +19,7 @@ one image blob
 - Logical organization is decoupled from physical layout.
 - Not every file is forced into an entity graph; normal user-created folders must remain possible.
 - Do not prematurely implement a Dropbox replacement.
+- Permanently deleting a resource that references a blob must follow shared-storage ownership/reference rules and never blindly delete a blob still referenced elsewhere (first stated for [Mnemosyne Trash](../modules/mnemosyne.md#trash)). The lifecycle mechanism itself is Open (below).
 
 ## Planned direction
 

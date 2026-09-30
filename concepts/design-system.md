@@ -25,6 +25,8 @@ Other modules             → same shared foundation           → their own acc
 - User-selectable resource colors (e.g. a Note or Project set to red, blue, gold, green) are **separate** from the module accent. Resource customization is not module theme semantics, and color carries no hidden meaning unless the user gives it one.
 - Accent use is deliberate and restrained: active navigation, selected states, primary actions, focus states, important interactive highlights, the module's icon/identity, subtle progress/state visualization. Not: accent-colored backgrounds everywhere, neon glow, excessive gradients, cyberpunk or streaming-platform styling, generic SaaS look, accent borders on every card, decoration overwhelming content.
 
+- Interfaces favor information density with restraint: compact, useful, hierarchical, without decorative filler cards, meaningless counts or empty dashboards. UI copy states, identifies, explains a non-obvious action or warns about consequences, and does not expose implementation terminology needlessly. Modules do not imitate another product's look or interaction design.
+
 ## Shared tokens
 
 Neutrals and text (shared by all applications):
@@ -64,6 +66,7 @@ No accents are assigned to other modules yet. They are chosen when each module's
 
 - A shared token set that modules consume, with a module accent family (accent, light, deep, subtle tint) per module.
 - Modules keep the same foundation and typography while swapping only the accent family.
+- Module accent tokens are centralized in each application so they can be changed later without touching components. Current Mnemosyne values are unchanged.
 
 ## Open questions
 

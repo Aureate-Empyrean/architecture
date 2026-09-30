@@ -39,6 +39,8 @@ Durable principles for the whole ecosystem. These are intentionally free of impl
 24. **Localization is an ecosystem concern.** Locale controls presentation only; changing language never rewrites or duplicates user data. Use established i18n standards rather than inventing a translation syntax. See [concepts/localization.md](concepts/localization.md).
 25. **Updates are inspectable before they are applied.** No update changes the installation without review and explicit approval, and new privileges are never silently granted. See [concepts/updates.md](concepts/updates.md).
 
+26. **Expose workflows, not schemas.** Shared data primitives do not imply shared interaction models; a module's interface should follow the user's task, with progressive disclosure, rather than exposing its storage model as generic CRUD. See [modules/mnemosyne.md](modules/mnemosyne.md#interaction-model) for the first worked example.
+
 ## Documentation
 
-26. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.
+27. Architecture lives in this repository, not only in conversations or code. Distinguish decided, planned and open clearly.

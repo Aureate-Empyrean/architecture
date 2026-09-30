@@ -75,7 +75,7 @@ A Janus credential may reference a Meridian person: `janus://credential/… belo
 - Whether a module's internal scoping boundaries (e.g. Mnemosyne Workspaces) constrain backlink/discovery results, and who enforces that: the owning module is the assumed enforcer, not yet decided ([mnemosyne](../modules/mnemosyne.md)).
 - Reference behavior for local-first clients that are offline or never connected ([local-first-and-sync](local-first-and-sync.md)).
 - Resolution contract: what a module returns for a reference (summary, type, URL, availability) and how third-party modules implement it.
-- Representation of unresolved references and how users repair or clean them.
+- Representation of unresolved references and how users repair or clean them, including distinguishing a temporarily unavailable target, a trashed-but-recoverable target and a permanently deleted one (see [Mnemosyne Trash](../modules/mnemosyne.md#trash)).
 - Interaction with backup/restore (references must round-trip; see [backups.md](backups.md)).
 - Embedding syntax in text content (Markdown/rich text), see [Documents](../modules/documents.md) and [Mnemosyne](../modules/mnemosyne.md).
 
