@@ -33,7 +33,7 @@ Current conceptual modules:
 | Atlas | Places and location history | [atlas](modules/atlas.md) |
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |
 | Janus | Credentials, secrets, password management; local-first | [janus](modules/janus.md) |
-| Lyra (Planned) | Music library, organization and playback | [lyra](modules/lyra.md) |
+| Lyra (Planned) | Multimedia library and playback: music first; movies, TV, books, audiobooks later | [lyra](modules/lyra.md) |
 | Chronos | Calendar, dates, events, time-oriented information | [chronos](modules/chronos.md) |
 | Mnemosyne | Personal knowledge, notes, tasks, projects, workspaces | [mnemosyne](modules/mnemosyne.md) |
 | Documents | Document creation/editing (final name undecided) | [documents](modules/documents.md) |

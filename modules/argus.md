@@ -18,6 +18,7 @@ Current direction:
 - People ([Meridian](meridian.md)); Argus links recognized faces to Meridian people by reference.
 - Physical blobs ([storage-and-files](../concepts/storage-and-files.md)); media files are shared blobs.
 - Places ([Atlas](atlas.md)) and events ([Chronos](chronos.md)).
+- Media the user collects and consumes (albums, movies, TV, books, audiobooks) ([Lyra](lyra.md)). Argus primarily owns the user's own captured/imported media, such as personal photos and videos; the boundary is conceptual, not absolute ([lyra](lyra.md#boundary-with-argus)).
 
 ## Integrations
 

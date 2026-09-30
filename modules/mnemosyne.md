@@ -23,7 +23,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 
 - Knowledge specifically about people, organizations or groups ([Meridian](meridian.md) facts, stories, quotes, interactions). Mnemosyne resources may reference Meridian entities.
 - Communications ([Hermes](hermes.md)); Mnemosyne is not a communications archive.
-- Places ([Atlas](atlas.md)), calendar events and calendar projection ([Chronos](chronos.md)), media ([Argus](argus.md)), music ([Lyra](lyra.md)).
+- Places ([Atlas](atlas.md)), calendar events and calendar projection ([Chronos](chronos.md)), personal photos/videos ([Argus](argus.md)), consumed media such as music ([Lyra](lyra.md)).
 - Physical file/blob storage (shared storage; see [storage-and-files](../concepts/storage-and-files.md)). Mnemosyne owns the relationship/context around an attachment.
 - Notification delivery (Nexus notification infrastructure).
 - External resources that integrations reference (e.g. GitHub Issues/PRs, Slack items).

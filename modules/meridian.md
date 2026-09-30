@@ -24,7 +24,7 @@ Not yet designed beyond boundaries: attachments (beyond existing module boundari
 - Photos, video, media library, biometric/recognition representations ([Argus](argus.md)). Meridian may hold a representative/profile image reference, not exact facial geometry, fingerprints, iris templates or similar.
 - Place records and location history ([Atlas](atlas.md)).
 - Calendar events, reminders and calendar projection of dates ([Chronos](chronos.md)).
-- Music catalog: artists, albums, tracks ([Lyra](lyra.md)).
+- Consumed-media catalogs: music (artists, albums, tracks) and other media Lyra may hold ([Lyra](lyra.md)).
 - Credentials and secret material, including passwords, session cookies and tokens ([Janus](janus.md)).
 - Notes/knowledge not specifically about a person ([Mnemosyne](mnemosyne.md)).
 - Physical file storage ([storage-and-files](../concepts/storage-and-files.md)).
