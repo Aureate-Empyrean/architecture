@@ -23,7 +23,7 @@ Current direction:
 ## Integrations
 
 - **Meridian**: `argus://photo/928 depicts meridian://person/42`. Meridian discovers related media through backlinks.
-- **Atlas**: `taken_at` place. **Chronos**: `related_to` event.
+- **Atlas**: `taken_at` place, and, since geographic meaning may be an Area or Route rather than a point, potentially other Atlas resources. Argus owns the photo and its metadata; Atlas may project its geographic metadata without owning it ([atlas](atlas.md#cross-module-geographic-projection)). **Chronos**: `related_to` event.
 - **Collectors**: photos from an opt-in Android companion.
 - **Immich**: possible foundation or integration (see below).
 - Media can be attached or embedded elsewhere (Hermes attachments, Documents) via shared blobs and references.

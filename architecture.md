@@ -30,7 +30,7 @@ Current conceptual modules:
 |---|---|---|
 | Meridian | People, organizations, groups, relationships, personal knowledge about them | [meridian](modules/meridian.md) |
 | Hermes | Communications | [hermes](modules/hermes.md) |
-| Atlas | Places and location history | [atlas](modules/atlas.md) |
+| Atlas | Personal geographic layer: places, areas, routes, location history | [atlas](modules/atlas.md) |
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |
 | Janus | Credentials, secrets, password management; local-first | [janus](modules/janus.md) |
 | Lyra (Planned) | Multimedia library and playback: music first; movies, TV, books, audiobooks later | [lyra](modules/lyra.md) |

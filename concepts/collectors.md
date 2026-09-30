@@ -37,4 +37,5 @@ device collector ──► Nexus APIs/events ──► Atlas / Hermes / Argus / 
 - Transparency requirements: indicators, audit log, easy revocation and deletion of collected data.
 - Platform limits: what Android permits for RCS, call logs and background location, and Play Store policy implications for distribution.
 - Whether collectors beyond mobile exist (desktop, browser). Browser-based Hermes sync is a connector concern; see [Hermes](../modules/hermes.md) and [interoperability.md](interoperability.md).
+- Raw location samples: retention and raw-data policy, and how collectors' samples become Atlas visits/routes (an Atlas concern; see [Atlas](../modules/atlas.md#location-collection-and-visits-later)).
 - Distinction between *collectors* (device-side push) and *connectors* (service-side integration): whether they share infrastructure ("plugin/connector infrastructure" in Nexus).

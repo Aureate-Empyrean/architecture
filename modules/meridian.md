@@ -116,7 +116,7 @@ Meridian is not a biometric database. Argus may use technical recognition repres
 
 ### Places
 
-Meridian owns knowledge about the relationship between a Person and a Place; Atlas owns the Place. An association may include: place (Atlas reference), relationship/type (residence, former residence, hometown, workplace, school, frequently visited, owns property, family home, significant place, custom), valid from/until, current status, notes, source, confidence. The Atlas Place is never duplicated into Meridian.
+Meridian owns knowledge about the relationship between a Person and a Place; Atlas owns the Place. An association may include: place (Atlas reference), relationship/type (residence, former residence, hometown, workplace, school, frequently visited, owns property, family home, significant place, custom), valid from/until, current status, notes, source, confidence. The Atlas Place is never duplicated into Meridian. Where the geography is better expressed as an area or a route than a point (e.g. a park, a walked route), the reference may target an Atlas Area or Route ([atlas](atlas.md#first-class-geographic-resources)). Atlas may project these associations on its map, including former ones as historical/inactive geography, without taking ownership of the association or its history.
 
 ### Education
 

@@ -75,3 +75,4 @@ No accents are assigned to other modules yet. They are chosen when each module's
 - Where the shared tokens live in practice (a shared package, per-module copies, served by Nexus) and how community modules adopt them.
 - Whether community modules are expected to follow the shared language or only encouraged to.
 - Icon and logo system per module.
+- Atlas's module accent and map style: the map follows the shared design language, not a data provider's default appearance ([atlas](../modules/atlas.md#map-presentation)). No Atlas accent is assigned yet.
