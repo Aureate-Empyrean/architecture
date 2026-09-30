@@ -33,7 +33,7 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 
 ### Modules
 
-[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) · [Lyra](modules/lyra.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md)
+[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) ([security design](modules/janus-security-design.md)) · [Lyra](modules/lyra.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md)
 
 ### Concepts
 

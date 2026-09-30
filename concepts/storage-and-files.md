@@ -19,6 +19,7 @@ one image blob
 - Logical organization is decoupled from physical layout.
 - Not every file is forced into an entity graph; normal user-created folders must remain possible.
 - Do not prematurely implement a Dropbox replacement.
+- Shared blob storage must not imply that confidential modules' files are stored in plaintext. [Janus](../modules/janus.md) attachments must not be stored plaintext merely because other modules use generic blob storage; the mechanism is Open.
 - Permanently deleting a resource that references a blob must follow shared-storage ownership/reference rules and never blindly delete a blob still referenced elsewhere (first stated for [Mnemosyne Trash](../modules/mnemosyne.md#trash)). The lifecycle mechanism itself is Open (below).
 
 ## Planned direction
@@ -36,7 +37,7 @@ one image blob
 - Relationship between blob store and external stores (e.g. Immich holding original media — see [Argus](../modules/argus.md)).
 - Physical layout on disk and how it stays understandable/recoverable without Nexus (portability).
 - Metadata and tag storage: in Nexus, or per owning module.
-- Encryption at rest.
+- Encryption at rest, and how client-side-encrypted files (e.g. Janus attachments) coexist with content-addressing and deduplication (equality of ciphertext or plaintext hashes can itself leak information).
 - Large-file handling, streaming, resumable upload.
 - Sync mechanism (WebDAV vs. dedicated client) and conflict handling.
 - Handling of files that users place in plain folders but which are also managed by a module.

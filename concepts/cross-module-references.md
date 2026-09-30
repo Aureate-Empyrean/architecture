@@ -56,7 +56,7 @@ Responsibilities:
 
 ## Example: why discovery must be permission-aware
 
-A Janus credential may reference a Meridian person: `janus://credential/… belongs_to -> meridian://person/123`. Meridian must not receive secret material merely because of this, and must also not automatically be able to answer "does Janus hold a credential belonging to this person?", because that fact may itself be sensitive. A backlink query is therefore authorized like any other read: only contexts explicitly permitted to know that the relation exists may discover it. See [Janus](../modules/janus.md).
+A Janus credential may reference a Meridian person: `janus://credential/… belongs_to -> meridian://person/123`. Meridian must not receive secret material merely because of this, and must also not automatically be able to answer "does Janus hold a credential belonging to this person?", because that fact, or even the credential's label, may itself be sensitive. A backlink query is therefore authorized like any other read: only contexts explicitly permitted to know that the relation exists may discover it. See [Janus](../modules/janus.md).
 
 ## Planned direction
 

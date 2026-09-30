@@ -32,7 +32,7 @@ Responsibilities that are established or expected eventually:
 - A central database of every module's domain objects.
 - Document editing (that is the Documents module).
 - Module business logic.
-- Plaintext module secrets. In particular, Nexus should not need plaintext access to [Janus](janus.md) vault contents to synchronize them.
+- Plaintext module secrets. In particular, Nexus should not need plaintext access to [Janus](janus.md) vault contents, or the user's Janus master password, to synchronize them, and holds no universal recovery secret for Janus vaults.
 
 ## Integrations
 

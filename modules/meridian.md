@@ -370,6 +370,7 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Exact preference target/rank/qualifier schema; exact language-proficiency schema.
 - Exact funeral/burial/cremation split between the death record and Life Events.
 - Exact online-account ↔ Hermes communication identity linkage model.
+- Boundary between Meridian's identifiers/accounts and sensitive identity records or credentials held in [Janus](janus.md) (e.g. passport numbers): Meridian never stores secret material, and where a sensitive identifier belongs is not decided.
 - **How observations and changes to shared real-world attributes propagate between modules** while preserving each module's domain ownership, provenance and user control (not "which module wins"). No synchronization engine is designed.
 - Whether claims/evidence/observations become separate storage primitives, their terminology, and confidence semantics; how unresolved conflicts are presented. Whether provenance/evidence becomes an ecosystem-wide concept (e.g. for Hermes raw-source data) rather than Meridian-specific is undecided and not assumed.
 - Exact Interaction, Story and Quote schemas; participant-role vocabulary; when an Interaction wrapper is warranted vs. a plain Hermes backlink.

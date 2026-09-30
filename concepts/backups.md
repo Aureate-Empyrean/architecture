@@ -5,7 +5,7 @@ Aureate Empyrean may hold a large portion of a user's personal digital history. 
 ## Established decisions
 
 - **Restore is as important as backup creation.** A backup that cannot be reliably restored is not a valid backup system.
-- **Backups must not casually convert module data that is locally or end-to-end encrypted into plaintext.** For [Janus](../modules/janus.md), a Nexus system backup must not turn an encrypted vault into plaintext merely because Nexus is creating the backup. How this is achieved is not decided.
+- **Backups must not casually convert module data that is locally or end-to-end encrypted into plaintext.** For [Janus](../modules/janus.md), a Nexus system backup must not require decrypting vault contents or turn an encrypted vault into plaintext merely because Nexus is creating the backup; vault ciphertext and the required metadata/recovery information should round-trip through backup and restore. How this is achieved, including key interaction, is not decided.
 - Do not invent proprietary compression algorithms.
 - Already-compressed media (JPEG, modern video, compressed audio) must not waste significant CPU on ineffective recompression.
 

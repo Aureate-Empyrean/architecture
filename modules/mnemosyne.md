@@ -27,7 +27,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 - Physical file/blob storage (shared storage; see [storage-and-files](../concepts/storage-and-files.md)). Mnemosyne owns the relationship/context around an attachment.
 - Notification delivery (Nexus notification infrastructure).
 - External resources that integrations reference (e.g. GitHub Issues/PRs, Slack items).
-- Credentials for connected accounts (Janus/Nexus secret infrastructure).
+- Credentials for connected accounts (Janus/Nexus secret infrastructure), and secret/sensitive information generally: Janus Secure Notes exist for that; Mnemosyne owns general notes and knowledge.
 - Artifact-oriented document authoring ([Documents](documents.md)).
 
 ## Integrations
