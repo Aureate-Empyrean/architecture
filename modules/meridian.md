@@ -313,7 +313,7 @@ Education                          Employment
 |---|---|
 | **Established long-term architecture** | Everything in this document marked Established. |
 | **V1 implementation scope (Planned)** | Person, Organization and Group entities; basic relationships (Person↔Person, Person↔Organization, Organization↔Organization) with temporal validity; many-to-many temporal Group membership; extensible Facts/custom information; source/provenance foundation (multiple sources per record, generic references as sources with unresolved handling, human-readable confidence vocabulary, contradictory information not silently deleted); basic contact information; online accounts as records; basic Education and Employment; basic Interests/Preferences (extensible, reference-or-text target); Life Events; Interactions (manual, optionally referencing other modules' resources); temporal/history concepts including date precision; outbound cross-module references with unresolved handling; a derived Person timeline (chronological view, not necessarily graphical); search and basic navigation sufficient to use the model. |
-| **Planned later** | Appearance; personal characteristics; contact preferences; full death/disposition detail; Stories and Quotes; graphical timeline; Organization and Group timelines; richer claim/evidence workflows; selective PDF/CV export; rich Organization type-specific records; deep backlink-driven ecosystem views as other modules appear. |
+| **Planned later** | Appearance; personal characteristics; contact preferences; full death/disposition detail; Stories and Quotes; graphical timeline; Organization and Group timelines; richer claim/evidence workflows; selective PDF/CV export; migration/import of existing contact data; rich Organization type-specific records; deep backlink-driven ecosystem views as other modules appear. |
 | **Open** | See [Open questions](#open-questions). |
 
 V1 must work with manually entered data alone; it does not require any other module to exist.
@@ -359,6 +359,7 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Integration with other modules through references and backlinks; profiles aggregating views across modules.
 - Provenance/source tracking, including claims/evidence, for facts and domain records.
 - Stories and quotes.
+- **Migration/import of existing contact data** (later; not V1). Direction: vCard/VCF and CSV with explicit field mapping are the clearest standard paths; JSON/structured data and migration from existing databases or database exports (potentially SQLite or SQL-based sources) are extensible directions, not mandatory formats. Non-trivial imports should be inspectable rather than writing records blindly, where appropriate: parse/source inspection → preview → field/schema mapping → duplicate/conflict detection → user review → import. Imported data preserves useful provenance/source information where possible, and import respects Meridian's identity, provenance, conflicting-information and temporal-data architecture: imported values are not silently treated as unquestionable current truth, and possible duplicate people or organizations are never silently merged because fields look similar. Database migration is controlled extraction/parsing with explicit mapping into Meridian's model, **not** arbitrary SQL executed against Meridian's own database, and Meridian's internal storage schema is not a public migration API. One-time migration/import is separate from continuous synchronization with live contact sources (e.g. CardDAV or provider connectors, a later possibility); they may share adapters or mapping infrastructure but are different capabilities.
 
 ## Open questions
 
@@ -383,4 +384,4 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Attachments beyond existing module boundaries.
 - Search architecture.
 - Final V1 cut (the [V1 boundary](#v1-boundary) is Planned and revisable).
-- Import from existing tools (e.g. contact formats, MonicaHQ).
+- Migration/import: supported source formats and adapters beyond vCard/CSV (including SQLite/SQL exports and tools such as MonicaHQ), the sandboxing/security model for parsing untrusted files and database exports, how imported values map to facts/evidence and sources, duplicate/conflict detection and review rules, and whether/how adapters and mapping are shared with future live contact-source connectors (CardDAV, provider connectors).
