@@ -13,7 +13,7 @@
 
 ## Areas that need design (all Open)
 
-- Threat model
+- Threat model, including the **client delivery threat**: if Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified code that captures secrets during unlock ([janus](janus.md#security-and-custody-model)). Possible approaches (e.g. independently distributed or signed clients) are examples, not decisions.
 - Cryptographic primitives; KDF and parameters
 - Key hierarchy; master-password handling
 - Vault encryption format; per-item vs. vault-level encryption
@@ -29,7 +29,8 @@
 - Nexus ciphertext sync protocol; conflict resolution
 - Backup/restore cryptographic interaction
 - Secure deletion limitations on modern storage
-- Encrypted transfer format
+- Encrypted transfer format; documented portable encrypted export format readable by independent tooling
+- Janus local storage technology
 - Import handling of plaintext source exports
 - Browser-extension threat model
 - Android autofill threat model

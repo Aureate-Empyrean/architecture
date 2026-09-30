@@ -22,10 +22,10 @@ Current direction:
 
 ## Integrations
 
-- **Meridian**: `argus://photo/928 depicts meridian://person/42`. Meridian discovers related media through backlinks.
-- **Atlas**: `taken_at` place, and, since geographic meaning may be an Area or Route rather than a point, potentially other Atlas resources. Argus owns the photo and its metadata; Atlas may project its geographic metadata without owning it ([atlas](atlas.md#cross-module-geographic-projection)). **Chronos**: `related_to` event.
+- **Meridian**: `argus://photo/<uuid> depicts meridian://person/<uuid>`. Meridian discovers related media through backlinks. The user's own recognized face is associated with the distinguished self Person `@me` ([meridian](meridian.md#the-distinguished-self-person-me)).
+- **Atlas**: `taken_at` place, and, since geographic meaning may be an Area or Route rather than a point, potentially other Atlas resources. Argus owns the photo and its metadata; Atlas may project its geographic metadata without owning it, including through a derived, non-authoritative cache for large libraries ([interoperability](../concepts/interoperability.md#derived-data-and-projection)). **Chronos**: `related_to` event.
 - **Collectors**: photos from an opt-in Android companion.
-- **Immich**: possible foundation or integration (see below).
+- **Product references**: applications such as Immich are studied as references for capabilities Argus should provide; they are not runtime backends ([ADR 0005](../decisions/0005-official-modules-own-product-implementations.md)).
 - Media can be attached or embedded elsewhere (Hermes attachments, Documents) via shared blobs and references.
 
 ## Established decisions
@@ -33,7 +33,7 @@ Current direction:
 - Recognition is **local**.
 - Connecting a face to a person is an **explicit reference** to a Meridian person.
 - Purpose is the user's own library and known-person organization, **not identifying arbitrary strangers**.
-- Prefer integrating with strong existing open-source technology such as Immich where appropriate rather than unnecessarily rebuilding it.
+- Argus owns its media-management implementation and user experience; it is not a frontend to another complete application such as Immich. Mature components and standards (e.g. FFmpeg, image/video codecs, focused recognition libraries) are reused where appropriate ([ADR 0005](../decisions/0005-official-modules-own-product-implementations.md)).
 
 ## Planned direction
 
@@ -42,9 +42,9 @@ Current direction:
 
 ## Open questions
 
-- Build vs. integrate: whether Argus wraps Immich, sits alongside it, or replaces parts; what Argus owns if Immich remains the media store.
+- Which components and libraries to reuse (media processing, thumbnails, recognition).
+- Import from existing photo libraries and folders (including libraries previously managed by other applications) and whether files may be managed in place.
 - Which recognition models, and their licensing/hardware requirements.
 - How face-to-person confirmation works and where face embeddings are stored (privacy/portability implications).
-- Ownership of media files when an external system (Immich) holds them, and consequences for backup/restore.
 - Scope of video handling.
 - Product scope and priorities.

@@ -47,7 +47,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 
 ## Integrations
 
-- **Meridian**: `janus://… belongs_to -> meridian://person/123` (or `meridian://organization/42`). See [References and context](#references-and-context).
+- **Meridian**: `janus://… belongs_to -> meridian://person/<uuid>` (or `meridian://organization/<uuid>`). See [References and context](#references-and-context).
 - **Nexus** (optional):
   - Synchronization infrastructure for encrypted vault state.
   - Backup infrastructure that may store and transport Janus state. For both sync and backup, Nexus should not need plaintext vault contents.
@@ -78,6 +78,9 @@ Required properties (Established):
 - Secrets must not leak into normal Nexus metadata, logs, events, search indexes, notifications, URLs or reference metadata.
 - Cross-module interoperability must not turn Nexus into a plaintext secret index.
 - "Encrypt the database" is not a sufficient security design.
+- **Janus holds user vault secrets, not service/integration credentials.** Credentials that Nexus or a connector must use while the user is absent and Janus is locked (OAuth refresh tokens, connector credentials, machine credentials) are a separate category ([secrets](../concepts/secrets.md), [ADR 0004](../decisions/0004-janus-custody-and-secret-classes.md)). A user may keep a personal copy of such a credential in Janus, but Janus is not its runtime source.
+
+**Client delivery threat (Open).** If Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified client code that captures secrets during unlock. "Nexus never sees plaintext" does not by itself protect against a compromised Nexus that controls client delivery. How Janus clients are delivered and updated is part of the [security design](janus-security-design.md) threat model; independently distributed or signed clients are possible approaches, not decisions.
 
 No security marketing claims ("zero knowledge", "military grade", "unbreakable", "industry-standard encryption" and similar) are made. Precise terminology waits for a reviewed design.
 
@@ -174,6 +177,7 @@ Hosted one-time secret links are not a current requirement. The intended directi
 
 - **Import/migration** from common ecosystems over time (Planned): Bitwarden, KeePass, 1Password, browser password exports and other standard/structured vault formats. Compatibility with every product is not promised in V1. Import is inspectable and maps source item types into Janus item types without silently discarding important fields. Handling of plaintext source exports is a security question (Open).
 - **Export rule (Established): Janus does not provide an ordinary plaintext vault export as its normal export mechanism.** Vault export is encrypted/password-protected; there is no convenient unencrypted CSV/JSON "Export everything" path. Portable encrypted backup/export is the intended normal path. Any future plaintext export for compatibility would require a separate explicit architecture/security decision, which is not made here.
+- **Portability tension (recorded).** The ecosystem principle that the user can leave with their data ([principles](../principles.md)) is in tension with avoiding casual plaintext export of highly sensitive secrets. Preferred direction (Planned): a documented, portable, encrypted export format that does not depend on any hosted Aureate Empyrean service and is documented well enough that independent tooling could read and decrypt it. This does not enable casual plaintext CSV/JSON export; plaintext compatibility export remains a separate Open security/product decision. The format itself is not designed here.
 
 ### Backups
 
@@ -231,6 +235,7 @@ V1 is separable from autofill, sync and passkeys: none of them is required for a
 - **A Janus client must remain useful when Nexus is unavailable**: Nexus offline, no network, out of reach of a self-hosted server, or the user chooses never to use Nexus. Locally available vault data stays accessible according to the device's normal authentication/security policy.
 - Nexus is optional for Janus synchronization; offline changes are eligible for later synchronization if the user configures Nexus sync.
 - Nexus should not need plaintext vault contents, or the user's master password, to synchronize Janus.
+- User vault secrets (Janus) and service/integration credentials are distinct categories; Janus is not the runtime source for unattended integrations.
 - Aureate Empyrean infrastructure holds no universal recovery secret or backdoor; the vault may be unrecoverable if all unlock/recovery means are lost.
 - Sensitive plaintext is exposed only where an explicit user workflow needs it; secrets do not leak into Nexus metadata, logs, events, search indexes, notifications, URLs or reference metadata.
 - Secret material remains owned by Janus.
@@ -260,6 +265,7 @@ Product scope; UI is deliberately unspecified.
 - Biometric/system-credential-assisted unlock where safe; clipboard timeout/clearing.
 - Secret history; encrypted attachments.
 - Portable secure item transfer.
+- A documented, portable, encrypted vault export format readable by independent tooling.
 - Import/migration from common password managers and browsers; encrypted export.
 - Backup/recovery integration.
 
@@ -292,4 +298,7 @@ All of the following require dedicated security design; none is decided. The ful
 - Breach-check privacy protocol and provider/dataset.
 - Encrypted transfer format and file extension; import handling of plaintext source exports; password-strength estimator.
 - How a standalone Janus client (which has no Nexus) relates to the module registry/lifecycle in [Nexus](nexus.md).
-- Whether Nexus's own operational secrets/configuration are related to Janus in any way (default assumption: they are not).
+- How Janus clients are delivered and updated, and the client-delivery threat from a compromised Nexus.
+- Whether Janus vault item identities (UUIDs) are exposed outside the vault at all, given that identity and existence may be sensitive metadata.
+- Janus storage technology, decided by the security design; it is not forced into the ecosystem PostgreSQL default ([architecture](../architecture.md#databases)).
+- Plaintext compatibility export.

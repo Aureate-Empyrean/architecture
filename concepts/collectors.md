@@ -23,6 +23,8 @@ device collector ──► Nexus APIs/events ──► Atlas / Hermes / Argus / 
 - Collectors deliver via Nexus APIs and events, not directly into module databases.
 - **Collection is opt-in and transparent. No covert monitoring.**
 - Location collection specifically must be explicitly enabled and locally controlled ([Atlas](../modules/atlas.md)).
+- Collectors are principals with declared, least-privilege capabilities ([principals-and-permissions](principals-and-permissions.md)); connector credentials are service/integration credentials ([secrets](secrets.md)).
+- Collectors that can lose access to Nexus (e.g. a phone away from a home-hosted installation) buffer permitted data locally and deliver it later rather than silently losing it. Remote access follows [architecture](../architecture.md#deployment).
 
 ## Planned direction
 
@@ -33,7 +35,7 @@ device collector ──► Nexus APIs/events ──► Atlas / Hermes / Argus / 
 
 - Collector API contract: authentication of a device, per-collector permissions/capabilities, versioning.
 - Routing: how Nexus knows which module receives a given data type; how community modules can receive collector data.
-- Delivery semantics: offline buffering, retries, idempotency, deduplication (e.g. SMS also imported from a backup).
+- Delivery semantics: buffer limits and retention on the device, retries, idempotency, deduplication (e.g. SMS also imported from a backup).
 - Transparency requirements: indicators, audit log, easy revocation and deletion of collected data.
 - Platform limits: what Android permits for RCS, call logs and background location, and Play Store policy implications for distribution.
 - Whether collectors beyond mobile exist (desktop, browser). Browser-based Hermes sync is a connector concern; see [Hermes](../modules/hermes.md) and [interoperability.md](interoperability.md).

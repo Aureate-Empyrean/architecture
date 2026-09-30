@@ -30,7 +30,7 @@ Potential long-term capabilities:
 A defining capability is embedding/referencing resources from other modules through [cross-module references](../concepts/cross-module-references.md). Illustrative:
 
 - `@person` → Meridian person
-- `@place` → Atlas place
+- `@place` → Atlas Place, Area or Route
 - `@event` → Chronos event
 - conversation → Hermes conversation
 

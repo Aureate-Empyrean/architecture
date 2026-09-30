@@ -16,6 +16,8 @@ Potential responsibilities:
 - birthdays and name days (operationally, as projections)
 - cross-module event references
 
+Terminology: a Chronos **Event** is a calendar event. It is distinct from Nexus system events (change notifications between modules) and from Meridian **Life Events**.
+
 ## Does not own
 
 - The authoritative identity data behind dates. Example: Meridian is authoritative for a person's birthday; Chronos may expose it as calendar entries/reminders/phone notifications without owning the person's identity.
@@ -23,7 +25,7 @@ Potential responsibilities:
 ## Integrations
 
 - **Meridian**: birthdays, name days, other important dates (projection), people involved in events.
-- **Atlas**, **Argus**, **Hermes**: events referenced by places, media, conversations (e.g. `argus://photo/928 related_to chronos://event/551`).
+- **Atlas**, **Argus**, **Hermes**: events referenced by places, media, conversations (e.g. `argus://photo/<uuid> related_to chronos://event/<uuid>`).
 - Nexus notifications for reminders.
 - **Mnemosyne**: Mnemosyne owns the semantic intent of reminders on its own resources (Tasks, Notes) and deadlines; Nexus delivers notifications. A Mnemosyne deadline does not automatically become a Chronos event; any projection would have to be explicitly defined ([mnemosyne](mnemosyne.md)).
 - Possible standard calendar interoperability (e.g. iCalendar/CalDAV) — not decided.
@@ -40,7 +42,7 @@ Potential responsibilities:
 
 ## Open questions
 
-- **Boundary between module-owned dates and Chronos projections**: how a source module publishes dates, whether Chronos stores copies or computes them on demand, how edits flow back to the owner. Must be designed carefully.
+- **Boundary between module-owned dates and Chronos projections**: how a source module publishes dates and how edits flow back to the owner. Chronos may keep derived, non-authoritative representations of other modules' dates under the [derived-data rule](../concepts/interoperability.md#derived-data-and-projection); the mechanism must be designed carefully.
 - Standard protocol support (CalDAV/iCalendar) and two-way sync with external calendars.
 - Recurrence, time zones, and historical/uncertain dates (e.g. "year unknown").
 - Whether cross-ecosystem timelines belong in Chronos or Nexus. Module-specific timelines, e.g. Meridian's Person timeline, are views derived from that module's own records ([meridian](meridian.md#timeline)) and are not Chronos-owned copies.

@@ -93,7 +93,7 @@ The same principle applies to Nexus updates: installed/target version, release n
 
 ## Open questions
 
-- Update metadata schema (and its relationship to the module manifest, see [interoperability](interoperability.md)).
+- Update metadata schema (and its relationship to the module manifest, see [module-contract](module-contract.md)).
 - Release discovery mechanism.
 - Rollback mechanism.
 - Migration execution and sandboxing; arbitrary migration scripts must not run without controls, but the controls are undefined.

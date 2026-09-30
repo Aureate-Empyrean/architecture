@@ -10,7 +10,7 @@ It must support rich structured information without becoming one giant Person ta
 
 ## Owns
 
-- **Person**, **Organization** and **Group** as first-class entities.
+- **Person**, **Organization** and **Group** as first-class entities, including the designation of one Person as the user's distinguished self profile (`@me`).
 - Rich domain records around them: identity, contact information, online accounts/identities, appearance, place associations, education, employment/professional activity, relationships, group memberships, interests/preferences, personal characteristics, life events, interactions (the human meaning/context), stories, quotes, personal dates, notes and custom/extensible data. See [Information model](#information-model).
 - Knowledge with history, sources/provenance and confidence: facts, claims/evidence and observations (conceptual; see [Knowledge](#knowledge-claims-observations-and-provenance)).
 - The Person-facing **timeline** as a derived view (see [Timeline](#timeline)).
@@ -48,9 +48,10 @@ Via [cross-module references](../concepts/cross-module-references.md); a Meridia
 - Argus: photos depicting the person (backlinks); representative image reference.
 - Atlas: places associated with the person, birth/death/funeral/resting places, addresses.
 - Chronos: events involving the person; birthday/name-day projection; reminders derived from or referencing Meridian's personal dates.
-- Janus: a credential may belong to a person or organization (`janus://… belongs_to -> meridian://person/123`). This gives Meridian no access to secret material, and Meridian must not automatically be able to discover that a person has credentials in Janus without explicit permission.
+- Janus: a credential may belong to a person or organization (`janus://… belongs_to -> meridian://person/<uuid>`). This gives Meridian no access to secret material, and Meridian must not automatically be able to discover that a person has credentials in Janus without explicit permission.
 - Lyra: music preferences may reference `lyra://…` resources. Meridian owns the preference; Lyra owns the music. See [Lyra](lyra.md).
 - Documents/Mnemosyne: mentions of the person.
+- Astra (Planned): user-directed research that produces reviewable drafts; Meridian performs any resulting change ([Research and enrichment](#research-and-enrichment-planned)).
 
 Meridian discovers related resources through backlinks, not by copying them.
 
@@ -64,11 +65,15 @@ Conceptual content of the model, not required fields and not a schema. Every ite
 - **Temporal information preserves change** rather than overwriting history.
 - **Source, date learned and confidence** matter and must distinguish, e.g., "person told me" from "my estimate" (see [Knowledge](#knowledge-claims-observations-and-provenance)).
 - **Temporal precision and uncertainty are preserved** (see [Date precision](#date-precision-and-uncertainty)).
-- **Extensible:** custom types/categories remain possible; closed enums are avoided.
+- **Extensible:** custom types/categories remain possible; closed enums are avoided. User-defined structure may use generic editing without conflicting with "expose workflows, not schemas" ([principles](../principles.md)).
 
 ### Entities
 
 Meridian has three first-class entities: **Person**, **Organization** and **Group**. All follow the same philosophy: a common structured core, appropriate structured domain records, and facts/custom extensibility. An Organization is not "a Person but a company" (see [Organizations](#organizations)). A **Group** is a meaningful collection of people that is not necessarily an organization, and is deliberately not an Organization subtype: four friends are not an Organization (see [Groups](#groups)).
+
+### The distinguished self Person (`@me`)
+
+During onboarding the user may create or select their own Person. It remains an ordinary Meridian Person, marked as the installation user's distinguished self profile, and user-facing contexts may show it as **`@me`**. Other modules reference the user's own person through it instead of inventing incompatible "self" entities: Hermes can associate the user's communication identities with `@me`, Argus the user's own recognized face, and Meridian relationships and Interactions can include the user explicitly. Nexus does not own a Person or any domain object for the user. Multi-user behavior is Open.
 
 ### Person identity
 
@@ -207,7 +212,7 @@ An Interaction is a Meridian-owned record of the human meaning/context of contac
 
 **Stories/anecdotes** preserve human narrative that does not fit key/value Facts ("At school Peter once stole the school bell and hid it in the teacher's car"). May include: title, narrative/content, involved People/Organizations/Groups, exact or approximate time, place (Atlas reference), source/provenance, related Interaction, related Life Event, notes, attachments/references. A story is not automatically decomposed into Facts; it may appear on profiles and timelines while remaining its own information.
 
-**Quotes** are first-class knowledge: quoted Person/entity, quote text, date/time or temporal uncertainty, context, source/provenance (e.g. `hermes://message/9182` or a Meridian Interaction), related Interaction/Hermes resource, notes. The quote is Meridian's record; the source message is referenced, not copied. Exact schema is Open.
+**Quotes** are first-class knowledge: quoted Person/entity, quote text, date/time or temporal uncertainty, context, source/provenance (e.g. `hermes://message/<uuid>` or a Meridian Interaction), related Interaction/Hermes resource, notes. The quote is Meridian's record; the source message is referenced, not copied. Exact schema is Open.
 
 ### Date precision and uncertainty
 
@@ -233,7 +238,7 @@ A Fact is **not unquestionable objective truth**. Meridian preserves how the use
 
 Example: Peter's employment may have evidence that (a) Peter said "I work at ACME", (b) Jana later said Peter already left ACME, (c) an imported public profile says ACME 2022 → present, (d) the user observed Peter discussing a new job. Meridian must preserve all of these without silently deleting contradictory claims or treating one as automatically objective. A conflict may remain unresolved, and the user can control/override the knowledge state.
 
-**Sources are first-class** and are not limited to a text string such as "Peter". A source may be: a Meridian Person, Interaction or other record; a Hermes message, call or conversation; a Documents or Mnemosyne resource; an Argus photo/media resource; a Chronos or Atlas resource; another module's resource; an imported file; an external source with recorded metadata; direct user observation; manual entry; custom/future types. Cross-module sources use generic Empyrean references rather than copies (`Fact: Peter works at ACME` / `source: hermes://message/9182`). If the referenced module is disabled, unavailable or uninstalled, the provenance reference stays as an unresolved/unavailable reference and does not disappear, per [cross-module-references](../concepts/cross-module-references.md). One Fact or domain record may have multiple sources.
+**Sources are first-class** and are not limited to a text string such as "Peter". A source may be: a Meridian Person, Interaction or other record; a Hermes message, call or conversation; a Documents or Mnemosyne resource; an Argus photo/media resource; a Chronos or Atlas resource; another module's resource; an imported file; an external source with recorded metadata; direct user observation; manual entry; custom/future types. Cross-module sources use generic Empyrean references rather than copies (`Fact: Peter works at ACME` / `source: hermes://message/<uuid>`). If the referenced module is disabled, unavailable or uninstalled, the provenance reference stays as an unresolved/unavailable reference and does not disappear, per [cross-module-references](../concepts/cross-module-references.md). One Fact or domain record may have multiple sources.
 
 Three separate notions, not to be conflated:
 
@@ -257,6 +262,15 @@ Example: Meridian may know Person Natália has an Instagram account with current
 - Meridian may know that several communication identities belong to one Person, letting Hermes present them as related through references.
 
 The real Open question is how observations and changes to shared real-world attributes propagate between modules while preserving each module's domain ownership, provenance and user control. No synchronization engine is designed here; see [interoperability](../concepts/interoperability.md).
+
+## Research and enrichment (Planned)
+
+A long-term workflow enabled by [Astra](astra.md). Example: the Person "Ján Novák, CEO, Acme s.r.o., Bratislava". The user explicitly invokes **Research this person**. Astra uses the permitted known context (name, organization, role, location) to search public/external sources and correlate likely matches.
+
+- The output is a **reviewable research draft**, never a silent change to the Person. Candidate findings may include employment, organizational relationships, public interviews, public biographical facts, news/article mentions and other publicly available information.
+- Each finding keeps its sources/provenance and uncertainty, consistent with the [knowledge model](#knowledge-claims-observations-and-provenance). AI synthesis is not recorded as fact.
+- The user may reject a finding, import it, inspect its sources, link it to an existing resource, or create a new Meridian resource. If research surfaces another Person or Organization, import offers **link to existing** or **create new**; possible duplicates are never silently merged.
+- External research is explicit ([search-and-discovery](../concepts/search-and-discovery.md)) and user-directed. This is not a scraping framework, an always-on crawler or a mechanism for building dossiers about every Person.
 
 ## Selective PDF export
 
@@ -312,8 +326,8 @@ Education                          Employment
 | Layer | Content |
 |---|---|
 | **Established long-term architecture** | Everything in this document marked Established. |
-| **V1 implementation scope (Planned)** | Person, Organization and Group entities; basic relationships (Person↔Person, Person↔Organization, Organization↔Organization) with temporal validity; many-to-many temporal Group membership; extensible Facts/custom information; source/provenance foundation (multiple sources per record, generic references as sources with unresolved handling, human-readable confidence vocabulary, contradictory information not silently deleted); basic contact information; online accounts as records; basic Education and Employment; basic Interests/Preferences (extensible, reference-or-text target); Life Events; Interactions (manual, optionally referencing other modules' resources); temporal/history concepts including date precision; outbound cross-module references with unresolved handling; a derived Person timeline (chronological view, not necessarily graphical); search and basic navigation sufficient to use the model. |
-| **Planned later** | Appearance; personal characteristics; contact preferences; full death/disposition detail; Stories and Quotes; graphical timeline; Organization and Group timelines; richer claim/evidence workflows; selective PDF/CV export; migration/import of existing contact data; rich Organization type-specific records; deep backlink-driven ecosystem views as other modules appear. |
+| **V1 implementation scope (Planned)** | Person, Organization and Group entities; basic relationships (Person↔Person, Person↔Organization, Organization↔Organization) with temporal validity; many-to-many temporal Group membership; extensible Facts/custom information; source/provenance foundation (multiple sources per record, generic references as sources with unresolved handling, human-readable confidence vocabulary, contradictory information not silently deleted); the distinguished self Person (`@me`) at onboarding; basic contact information; online accounts as records; basic Education and Employment; basic Interests/Preferences (extensible, reference-or-text target); Life Events; Interactions (manual, optionally referencing other modules' resources); temporal/history concepts including date precision; outbound cross-module references with unresolved handling; a derived Person timeline (chronological view, not necessarily graphical); search and basic navigation sufficient to use the model. |
+| **Planned later** | Appearance; personal characteristics; contact preferences; full death/disposition detail; Stories and Quotes; graphical timeline; Organization and Group timelines; richer claim/evidence workflows; selective PDF/CV export; migration/import of existing contact data; Astra-assisted research/enrichment; rich Organization type-specific records; deep backlink-driven ecosystem views as other modules appear. |
 | **Open** | See [Open questions](#open-questions). |
 
 V1 must work with manually entered data alone; it does not require any other module to exist.
@@ -335,7 +349,7 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Identity may include aliases, former names, titles, languages and similar.
 - Online accounts are richer records, not username strings.
 - Contact information may be temporal.
-- Atlas owns Places; Meridian owns Person/Organization/Group relationships to Places. Hermes owns communications; Meridian may link an online account to a Hermes identity. Janus owns secret material. Argus owns the photo/media library and recognition. Lyra owns music. Chronos owns calendar/reminder projection. Meridian never duplicates their data.
+- Atlas owns geographic resources (Places, Areas, Routes); Meridian owns Person/Organization/Group relationships to them. Hermes owns communications; Meridian may link an online account to a Hermes identity. Janus owns secret material. Argus owns the photo/media library and recognition. Lyra owns consumed-media resources such as music. Chronos owns calendar/reminder projection. Meridian never duplicates their data.
 - Meridian is authoritative for personal facts/dates such as birthdays; Chronos projects them, and there is no duplicate authoritative truth.
 - Meridian must never receive secret material merely because a Janus credential references a Meridian person or organization.
 - Education and Employment/professional activity are rich temporal domain records; professional activity is not limited to employment.
@@ -344,6 +358,7 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Meridian owns a Person's music preference; Lyra owns the referenced music; Meridian does not require Lyra to represent a music preference.
 - Personal characteristics distinguish self-description from observation. Meridian does not infer diagnoses from behavior or messages.
 - Meridian is not a biometric database.
+- One Person may be designated the user's distinguished self profile (`@me`); it is an ordinary Person, and other modules reference it rather than inventing their own self entities.
 - Life Events exist as a concept; one event may involve multiple participants and is stored once.
 - Events and ongoing states/domain records are distinct concepts.
 - Temporal precision and uncertainty must be preserved.
@@ -380,9 +395,10 @@ V1 must work with manually entered data alone; it does not require any other mod
 - Meridian-wide multi-Person/Organization timeline UX and visualization.
 - Storage, indexing and materialization of timeline views.
 - Mechanism for Chronos projection of personal dates (Chronos-side question; see [Chronos](chronos.md)).
-- Merging/deduplicating people (e.g. when several communication identities turn out to be the same person) and how references follow a merge.
+- Merging/deduplicating people (e.g. when several communication identities turn out to be the same person). A merge may redirect the old identity to the surviving one ([resource lifecycle](../concepts/resource-identity-and-lifecycle.md#resolution-states)); the merge workflow is Open.
 - Privacy controls within Meridian: handling of especially sensitive categories (health/medical, beliefs, appearance, death details, personal characteristics) and visibility once multi-user exists.
 - Attachments beyond existing module boundaries.
-- Search architecture.
+- Search architecture (local knowledge first, external research explicit: [search-and-discovery](../concepts/search-and-discovery.md)).
+- Multi-user behavior of `@me`; research draft representation and review UX.
 - Final V1 cut (the [V1 boundary](#v1-boundary) is Planned and revisable).
 - Migration/import: supported source formats and adapters beyond vCard/CSV (including SQLite/SQL exports and tools such as MonicaHQ), the sandboxing/security model for parsing untrusted files and database exports, how imported values map to facts/evidence and sources, duplicate/conflict detection and review rules, and whether/how adapters and mapping are shared with future live contact-source connectors (CardDAV, provider connectors).

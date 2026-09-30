@@ -13,11 +13,11 @@ Responsibilities that are established or expected eventually:
 - identity/authentication
 - permissions/capabilities
 - module lifecycle and registry (install, enable, disable, update, uninstall); updates are reviewed before being applied ([updates](../concepts/updates.md))
-- shared configuration and secrets
+- shared configuration and service/integration credentials (not user vault secrets; see [secrets](../concepts/secrets.md))
 - ecosystem/default locale preference and localization interoperability (see [localization](../concepts/localization.md))
 - gateway/routing
 - versioned APIs
-- lightweight event mechanism
+- lightweight system-event mechanism (change notifications between components; distinct from Chronos calendar Events and Meridian Life Events)
 - notifications
 - health/status
 - shared storage primitives
@@ -32,6 +32,7 @@ Responsibilities that are established or expected eventually:
 - A central database of every module's domain objects.
 - Document editing (that is the Documents module).
 - Module business logic.
+- A Person or any other domain object representing the user. The user's own Person is a Meridian resource ([meridian](meridian.md#the-distinguished-self-person-me)).
 - Plaintext module secrets. In particular, Nexus should not need plaintext access to [Janus](janus.md) vault contents, or the user's Janus master password, to synchronize them, and holds no universal recovery secret for Janus vaults.
 
 ## Integrations
@@ -53,6 +54,9 @@ Responsibilities that are established or expected eventually:
 - Nexus is not a mandatory runtime dependency for modules that operate local-first (Janus requires this).
 - Nexus updates and module updates are inspectable before they are applied, with manifest/capability changes compared and new privileges never silently granted ([updates](../concepts/updates.md)).
 - Nexus is the control center/homepage; installed modules are full applications with their own navigation and UX, not permanent pages inside the Nexus management sidebar ([architecture](../architecture.md#application-boundary)).
+- Nexus state about modules is derived where possible: the reference index and blob usage are rebuildable from modules through the [module contract](../concepts/module-contract.md).
+- Uninstalling or disabling a module never deletes its user data; destructive deletion is separate and explicit ([resource lifecycle](../concepts/resource-identity-and-lifecycle.md#destructive-operations-and-module-removal)).
+- Permissions constrain components, not only users; installed modules are not trusted by default ([principals-and-permissions](../concepts/principals-and-permissions.md)).
 - Nexus owns the ecosystem locale preference; modules own their translatable messages ([localization](../concepts/localization.md)).
 
 ## Planned direction
@@ -66,11 +70,11 @@ Responsibilities that are established or expected eventually:
 
 ## Open questions
 
-- Permission/capability model: granularity, how modules request and are granted access, how cross-module reads are authorized.
-- Module manifest/contract: what a module declares (APIs, event types, resource types, permissions, storage needs).
+- Permission/capability model details: vocabulary, granularity, grant flow and enforcement (the minimum rule is in [principals-and-permissions](../concepts/principals-and-permissions.md)).
+- Module contract wire format and manifest schema (required areas are in [module-contract](../concepts/module-contract.md)).
 - Event mechanism: delivery guarantees, persistence, replay, transport.
 - How the reference index stays consistent with module-owned data (push, pull, or both).
-- Secrets handling and where they are stored.
+- Storage and at-rest protection of service/integration credentials ([secrets](../concepts/secrets.md#open-questions)).
 - Which of the responsibilities above split into separate Nexus services versus one deployable.
 - How Nexus stores and versions encrypted, opaque sync state, and how devices are authorized/revoked.
 - Multi-user: what changes for identity, permissions, and data ownership.

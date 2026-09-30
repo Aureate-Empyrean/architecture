@@ -1,6 +1,6 @@
 # Lyra
 
-**Status: Planned.** Lyra's role and ownership boundary are established now; its product specification and v1 scope are not.
+Lyra's role and ownership boundary are established; its product specification and V1 scope are not. (Lyra is not implemented yet; status labels in this document classify decisions.)
 
 Lyra is Aureate Empyrean's **multimedia platform**: the user's personal library for media they consume. **Music** is its first and currently most-developed domain. The name has a dual association: the lyre as an instrument, and Lyra as a constellation, which fits the celestial identity of the ecosystem.
 
@@ -31,13 +31,13 @@ lyra://artist/<id>   lyra://album/<id>   lyra://track/<id>   lyra://playlist/<id
 - Generic communication ([Hermes](hermes.md)).
 - Generic documents/notes ([Documents](documents.md), [Mnemosyne](mnemosyne.md)).
 - Module lifecycle and interoperability (Nexus). Nexus does not become a media service.
-- Passwords, API credentials and other external-account secrets ([Janus](janus.md)). If an integration needs credentials, Janus/Nexus secret infrastructure should be used per the eventual security architecture; Lyra does not build its own vault.
+- Secrets. User vault secrets belong to [Janus](janus.md); credentials an integration needs while the user is absent are service/integration credentials ([secrets](../concepts/secrets.md)). Lyra does not build its own vault.
 
 ## Integrations
 
 - **Storage**: a Lyra Track owns the music meaning (artist, album, duration, tags, library state) and references a shared audio blob; shared storage owns the blob where that architecture applies. The blob API is not frozen here.
 - **Meridian**: Meridian may hold a fact such as "Person X considers Track Y a favorite" as a reference to `lyra://track/…` or `lyra://artist/…`. Meridian owns the preference; Lyra owns the music. This uses the generic reference mechanism with no special Meridian–Lyra coupling. Lyra resources may eventually discover Meridian references to them through backlinks, subject to normal permission rules. Lyra does not duplicate Meridian's Person model.
-- **Janus / Nexus**: credentials for any external integration.
+- **Secrets**: integration credentials follow the service/integration category ([secrets](../concepts/secrets.md)).
 - **Argus**: see [Boundary with Argus](#boundary-with-argus).
 
 ## Domains
@@ -72,6 +72,8 @@ The domains below are **Planned direction only**. They establish semantic direct
 - Lyra's matching/acquisition architecture must not be inherently Spotify-specific; Spotify is at most one input.
 - Imported playlists become Lyra playlists rather than requiring a Spotify-specific internal model. Provenance may be preserved where useful.
 - TrackSwipe is not a separate planned module (see below).
+- Lyra owns its library and playback implementation and user experience; complete applications such as Jellyfin or Navidrome are product references, not runtime backends. Mature components (e.g. FFmpeg, codecs, metadata libraries) are reused where appropriate ([ADR 0005](../decisions/0005-official-modules-own-product-implementations.md)).
+- Acquisition/review workflows remain part of Lyra and may use tools such as yt-dlp, spotDL or similar components. The architecture neither defines nor encourages copyright infringement; legality depends on source, content, rights and jurisdiction.
 
 ## TrackSwipe (Music domain)
 
@@ -105,7 +107,7 @@ Possible inputs (none committed): Spotify exports/metadata, other services' expo
 ## Open questions
 
 - v1 scope; exact music data model; exact resource/reference types.
-- **Movies/TV and media-server capabilities**: whether Lyra integrates with, reuses parts of, forks, or independently implements an approach comparable to Jellyfin is Open. Jellyfin integration/reuse is a future option worth investigating when that domain is designed. It is not decided that Lyra forks or depends on Jellyfin, and no transcoding/streaming architecture is chosen.
+- **Movies/TV and media-server capabilities**: how Lyra provides them is Open. Jellyfin and Navidrome are product references for the capabilities, not backends; which components (e.g. FFmpeg) are reused, and the transcoding/streaming architecture, are not chosen.
 - Books/ebooks and audiobooks: reader/format support, library and reading-progress semantics, metadata providers, and how audiobooks share primitives with both books and audio playback.
 - Which library primitives are shared across domains, and how cross-domain features (search, collections, favorites, history) work without a generic media UI.
 - Where the Argus/Lyra boundary needs finer rules (e.g. home videos).
@@ -113,11 +115,11 @@ Possible inputs (none committed): Spotify exports/metadata, other services' expo
 - Playback, streaming and transcoding architecture; supported audio formats; clients (mobile/desktop/web).
 - **Local-first/offline/client architecture.** Undecided: server-first vs. local-first, offline capability, synchronization. Janus's local-first requirement does not automatically apply to Lyra ([local-first-and-sync](../concepts/local-first-and-sync.md)).
 - Metadata providers; recommendation/discovery design.
-- Supported import sources; supported acquisition sources and mechanisms, including any legal or service-specific considerations.
+- Supported import sources; supported acquisition sources, tools and mechanisms, and their legal, rights and service-specific considerations.
 - Automatic vs. manual matching thresholds.
 - Relationship to existing local music folders; library scanning.
 - Duplicate detection; metadata conflict resolution.
 - Playlist interoperability/export.
-- Integration with external music servers/services, if any.
+- Import from existing libraries (including those managed by other applications) and interoperability with external services, if any; not as runtime backends.
 - Whether any TrackSwipe code is reused, or only its product ideas.
 - Listening history: retention and privacy controls.

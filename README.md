@@ -19,6 +19,8 @@ Every substantive statement in this repository should be classifiable as one of:
 | **Planned** | The intended direction. Reasonably settled in spirit, not in detail. May change. |
 | **Open** | An idea or question that needs design before anything depends on it. |
 
+These labels classify **decisions**, not implementation maturity: a module can have Established decisions while not yet being implemented.
+
 Documents that mix these use explicit headings ("Established decisions", "Planned direction", "Open questions"). Do not treat Planned or Open items as commitments, and do not implement them speculatively.
 
 ## Layout
@@ -27,17 +29,17 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 |---|---|
 | [principles.md](principles.md) | Durable principles: privacy, ownership, self-hosting, technology posture |
 | [architecture.md](architecture.md) | Ecosystem structure, Nexus/module boundary, deployment, naming, licensing, trust |
-| [modules/](modules/) | One document per module: purpose, ownership, integrations, decisions, open questions |
+| [modules/](modules/) | One document per module or named ecosystem capability: purpose, ownership, integrations, decisions, open questions |
 | [concepts/](concepts/) | Shared mechanisms that span modules |
-| [decisions/](decisions/README.md) | Lightweight ADRs for important architectural choices |
+| [decisions/](decisions/README.md) | Lightweight ADRs explaining why foundational decisions were made |
 
 ### Modules
 
-[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) ([security design](modules/janus-security-design.md)) · [Lyra](modules/lyra.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md)
+[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) ([security design](modules/janus-security-design.md)) · [Lyra](modules/lyra.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md) · [Astra](modules/astra.md) (shared capability, not a domain module)
 
 ### Concepts
 
-[Cross-module references](concepts/cross-module-references.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Updates](concepts/updates.md) · [Design system](concepts/design-system.md) · [Interoperability](concepts/interoperability.md)
+[Resource identity and lifecycle](concepts/resource-identity-and-lifecycle.md) · [Cross-module references](concepts/cross-module-references.md) · [Module contract](concepts/module-contract.md) · [Principals and permissions](concepts/principals-and-permissions.md) · [Secrets](concepts/secrets.md) · [Search and discovery](concepts/search-and-discovery.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Updates](concepts/updates.md) · [Design system](concepts/design-system.md) · [Interoperability](concepts/interoperability.md)
 
 ## Reading order
 

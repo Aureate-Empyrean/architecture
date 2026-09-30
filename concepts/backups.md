@@ -6,6 +6,8 @@ Aureate Empyrean may hold a large portion of a user's personal digital history. 
 
 - **Restore is as important as backup creation.** A backup that cannot be reliably restored is not a valid backup system.
 - **Backups must not casually convert module data that is locally or end-to-end encrypted into plaintext.** For [Janus](../modules/janus.md), a Nexus system backup must not require decrypting vault contents or turn an encrypted vault into plaintext merely because Nexus is creating the backup; vault ciphertext and the required metadata/recovery information should round-trip through backup and restore. How this is achieved, including key interaction, is not decided.
+- Restore preserves resource identities (UUIDs) and **must not immediately trigger destructive retention behavior** (e.g. Trash purges) because restored timestamps are old; automatic purges are suspended and reconciled with the user in control ([resource lifecycle](resource-identity-and-lifecycle.md#restore)).
+- Modules participate through the [module contract](module-contract.md); derived Nexus state (reference index, blob usage) is rebuilt or reconciled after restore rather than trusted blindly.
 - Do not invent proprietary compression algorithms.
 - Already-compressed media (JPEG, modern video, compressed audio) must not waste significant CPU on ineffective recompression.
 
@@ -50,6 +52,7 @@ Nexus provides backup/export/restore infrastructure; modules participate by expo
 - Backup-before-update: whether/when a backup is recommended or required before updates or migrations ([updates.md](updates.md)).
 - Restore validation: verification, dry-run, partial restore (single module), restore into a different version, disaster-recovery tests.
 - Handling of modules that are absent at restore time (references become unresolved, per [cross-module-references.md](cross-module-references.md)).
-- Handling data held by external systems (e.g. Immich) that Aureate Empyrean does not fully own.
+- Handling user-selected data kept outside Aureate Empyrean storage (e.g. a library folder managed in place).
+- Backup and restore of service/integration credentials ([secrets](secrets.md)).
 - Scheduling and destinations (local disk, remote self-hosted targets) without requiring a cloud.
 - Relationship between backup format and general user-facing data export/portability.

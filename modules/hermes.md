@@ -29,9 +29,10 @@ Possible sources: Discord, Instagram, Facebook Messenger, WhatsApp, Signal, Tele
 ## Integrations
 
 - **Meridian**: several communication identities (Instagram, Discord, WhatsApp, Messenger…) may reference one Meridian person. Hermes owns communication identities and the source-observed metadata (e.g. platform account ID, observed handles) needed to preserve/import communication correctly; Meridian owns the knowledge that an online account belongs to a person. Neither is authoritative over the other; Hermes observations (e.g. a handle change) may serve as provenance for Meridian's account history. Calls, messages and conversations stay in Hermes; a Meridian Interaction only adds person/relationship context and references them. See [Meridian](meridian.md#cross-module-observations).
+- **`@me`**: the user's own communication identities are associated with the distinguished self Person in Meridian ([meridian](meridian.md#the-distinguished-self-person-me)).
 - **Collectors**: SMS, call history and (where permitted) RCS from an Android companion arrive through Nexus.
 - **Storage**: attachments share blobs with other modules.
-- **Argus/Chronos/Atlas/Mnemosyne/Documents**: via references (e.g. `hermes://conversation/91` embedded in a document).
+- **Argus/Chronos/Atlas/Mnemosyne/Documents**: via references (e.g. `hermes://conversation/<uuid>` embedded in a document).
 
 ## Established decisions
 
@@ -54,7 +55,7 @@ Possible sources: Discord, Instagram, Facebook Messenger, WhatsApp, Signal, Tele
 - Normalized message/conversation model that fits very different services (email vs. chat vs. calls).
 - Raw-source retention format and how it relates to the normalized model.
 - Deduplication when the same conversation is ingested via multiple paths (export + connector + collector).
-- Connector contract: credentials handling, sync cursors, error/breakage reporting.
+- Connector contract: sync cursors, error/breakage reporting. Connector credentials are service/integration credentials ([secrets](../concepts/secrets.md)); their storage is Open there.
 - Identity resolution: how identities are proposed/confirmed as one Meridian person (must stay user-controlled).
 - Live inbox feasibility per service, and its security/credential implications.
 - Handling of edits, deletions and disappearing messages when the source no longer has them.

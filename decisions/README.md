@@ -1,8 +1,6 @@
 # Architecture Decisions
 
-Lightweight Architecture Decision Records (ADRs) for important architectural choices that need rationale and history.
-
-No ADRs have been written yet. Existing established decisions are recorded in [architecture.md](../architecture.md), [principles.md](../principles.md) and the module/concept documents. Retroactive ADRs may be added when a decision's rationale is worth preserving or is being challenged.
+Lightweight Architecture Decision Records (ADRs) for foundational choices whose reasoning would otherwise be lost. The architecture documents remain canonical for current rules; ADRs explain **why** foundational decisions were made.
 
 ## When to write an ADR
 
@@ -10,7 +8,7 @@ No ADRs have been written yet. Existing established decisions are recorded in [a
 - It would be expensive to reverse.
 - Someone will later ask "why did we do it this way?"
 
-Do not write ADRs for local implementation choices inside one repository.
+Do not write ADRs for local implementation choices inside one repository, and do not create them for every decision.
 
 ## Format
 
@@ -19,17 +17,13 @@ File name: `NNNN-short-title.md` (zero-padded, sequential, never renumbered).
 ```markdown
 # NNNN. Title
 
-- Status: Proposed | Accepted | Superseded by NNNN | Rejected
-- Date: YYYY-MM-DD
+- Status: Proposed | Accepted (YYYY-MM-DD) | Superseded by NNNN | Rejected
 
 ## Context
 What forces and constraints make this decision necessary.
 
 ## Decision
 What was decided, stated plainly.
-
-## Alternatives considered
-Brief; why they were not chosen.
 
 ## Consequences
 What becomes easier, what becomes harder, what is now required of other documents/repos.
@@ -42,4 +36,12 @@ What becomes easier, what becomes harder, what is now required of other document
 
 ## Index
 
-_(none yet)_
+| ADR | Title |
+|---|---|
+| [0001](0001-module-ownership-and-domain-ignorant-nexus.md) | Module ownership and a domain-ignorant Nexus |
+| [0002](0002-uuid-resource-identity.md) | UUID resource identity |
+| [0003](0003-local-knowledge-first.md) | Local knowledge first; explicit external discovery |
+| [0004](0004-janus-custody-and-secret-classes.md) | Janus custody and the user-secret/service-secret distinction |
+| [0005](0005-official-modules-own-product-implementations.md) | Official modules own their product implementations |
+| [0006](0006-astra-contextual-intelligence.md) | Astra as a contextual intelligence layer, not a data owner |
+| [0007](0007-postgresql-default-database.md) | PostgreSQL as the default server database |

@@ -32,7 +32,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 
 ## Integrations
 
-- **References and backlinks**: Atlas resources may be referenced by, and may reference, other modules' resources through the generic mechanism ([cross-module-references](../concepts/cross-module-references.md)). Illustrative: `argus://photo/928 taken_at atlas://place/17`; a Meridian Interaction or Life Event referencing `atlas://area/…`. Exact types and syntax are not established.
+- **References and backlinks**: Atlas resources may be referenced by, and may reference, other modules' resources through the generic mechanism ([cross-module-references](../concepts/cross-module-references.md)). Illustrative: `argus://photo/<uuid> taken_at atlas://place/<uuid>`; a Meridian Interaction or Life Event referencing `atlas://area/…`. Exact types and syntax are not established.
 - **Meridian**: Person/Organization/Group place associations (residence, workplace, registered office, funeral or resting place, etc.) reference Atlas resources; Meridian owns the association and its history, Atlas owns the resource ([meridian](meridian.md#places)).
 - **Argus**: photos with geographic metadata may be projected onto the map.
 - **Mnemosyne**: Notes may reference Atlas resources; notes referencing a resource may appear as context on it.
@@ -64,7 +64,8 @@ Two equally legitimate ways to explore geographic data.
 
 A central capability: Atlas may visually project geographically relevant resources owned by other modules onto the map, e.g. a Meridian Person's current or historical home, a Meridian Organization's addresses, a Meridian Life Event or Interaction referencing an Atlas Place/Area/Route, an Argus photo with geographic metadata, a Mnemosyne Note referencing an Atlas resource, future Chronos events.
 
-- **Projection does not transfer ownership.** Atlas does not duplicate another module's semantic content merely because it displays it. Example: a Meridian Interaction "First kiss with @Person" referencing `atlas://area/<id>` can be shown on that Area through references/backlinks, without Atlas persisting a copy of the text.
+- **Projection does not transfer ownership.** Atlas does not take ownership of, or independently edit, another module's semantic content merely because it displays it. Example: a Meridian Interaction "First kiss with @Person" referencing `atlas://area/<uuid>` can be shown on that Area through references/backlinks; Atlas does not store its own authoritative copy of the text.
+- **Derived projection data is allowed.** For practical scale (e.g. thousands of geotagged Argus photos), Atlas may keep a derived, non-authoritative, rebuildable cache of other modules' geographic data under the [derived-data rule](../concepts/interoperability.md#derived-data-and-projection). A module-declared geographic query capability is Planned ([module-contract](../concepts/module-contract.md#planned)).
 - **There is no first-class Atlas "Moment" resource.** A moment on the map is a visual projection of a resource owned elsewhere. Argus owns the photo; Atlas owns or understands its geographic projection.
 - Generic references/backlinks are used rather than hard-coded module coupling. Projected content is visibly understandable as projected, not presented as Atlas-owned.
 
@@ -88,7 +89,7 @@ Atlas resources may own a short description when it describes the geographic res
 
 Atlas strongly prefers open geographic data and does not architecturally depend on a proprietary map provider. OpenStreetMap is the natural source to investigate first. "OpenStreetMap" is **not one service** that solves everything: map rendering, tiles, geocoding, reverse geocoding, POI search and routing are separate capabilities that may involve different components/providers. Providers and architecture are Open.
 
-Atlas should be able to search external/open geographic data so the user can find an existing place without entering coordinates. This must remain consistent with the ecosystem's "no mandatory cloud" and privacy principles: no feature may require a hosted service operated by the project, and a query to an external provider can reveal what the user is interested in. Whether and how third-party providers are contacted (and self-hosted alternatives) is Open.
+**Search is local knowledge first** ([search-and-discovery](../concepts/search-and-discovery.md)): searching for a place first searches saved Places, Areas and Routes and permitted local projections. If nothing suitable exists, or the user explicitly asks, Atlas searches configured external/open geographic data, as a clearly distinguishable action, so the user can find an existing place without entering coordinates. This must remain consistent with the ecosystem's "no mandatory cloud" and privacy principles: no feature may require a hosted service operated by the project, and a query to an external provider can reveal what the user is interested in. Whether and how third-party providers are contacted (and self-hosted alternatives) is Open.
 
 **External POI ownership and provenance.** Saving an external POI creates a **user-owned Atlas representation/snapshot** with useful external source identity/provenance. The provider remains a source, not the authority over the user's Atlas data. A later refresh must not silently overwrite the user's edits or personal metadata, and conflicts/updates are inspectable where relevant. Atlas's schema does not mirror an external provider's schema.
 
@@ -112,9 +113,16 @@ Automatic collection is on the roadmap, not the initial priority: opt-in device 
 
 A Place may eventually show contextual statistics (visit count, first/last visit, accumulated time) in the context of the Place itself. They are optional derived information, not the purpose of Atlas, and not dashboard filler.
 
+### Route intelligence with Astra (Planned)
+
+A long-term capability, not V1. [Astra](astra.md) may help plan and enrich routes using Atlas-provided tools and explicitly requested external information. Example request: "Plan this drive and show me interesting historical places no more than 15 minutes off the route." Potential capabilities: route calculation and alternatives, POIs near the route, interesting detours, viewpoints, historical sites, hiking-related stops, parking/fuel/charging, toll/vignette requirements, and current restrictions/closures when trustworthy live sources are available.
+
+- LLM memory is **never authoritative** for safety-sensitive or time-sensitive route information. Tolls, closures, restrictions and similar information come from appropriate current sources.
+- Proposed Places and Routes are drafts; Atlas performs the change after the user approves.
+
 ### Navigation
 
-Turn-by-turn navigation is not a current responsibility. "Open in external maps/navigation app" interoperability may come later; native navigation is a very distant Open possibility. No navigation architecture is designed.
+Turn-by-turn navigation is not a current responsibility and is not part of V1. "Open in external maps/navigation app" interoperability may come later. Native navigation remains a long-term direction that would use the same Atlas resources; for example, approaching a relevant POI on a route could optionally surface "To your right is [historic site]". Such commentary must be grounded in known, source-backed POI information, not invented dynamically. No navigation engine is designed.
 
 ### Interaction model
 
@@ -140,7 +148,7 @@ Turn-by-turn navigation is not a current responsibility. "Open in external maps/
 **V1 Planned (may be reduced)**
 
 - Manual route drawing/editing where practical.
-- Open geographic/POI search (depends on the provider decision).
+- Explicit external geographic/POI search after local search (depends on the provider decision).
 - Atlas-specific map visual style (a basic first version).
 - Smart views / saved filters at a useful basic level.
 
@@ -152,7 +160,8 @@ Turn-by-turn navigation is not a current responsibility. "Open in external maps/
 - Map and Library are both primary ways to explore geographic data; the library is not a generic CRUD table.
 - Place, Area and Route are distinct first-class geographic resources; Visit is part of the long-term domain (later). A geographic reference may target a Place, Area or Route, and shape carries meaning.
 - Atlas resources may reference other modules' resources through cross-module references.
-- **Projection does not transfer ownership**; Atlas does not duplicate other modules' content, and there is no first-class Atlas "Moment" resource.
+- **Projection does not transfer ownership**; Atlas does not own or independently edit other modules' content, derived caches are non-authoritative, and there is no first-class Atlas "Moment" resource.
+- Search is local first; external geographic search is explicit.
 - Atlas may own a short description of the geographic resource; long-form knowledge belongs in Mnemosyne.
 - Tags/categories, smart views (rule-derived) and Collections (explicit membership) are distinct; favorite and want-to-visit are personal states without a large fixed taxonomy.
 - Atlas prefers open geographic data and does not depend architecturally on a proprietary map provider; OpenStreetMap is not treated as one service that solves rendering, geocoding, search and routing.
@@ -170,11 +179,12 @@ Turn-by-turn navigation is not a current responsibility. "Open in external maps/
 - Smart views, Collections and library browsing.
 - Cross-module resource creation via a shared create-target/picker mechanism.
 - Route export/sharing via open formats; "open in external maps" interoperability.
+- Route intelligence with Astra; long-term native navigation using Atlas resources with source-grounded contextual commentary.
 - Later: opt-in location collection, Visit inference, recorded routes and history, optional Place statistics.
 
 ## Open questions
 
-- Exact model boundaries among Place, Area, Route and Visit; geometry representation, geospatial storage and indexing.
+- Exact model boundaries among Place, Area, Route and Visit; geometry representation, geospatial storage and indexing (PostgreSQL with PostGIS is the expected direction under the [database default](../architecture.md#databases); details Open).
 - Map renderer; basemap/tile architecture; caching; offline map capability.
 - Geocoding/reverse geocoding, POI search provider(s), and routing engine/provider(s), consistent with "no mandatory cloud" and with privacy of external queries (self-hosted or optional).
 - Exact transport-mode model; route editing semantics.

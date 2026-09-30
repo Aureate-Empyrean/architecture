@@ -27,7 +27,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 - Physical file/blob storage (shared storage; see [storage-and-files](../concepts/storage-and-files.md)). Mnemosyne owns the relationship/context around an attachment.
 - Notification delivery (Nexus notification infrastructure).
 - External resources that integrations reference (e.g. GitHub Issues/PRs, Slack items).
-- Credentials for connected accounts (Janus/Nexus secret infrastructure), and secret/sensitive information generally: Janus Secure Notes exist for that; Mnemosyne owns general notes and knowledge.
+- Credentials for connected accounts: these are service/integration credentials ([secrets](../concepts/secrets.md)), not Mnemosyne data and not Janus vault contents. Secret/sensitive information the user keeps for themself belongs in Janus (e.g. Secure Notes); Mnemosyne owns general notes and knowledge.
 - Artifact-oriented document authoring ([Documents](documents.md)).
 
 ## Integrations
@@ -38,6 +38,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 - **Nexus**: authentication, permissions, routing, notifications (delivery of reminders), events, updates, references/backlinks. Application boundary: a full application at its own path, see [architecture](../architecture.md#application-boundary).
 - **Chronos**: possible calendar/time projections. A Task deadline does **not** automatically become a Chronos event unless the architecture explicitly defines that behavior.
 - **Hermes**: communication resources (e.g. a conversation or Slack message) are referenced or used as a source; they are not archived into Mnemosyne.
+- **Astra** (Planned): with a Note open, the Astra side panel can reason about it or related knowledge the user permits; Mnemosyne decides what context Astra receives, and changes are proposals the user commits ([astra](astra.md)).
 - **Design system**: Mnemosyne uses the shared design language with a purple/violet module accent ([design-system](../concepts/design-system.md)).
 
 ## Long-term model
@@ -46,7 +47,9 @@ Everything in this section is Established at the conceptual level unless labeled
 
 ### Workspaces
 
-A Workspace is a first-class logical boundary for Mnemosyne resources and integrations. It is not a tag, filter or cosmetic context. Users define arbitrary Workspaces (Personal, Work, University, Aureate Empyrean, Client X). The purpose is to prevent personal and professional identities/data from being mixed by accident.
+A Workspace is a first-class **organizational** boundary for Mnemosyne resources and integrations. It is not a tag, filter or cosmetic context. Users define arbitrary Workspaces (Personal, Work, University, Aureate Empyrean, Client X). The purpose is to keep unrelated knowledge, tasks and projects from becoming one undifferentiated pile, and to keep contexts such as personal and work apart in everyday use.
+
+- **Workspaces are not security, permission or ownership boundaries.** They are not principals and not access-control units ([principals-and-permissions](../concepts/principals-and-permissions.md)). Future multi-user permissions are a separate concern. Cross-module interoperability may carry Workspace context for presentation and filtering, but Workspace membership is not an authorization boundary unless a future decision changes that.
 
 - By default the **active Workspace scopes**: Notes, Tasks, Projects, Collections, Canvases, Inbox, Today, Search, Quick Capture, resource pickers, integrations and connected external accounts.
 - Connected accounts/integration configuration belong to a Workspace, and a Workspace may have several connected accounts for the same integration (e.g. personal GitHub in Personal; company GitHub and company Slack in Work).
@@ -105,7 +108,7 @@ An infinite/spatial workspace for thinking and arranging resources. Owns: title,
 
 ### Search and discovery
 
-Search is scoped to the active Workspace by default. Long-term scope: Notes, note contents, Tasks, Projects, Collections, Canvases, attachment metadata where appropriate, integration resources, and referenced Empyrean resources where permissions permit. Filters may include type, workspace, project, collection, tag, date, status, priority, source/integration. A command palette/quick navigation is desirable long-term; its UX is not architecture. Ecosystem-wide search remains a separate Open question.
+Search is scoped to the active Workspace by default and searches local knowledge first; any external search is explicit ([search-and-discovery](../concepts/search-and-discovery.md)). Long-term scope: Notes, note contents, Tasks, Projects, Collections, Canvases, attachment metadata where appropriate, integration resources, and referenced Empyrean resources where permissions permit. Filters may include type, workspace, project, collection, tag, date, status, priority, source/integration. A command palette/quick navigation is desirable long-term; its UX is not architecture. Ecosystem-wide search remains a separate Open question.
 
 ### Inbox, Quick Capture, Today
 
@@ -128,7 +131,8 @@ Moving a resource to Trash is a reversible action, distinct from permanent delet
 - **Permanent deletion and Empty Trash are destructive and require explicit confirmation.**
 - **Automatic permanent deletion** is based on time in Trash and is configurable. **Default retention: 30 days** (Established). The policy direction includes at least Never, 7, 14, 30, 60 and 90 days (Planned; the configuration surface is not specified). Retention is calculated from `trashed_at`, not from creation or last-edit time. With Never, nothing is deleted automatically. The UI may communicate remaining retention where useful ("Deleted 4 days ago · permanently deleted in 26 days").
 - **Restore** returns the resource to its original Workspace and preserves its valid relationships where possible.
-- Moving to Trash does not silently destroy references to the resource, and the resource stays recoverable during retention. After permanent deletion, incoming cross-module references follow the reference lifecycle in [cross-module-references](../concepts/cross-module-references.md) (unresolved, not silently removed).
+- Moving to Trash does not silently destroy references to the resource, and the resource stays recoverable during retention. While trashed, incoming references resolve as Trashed; after permanent deletion, as Deleted. They are not silently removed ([resolution states](../concepts/resource-identity-and-lifecycle.md#resolution-states)).
+- **Restore does not trigger the purge.** Restoring Mnemosyne from a backup suspends automatic permanent deletion and reconciles retention afterwards, so restored items whose `trashed_at` is old are not immediately purged ([resource lifecycle](../concepts/resource-identity-and-lifecycle.md#restore)).
 - Permanent deletion follows shared-storage ownership/reference rules and never blindly deletes a blob still referenced elsewhere ([storage-and-files](../concepts/storage-and-files.md)).
 - The mechanism that schedules and runs automatic cleanup is an implementation detail, but behavior must be deterministic and testable.
 
@@ -139,7 +143,7 @@ An open connector/integration model. Connected accounts are scoped to Workspaces
 - Mnemosyne does not own GitHub Issues/PRs. It may reference, display, link them to Projects, place them on a Canvas, reference them from Notes, and create a Mnemosyne Task from one while preserving source/reference provenance. The Task is owned by Mnemosyne; the Issue/PR by GitHub.
 - Synchronization behavior (e.g. completing a Task when an Issue closes) is explicit and Open, not assumed.
 - Slack is a possible future integration under the same model (a Work Workspace connecting a company Slack and explicitly creating Tasks/Notes from Slack resources). Hermes owns communication-domain concepts.
-- Credentials/tokens for connected accounts belong to Janus/Nexus secret infrastructure according to the eventual security architecture, not to a Mnemosyne-invented vault.
+- Credentials/tokens for connected accounts are service/integration credentials, usable for unattended synchronization while the user is absent and Janus is locked ([secrets](../concepts/secrets.md)); they are not Janus vault contents and not a Mnemosyne-invented vault.
 - Whether connectors are implemented by Mnemosyne, shared Nexus connector infrastructure, Hermes where appropriate, or a broader plugin system is Open.
 
 ### Customization and templates
@@ -219,7 +223,7 @@ Mnemosyne makes productive use of desktop space. Avoid: giant cards holding litt
 ## Established decisions
 
 - Mnemosyne is the personal knowledge, memory, organization and work module; not merely a notes app or an Obsidian/Notion clone.
-- Workspace is a first-class logical boundary (not a tag/filter/cosmetic context); the active Workspace scopes resources and integrations by default; cross-workspace views, moves and search are explicit. Logical isolation is established; physical isolation is not.
+- Workspace is a first-class organizational boundary (not a tag/filter/cosmetic context); the active Workspace scopes resources and integrations by default; cross-workspace views, moves and search are explicit. Logical separation is established; physical isolation is not. Workspaces are not security, permission or ownership boundaries.
 - Connected accounts/integration configuration belong to a Workspace.
 - Notes are simple; content direction is portable Markdown-oriented, not a proprietary block database. A checklist item is not automatically a Task.
 - Embeds are presentations of referenced resources, never copies; unresolved references are not silently destroyed.
@@ -261,16 +265,16 @@ Mnemosyne makes productive use of desktop space. Avoid: giant cards holding litt
 
 - Storage model: database-owned notes vs. plain files on disk (interop with existing Markdown tools); physical isolation between Workspaces.
 - Reference syntax inside Markdown and exact resource/reference types.
-- How Workspaces relate to Nexus permissions and multi-user, and whether references/backlinks from other modules respect Workspace boundaries (Workspaces are a logical boundary within Mnemosyne; the owning module enforces scoping).
+- How Workspace context is carried in resolution/presentation so other modules can display or filter it (Workspaces are organizational, not authorization boundaries), and how Workspaces relate to future multi-user permissions.
 - Exact task, recurrence and reminder models; task dependencies.
-- Whether connectors live in Mnemosyne, shared Nexus connector infrastructure, Hermes, or a broader plugin system; connected-account credential handling via Janus/Nexus secrets.
+- Whether connectors live in Mnemosyne, shared Nexus connector infrastructure, Hermes, or a broader plugin system; storage of connected-account credentials ([secrets](../concepts/secrets.md#open-questions)).
 - Integration synchronization semantics (e.g. Issue closes → Task).
 - Whether any Task/deadline projection into Chronos is ever defined.
 - Whether Meridian person notes stay in Meridian or are Mnemosyne notes referencing the person ([meridian](meridian.md)).
 - Ecosystem-wide search: which module or Nexus service owns it.
 - Local-first/offline design and sync ([local-first-and-sync](../concepts/local-first-and-sync.md)).
 - Exact boundary with [Documents](documents.md), including content model sharing.
-- Trash: configuration surface and exact retention options beyond the default, how references to a trashed (not yet deleted) resource resolve for other modules, and the cleanup scheduling mechanism (behavior must be deterministic and testable).
+- Trash: configuration surface and exact retention options beyond the default, exact post-restore reconciliation of retention, and the cleanup scheduling mechanism (behavior must be deterministic and testable).
 - Exact layouts, components and labels (illustrative in this document); where the module accent tokens are centralized.
 - Template model.
 - Whether the Example Module is retired once Mnemosyne V1 exists.

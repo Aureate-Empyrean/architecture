@@ -18,6 +18,7 @@ Modules that may benefit: password management (Janus), notes (Mnemosyne), docume
 - [Janus](../modules/janus.md) is the first module for which offline/local-first behavior is an explicit requirement: it must be useful with no Nexus at all.
 - Nexus is optional synchronization/interoperability for local-first modules, not a runtime dependency for using their local data.
 - Changes made offline are eligible for later synchronization once the user configures Nexus sync.
+- Resources created offline receive their stable UUID identity locally, without Nexus coordination ([resource-identity-and-lifecycle](resource-identity-and-lifecycle.md)).
 - Consistent with the core rule: the module still owns its domain data. Nexus does not become authoritative for a local-first module's domain objects by synchronizing them.
 
 ## Planned direction
