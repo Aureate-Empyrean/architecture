@@ -31,6 +31,7 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 | [architecture.md](architecture.md) | Ecosystem structure, Nexus/module boundary, deployment, naming, licensing, trust |
 | [modules/](modules/) | One document per module or named ecosystem capability: purpose, ownership, integrations, decisions, open questions |
 | [concepts/](concepts/) | Shared mechanisms that span modules |
+| [design/](design/tokens.css) | Canonical shared design tokens, vendored by applications ([ADR 0008](decisions/0008-shared-design-tokens.md)) |
 | [decisions/](decisions/README.md) | Lightweight ADRs explaining why foundational decisions were made |
 
 ### Modules
