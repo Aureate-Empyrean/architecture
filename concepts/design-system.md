@@ -62,17 +62,20 @@ Aureate ecosystem identity (Nexus primary accent):
 
 No accents are assigned to other modules yet. They are chosen when each module's design is done; none are established here.
 
+### Token distribution
+
+- The canonical token set is [`design/tokens.css`](../design/tokens.css). Applications vendor it unchanged, load it first and override only the module accent family (`--accent*`, `--focus`) and `--font-display`. Components use token names, never raw shared values. See [ADR 0008](../decisions/0008-shared-design-tokens.md).
+- Roboto is the shared UI face and is bundled by each application, including sandboxed module applications.
+
 ## Planned direction
 
-- A shared token set that modules consume, with a module accent family (accent, light, deep, subtle tint) per module.
-- Modules keep the same foundation and typography while swapping only the accent family.
 - Module accent tokens are centralized in each application so they can be changed later without touching components. Current Mnemosyne values are unchanged.
 
 ## Open questions
 
 - Final Mnemosyne token values, and accent families for the other modules.
 - Accessibility/contrast requirements for accents on the shared surfaces, and light-theme support, if any.
-- Where the shared tokens live in practice (a shared package, per-module copies, served by Nexus) and how community modules adopt them.
+- How community modules adopt the shared tokens (decided for official applications in [ADR 0008](../decisions/0008-shared-design-tokens.md)).
 - Whether community modules are expected to follow the shared language or only encouraged to.
 - Icon and logo system per module.
 - Atlas's module accent and map style: the map follows the shared design language, not a data provider's default appearance ([atlas](../modules/atlas.md#map-presentation)). No Atlas accent is assigned yet.

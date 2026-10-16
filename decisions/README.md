@@ -45,3 +45,4 @@ What becomes easier, what becomes harder, what is now required of other document
 | [0005](0005-official-modules-own-product-implementations.md) | Official modules own their product implementations |
 | [0006](0006-astra-contextual-intelligence.md) | Astra as a contextual intelligence layer, not a data owner |
 | [0007](0007-postgresql-default-database.md) | PostgreSQL as the default server database |
+| [0008](0008-shared-design-tokens.md) | One canonical token file, vendored by each application |
