@@ -60,7 +60,15 @@ Aureate ecosystem identity (Nexus primary accent):
 | Mnemosyne Deep Purple | `#5B4FC4` |
 | Subtle purple surface/tint | derived from the accent at low contrast/opacity on the shared dark surfaces |
 
-No accents are assigned to other modules yet. They are chosen when each module's design is done; none are established here.
+**Janus** (Established, [ADR 0009](../decisions/0009-janus-client-delivery.md)):
+
+| Name | Hex |
+|---|---|
+| Janus Teal | `#4FB8B0` |
+| Janus Light Teal | `#8AD8D1` |
+| Janus Deep Teal | `#2E7F79` |
+
+No accents are assigned to other modules yet. They are chosen when each module's design is done.
 
 ### Token distribution
 

@@ -115,7 +115,7 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - Illustratively (paths are not fixed): `/` is the Nexus control center; `/modules/mnemosyne/` is the full Mnemosyne application. Entering a module does not leave Nexus management chrome permanently consuming the module UI. A module owns its own navigation and product UX.
 - Nexus remains underneath as infrastructure: authentication, permissions, lifecycle/module management, routing/gateway, references/backlinks, events, shared storage where applicable, notifications, updates and APIs.
 - A common application/module switcher may provide navigation between Nexus and installed modules; its design is Open.
-- Local-first clients (e.g. Janus) are not necessarily served by Nexus. How Janus clients are delivered and updated is Open because Nexus-delivered client code is a security threat ([janus](modules/janus.md#security-and-custody-model)).
+- Local-first clients (e.g. Janus) are not necessarily served by Nexus. Janus clients are standalone applications released independently of Nexus, because Nexus-delivered client code is a security threat ([ADR 0009](decisions/0009-janus-client-delivery.md)).
 
 ### Updates
 

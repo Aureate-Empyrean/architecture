@@ -13,7 +13,7 @@
 
 ## Areas that need design (all Open)
 
-- Threat model, including the **client delivery threat**: if Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified code that captures secrets during unlock ([janus](janus.md#security-and-custody-model)). Possible approaches (e.g. independently distributed or signed clients) are examples, not decisions.
+- Threat model, including the **client delivery threat**: if Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified code that captures secrets during unlock ([janus](janus.md#security-and-custody-model)). Delivery is decided by [ADR 0009](../decisions/0009-janus-client-delivery.md): independently released standalone clients that Nexus never serves or updates. Release signing remains Open.
 - Cryptographic primitives; KDF and parameters
 - Key hierarchy; master-password handling
 - Vault encryption format; per-item vs. vault-level encryption
