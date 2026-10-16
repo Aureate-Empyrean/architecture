@@ -80,7 +80,7 @@ Required properties (Established):
 - "Encrypt the database" is not a sufficient security design.
 - **Janus holds user vault secrets, not service/integration credentials.** Credentials that Nexus or a connector must use while the user is absent and Janus is locked (OAuth refresh tokens, connector credentials, machine credentials) are a separate category ([secrets](../concepts/secrets.md), [ADR 0004](../decisions/0004-janus-custody-and-secret-classes.md)). A user may keep a personal copy of such a credential in Janus, but Janus is not its runtime source.
 
-**Client delivery threat (Open).** If Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified client code that captures secrets during unlock. "Nexus never sees plaintext" does not by itself protect against a compromised Nexus that controls client delivery. How Janus clients are delivered and updated is part of the [security design](janus-security-design.md) threat model; independently distributed or signed clients are possible approaches, not decisions.
+**Client delivery threat (decided: [ADR 0009](../decisions/0009-janus-client-delivery.md)).** If Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified client code that captures secrets during unlock. "Nexus never sees plaintext" does not by itself protect against a compromised Nexus that controls client delivery. How Janus clients are delivered and updated is part of the [security design](janus-security-design.md) threat model; Janus clients are therefore standalone applications released independently of Nexus (Tauri 2 with a Rust core, Windows first); Nexus never serves or updates Janus code. Release signing is required before real use; its mechanism is Open.
 
 No security marketing claims ("zero knowledge", "military grade", "unbreakable", "industry-standard encryption" and similar) are made. Precise terminology waits for a reviewed design.
 
@@ -298,7 +298,7 @@ All of the following require dedicated security design; none is decided. The ful
 - Breach-check privacy protocol and provider/dataset.
 - Encrypted transfer format and file extension; import handling of plaintext source exports; password-strength estimator.
 - How a standalone Janus client (which has no Nexus) relates to the module registry/lifecycle in [Nexus](nexus.md).
-- How Janus clients are delivered and updated, and the client-delivery threat from a compromised Nexus.
+- Release signing mechanism and provenance for the independently released clients ([ADR 0009](../decisions/0009-janus-client-delivery.md)).
 - Whether Janus vault item identities (UUIDs) are exposed outside the vault at all, given that identity and existence may be sensitive metadata.
 - Janus storage technology, decided by the security design; it is not forced into the ecosystem PostgreSQL default ([architecture](../architecture.md#databases)).
 - Plaintext compatibility export.

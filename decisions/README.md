@@ -46,3 +46,4 @@ What becomes easier, what becomes harder, what is now required of other document
 | [0006](0006-astra-contextual-intelligence.md) | Astra as a contextual intelligence layer, not a data owner |
 | [0007](0007-postgresql-default-database.md) | PostgreSQL as the default server database |
 | [0008](0008-shared-design-tokens.md) | One canonical token file, vendored by each application |
+| [0009](0009-janus-client-delivery.md) | Janus clients are independently released standalone applications |
