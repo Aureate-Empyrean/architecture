@@ -47,3 +47,9 @@ What becomes easier, what becomes harder, what is now required of other document
 | [0007](0007-postgresql-default-database.md) | PostgreSQL as the default server database |
 | [0008](0008-shared-design-tokens.md) | One canonical token file, vendored by each application |
 | [0009](0009-janus-client-delivery.md) | Janus clients are independently released standalone applications |
+| [0010](0010-module-network-egress.md) | Outbound network access is an explicit, reviewable module capability |
+| [0011](0011-projection-queries.md) | Projection queries: Nexus forwards scope-granted queries to owning modules |
+| [0012](0012-design-system-v2.md) | Design system v2: layered surfaces, restrained translucency and a shared foundation stylesheet |
+| [0013](0013-chronos-and-lyra-v1-boundaries.md) | Chronos and Lyra v1 boundaries: owned resources, external providers and derived calendar data |
+| [0014](0014-liquid-glass-surfaces.md) | Liquid-glass surfaces and per-application atmosphere |
+| [0015](0015-training-books-and-delivery-sequencing.md) | Training ownership, Lyra Books and self-hosted sequencing |

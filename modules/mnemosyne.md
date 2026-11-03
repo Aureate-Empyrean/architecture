@@ -36,7 +36,7 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 - **Backlinks**: notes link to resources, and resources can discover the notes that mention them, subject to permissions.
 - **Shared storage**: attachments reference shared blobs.
 - **Nexus**: authentication, permissions, routing, notifications (delivery of reminders), events, updates, references/backlinks. Application boundary: a full application at its own path, see [architecture](../architecture.md#application-boundary).
-- **Chronos**: possible calendar/time projections. A Task deadline does **not** automatically become a Chronos event unless the architecture explicitly defines that behavior.
+- **Chronos**: Mnemosyne 1.2 provides the [`dated-items`](../concepts/projections.md#dated-items-version-1) projection of Task deadlines ([ADR 0011](../decisions/0011-projection-queries.md)): non-trashed Tasks with a deadline, all-day, with status and the Workspace title as presentation context, to requesters Nexus authorized. Chronos shows them only after the user opts in, as derived entries; a Task deadline never becomes a Chronos Event and Mnemosyne stays the owner of Tasks, deadlines and reminder intent.
 - **Hermes**: communication resources (e.g. a conversation or Slack message) are referenced or used as a source; they are not archived into Mnemosyne.
 - **Astra** (Planned): with a Note open, the Astra side panel can reason about it or related knowledge the user permits; Mnemosyne decides what context Astra receives, and changes are proposals the user commits ([astra](astra.md)).
 - **Design system**: Mnemosyne uses the shared design language with a purple/violet module accent ([design-system](../concepts/design-system.md)).
@@ -269,7 +269,7 @@ Mnemosyne makes productive use of desktop space. Avoid: giant cards holding litt
 - Exact task, recurrence and reminder models; task dependencies.
 - Whether connectors live in Mnemosyne, shared Nexus connector infrastructure, Hermes, or a broader plugin system; storage of connected-account credentials ([secrets](../concepts/secrets.md#open-questions)).
 - Integration synchronization semantics (e.g. Issue closes → Task).
-- Whether any Task/deadline projection into Chronos is ever defined.
+- Whether Mnemosyne should offer its own per-requester disclosure setting for the Task-deadline projection beyond the Nexus scope grant and Chronos's opt-in.
 - Whether Meridian person notes stay in Meridian or are Mnemosyne notes referencing the person ([meridian](meridian.md)).
 - Ecosystem-wide search: which module or Nexus service owns it.
 - Local-first/offline design and sync ([local-first-and-sync](../concepts/local-first-and-sync.md)).

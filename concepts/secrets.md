@@ -23,6 +23,10 @@ OAuth refresh tokens, API credentials, connector credentials, machine credential
 - Integration and connector credentials are category B, not Janus vault contents. A user may additionally keep a personal copy of a credential in Janus, but Janus is not its runtime source for services.
 - Category A never becomes usable by unattended services as a side effect of integration.
 
+## Current practice (Provisional)
+
+- Lyra holds its TMDB credential itself: entered by the owner in Lyra's settings, stored in Lyra's data volume with file mode 0600 outside the database, never returned to the browser, logged, sent to Nexus or included in backups ([Lyra](../modules/lyra.md#tmdb-integration-established)). This is the smallest secure option while Nexus has no category B store; it does not settle the question below.
+
 ## Open questions
 
 - Where category B credentials are held (Nexus, the owning module, or both) and their storage and at-rest protection. Cryptography and the concrete secret store are not designed here.

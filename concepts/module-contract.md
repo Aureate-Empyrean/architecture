@@ -17,7 +17,14 @@ Requirements apply to modules connected to a Nexus installation. How standalone 
 | **Storage/blob usage reporting** | Where it uses shared storage, which blobs it currently uses, so shared storage never deletes a blob still in use ([storage-and-files](storage-and-files.md)). |
 | **Export/restore participation** | Where it holds user data, participation in backup, export and restore, including suspending automatic purges during restore ([backups](backups.md)). |
 
-Further metadata (localization, [localization](localization.md); projection/query capabilities, below) is Planned.
+Further metadata (localization, [localization](localization.md)) is Planned.
+
+## Optional areas (Established, Nexus 0.1.5)
+
+| Area | What the module provides |
+|---|---|
+| **Projections** | Projection contracts it *provides* (e.g. `dated-items`) and exact module/projection scopes it *reads*, reviewed by the owner. Providers serve `POST /empyrean/v1/projections/<name>` and decide per requester what to disclose. See [projections](projections.md) and [ADR 0011](../decisions/0011-projection-queries.md). |
+| **Outbound network** | The `network.egress` capability when a declared integration needs the Internet, with in-module SSRF protection for user-supplied destinations. See [ADR 0010](../decisions/0010-module-network-egress.md). |
 
 ## Principles
 
@@ -27,7 +34,7 @@ Further metadata (localization, [localization](localization.md); projection/quer
 
 ## Planned
 
-- Projection/query capabilities a module may declare (e.g. dated items for Chronos, geographic items for Atlas), feeding derived data under the [derived-data rule](interoperability.md#derived-data-and-projection).
+- Further projection contracts (geographic items for Atlas), feeding derived data under the [derived-data rule](interoperability.md#derived-data-and-projection). The mechanism and `dated-items` v1 are Established ([projections](projections.md)).
 - Tools a module exposes to [Astra](../modules/astra.md).
 - Localization metadata.
 

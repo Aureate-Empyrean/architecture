@@ -19,7 +19,7 @@ Aureate Empyrean consists of:
                  │ references · storage · backup│
                  └───┬─────┬─────┬─────┬────────┘
                      │     │     │     │      (APIs, events, references)
-                 Meridian Hermes Atlas Argus Janus Lyra Chronos Mnemosyne Documents … community modules
+                 Meridian Hermes Atlas Argus Janus Lyra Enceladus Chronos Mnemosyne Documents … community modules
 
   Collectors (e.g. Android companion) ──► Nexus APIs/events ──► owning module
 ```
@@ -34,6 +34,7 @@ Current conceptual modules:
 | Argus | Photos, video, media metadata, local recognition | [argus](modules/argus.md) |
 | Janus | Local-first encrypted vault: credentials, secrets, authentication material, payment and sensitive identity records | [janus](modules/janus.md) |
 | Lyra | Multimedia library and playback: music first; movies, TV, books, audiobooks later | [lyra](modules/lyra.md) |
+| Enceladus | Physical training, strength, schedules and progress (integration Planned) | [enceladus](modules/enceladus.md) |
 | Chronos | Calendar, dates, events, time-oriented information | [chronos](modules/chronos.md) |
 | Mnemosyne | Personal knowledge, notes, tasks, projects, workspaces | [mnemosyne](modules/mnemosyne.md) |
 | Documents | Document creation/editing (final name undecided) | [documents](modules/documents.md) |
@@ -109,6 +110,14 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - Remote access requires no Aureate-operated cloud. Private overlay/VPN access is the preferred direction for personal remote access; Tailscale is the current recommended onboarding option, but the ecosystem does not depend on it as a vendor and other secure approaches remain possible.
 - Collectors and mobile clients that can lose access to Nexus buffer permitted data locally and deliver it later rather than silently losing it ([collectors.md](concepts/collectors.md)).
 
+### Strategic sequencing
+
+**Established priority:** first build and stabilize a useful, fully self-hosted integrated ecosystem. Harden data integrity, restore, security and everyday cross-module workflows before expanding distribution. [Enceladus](modules/enceladus.md) and Lyra's [Books domain](modules/lyra.md#books-physical-and-digital) follow this sequence; their planned scope is not an implementation claim.
+
+**Planned, later consideration:** standalone mobile/app-store distribution or a managed SaaS may be evaluated only after that foundation is useful and stable. This is not a program to turn every module into a mobile app now. Pricing, platforms, operations and release dates are **Open**; paid distribution, if pursued, must preserve self-hosting, open-source portability and the existing principles.
+
+Janus's independently delivered client remains an established security requirement ([ADR 0009](decisions/0009-janus-client-delivery.md)), not a distribution experiment to defer or replace with a Nexus-served web client. Nexus must never serve, embed or update executable Janus client code.
+
 ### Application boundary
 
 - Nexus is the central control plane and homepage of the ecosystem. Installed modules are **full applications**, not permanent pages embedded in Nexus's management sidebar.
@@ -152,7 +161,7 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 
 ### Visual identity (summary)
 
-Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyberpunk, crypto or gaming-launcher; avoid excessive glow, gradients, glass. Nexus uses gold as its identity; each major module may carry its own accent (Mnemosyne: purple/violet) on the same shared foundation. Tokens and the module-accent rule are in [design-system.md](concepts/design-system.md).
+Celestial, black/charcoal, restrained aureate gold; premium, contemporary and serious. Not cyberpunk, crypto or gaming-launcher; no excessive glow or gradients; liquid-glass surfaces over a per-application atmosphere, readable and with solid fallbacks ([ADR 0012](decisions/0012-design-system-v2.md), [ADR 0014](decisions/0014-liquid-glass-surfaces.md)). Nexus uses gold as its identity; each major module carries its own accent (Mnemosyne violet, Janus teal, Chronos celestial blue, Lyra orchid) on the same shared foundation. Tokens, foundation primitives and the module-accent rule are in [design-system.md](concepts/design-system.md).
 
 ## Planned direction
 
@@ -165,7 +174,7 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Pre-update review with manifest diff, compatibility checks and post-update verification ([updates.md](concepts/updates.md)).
 - Nexus-communicated locale, module-declared supported locales and portable translation packs ([localization.md](concepts/localization.md)).
 - Third-party module participation through the same public mechanisms official modules use ([interoperability.md](concepts/interoperability.md)).
-- Module-declared projection/query capabilities feeding derived data ([module-contract.md](concepts/module-contract.md)).
+- Further module-declared projection contracts feeding derived data; the mechanism and `dated-items` are Established ([projections.md](concepts/projections.md)).
 - Astra, a provider-independent contextual intelligence layer using module-exposed tools ([astra](modules/astra.md)).
 
 ## Open questions
@@ -173,7 +182,7 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Authentication/permission model details: capability vocabulary, grant flow and enforcement ([principals-and-permissions.md](concepts/principals-and-permissions.md#open-questions)).
 - Module contract wire format and manifest schema ([module-contract.md](concepts/module-contract.md#open-questions)).
 - Database deployment topology (one PostgreSQL service with per-module databases/roles, or more).
-- Event delivery guarantees, ordering and persistence.
+- Event delivery guarantees, ordering and persistence. (Implemented events are bounded best-effort hints; consumers reconcile through projections and enumeration.)
 - Whether/when multi-user is introduced and its effect on ownership and permissions.
 - Trust-category review process for Verified modules.
 - How local-first clients relate to the module registry/lifecycle and to Nexus backups when they never connect to Nexus.
@@ -181,3 +190,5 @@ Celestial, black/charcoal, restrained aureate gold; premium and serious. Not cyb
 - Update metadata, rollback, migration execution and release trust: see [updates.md](concepts/updates.md#open-questions).
 - Application/module switcher design and how a module application is embedded or navigated to from Nexus (see [Application boundary](#application-boundary)).
 - Which capabilities become Nexus services versus modules (files/storage is the leading candidate).
+
+Scope and sequencing decision: [ADR 0015](decisions/0015-training-books-and-delivery-sequencing.md).

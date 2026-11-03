@@ -30,13 +30,14 @@ How independent modules, Nexus, collectors and third-party software work togethe
 
 Practical cases: Atlas displaying large numbers of Argus geographic resources; Chronos aggregating dated resources; search indexes; projections; performance caches. Projection does not transfer ownership, and a derived copy never becomes an alternative source of truth.
 
-A module-declared projection/query capability (e.g. "dated items in a range", "geographic items in an area") is Planned; its protocol is Open ([module-contract](module-contract.md#planned)).
+Module-declared projection queries are Established ([ADR 0011](../decisions/0011-projection-queries.md), [projections](projections.md)): Nexus forwards scope-granted queries to the owner and stores nothing; the first contract is `dated-items` (Chronos reading Lyra and Mnemosyne). Enceladus training-date projections to Chronos are Planned, with the exact `dated-items` mapping Open ([Enceladus](../modules/enceladus.md)); Nexus does not own workout data. Further contracts, such as geographic items for Atlas, are Planned.
 
 ## Channels (conceptual)
 
 | Channel | Use | Status |
 |---|---|---|
 | Documented, versioned APIs | Direct request/response between modules and clients | Planned |
+| Projection queries | A consumer reads a provider's declared projection through Nexus (e.g. `dated-items`) | Established ([projections](projections.md)) |
 | Lightweight system events | Notify others that something changed, without sharing data. Not to be confused with Chronos calendar Events or Meridian Life Events. | Planned |
 | Shared primitives | Auth, permissions, blobs, notifications, config | Planned |
 | References | Link resources across modules; backlinks | Established requirement; design Open |
@@ -58,7 +59,7 @@ A module-declared projection/query capability (e.g. "dated items in a range", "g
 - How observations and changes to shared real-world attributes propagate between modules while preserving each module's domain ownership, provenance and user control (no synchronization engine is designed).
 - Module manifest/registration contract and API versioning/compatibility policy, including the manifest comparison used for pre-update review ([updates.md](updates.md)).
 - Event model: schema, naming, delivery guarantees, who may subscribe under which permissions.
-- Projection/query capability protocol and how derived data is invalidated.
+- Push-style invalidation of derived data (consumers currently poll and treat events as hints).
 - Where cross-module orchestration lives when it is neither Nexus (domain-ignorant) nor a single module (e.g. "show everything about this person").
 - Enforcement of community-module isolation and the trust categories (required before untrusted third-party modules are treated as safely isolated).
 - Verified-module review process.

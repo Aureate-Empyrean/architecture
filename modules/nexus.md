@@ -24,6 +24,8 @@ Responsibilities that are established or expected eventually:
 - backup/export/restore infrastructure
 - cross-module resource/reference infrastructure (index, resolution, backlinks)
 - plugin/connector infrastructure
+- projection query forwarding between modules (domain-ignorant; [projections](../concepts/projections.md))
+- per-module outbound network grants (`network.egress`, [ADR 0010](../decisions/0010-module-network-egress.md))
 - optional synchronization infrastructure for local-first modules (Planned; see [local-first-and-sync](../concepts/local-first-and-sync.md))
 
 ## Does not own
@@ -42,6 +44,7 @@ Responsibilities that are established or expected eventually:
 - Nexus indexes references between resources ([cross-module-references](../concepts/cross-module-references.md)).
 - Nexus provides blob/file primitives ([storage-and-files](../concepts/storage-and-files.md)) and orchestrates backup ([backups](../concepts/backups.md)).
 - [Janus](janus.md): may synchronize encrypted vault state for authorized devices; Janus works without Nexus.
+- [Enceladus](enceladus.md) (Planned integration): registration, permission scopes and projection forwarding only; workout rules, records and history remain in Enceladus.
 - Common integration surface for community modules ([interoperability](../concepts/interoperability.md)).
 
 ## Established decisions

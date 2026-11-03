@@ -31,16 +31,22 @@ Documents that mix these use explicit headings ("Established decisions", "Planne
 | [architecture.md](architecture.md) | Ecosystem structure, Nexus/module boundary, deployment, naming, licensing, trust |
 | [modules/](modules/) | One document per module or named ecosystem capability: purpose, ownership, integrations, decisions, open questions |
 | [concepts/](concepts/) | Shared mechanisms that span modules |
-| [design/](design/tokens.css) | Canonical shared design tokens, vendored by applications ([ADR 0008](decisions/0008-shared-design-tokens.md)) |
+| [design/](design/tokens.css) | Canonical shared design tokens and foundation stylesheet, vendored by applications ([ADR 0008](decisions/0008-shared-design-tokens.md), [ADR 0012](decisions/0012-design-system-v2.md)) |
 | [decisions/](decisions/README.md) | Lightweight ADRs explaining why foundational decisions were made |
 
 ### Modules
 
-[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) ([security design](modules/janus-security-design.md)) · [Lyra](modules/lyra.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md) · [Astra](modules/astra.md) (shared capability, not a domain module)
+[Nexus](modules/nexus.md) · [Meridian](modules/meridian.md) · [Hermes](modules/hermes.md) · [Atlas](modules/atlas.md) · [Argus](modules/argus.md) · [Janus](modules/janus.md) ([security design](modules/janus-security-design.md)) · [Lyra](modules/lyra.md) · [Enceladus](modules/enceladus.md) · [Chronos](modules/chronos.md) · [Mnemosyne](modules/mnemosyne.md) · [Documents](modules/documents.md) · [Astra](modules/astra.md) (shared capability, not a domain module)
 
 ### Concepts
 
-[Resource identity and lifecycle](concepts/resource-identity-and-lifecycle.md) · [Cross-module references](concepts/cross-module-references.md) · [Module contract](concepts/module-contract.md) · [Principals and permissions](concepts/principals-and-permissions.md) · [Secrets](concepts/secrets.md) · [Search and discovery](concepts/search-and-discovery.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Updates](concepts/updates.md) · [Design system](concepts/design-system.md) · [Interoperability](concepts/interoperability.md)
+[Resource identity and lifecycle](concepts/resource-identity-and-lifecycle.md) · [Cross-module references](concepts/cross-module-references.md) · [Module contract](concepts/module-contract.md) · [Principals and permissions](concepts/principals-and-permissions.md) · [Secrets](concepts/secrets.md) · [Search and discovery](concepts/search-and-discovery.md) · [Storage and files](concepts/storage-and-files.md) · [Backups](concepts/backups.md) · [Collectors](concepts/collectors.md) · [Local-first and sync](concepts/local-first-and-sync.md) · [Localization](concepts/localization.md) · [Updates](concepts/updates.md) · [Design system](concepts/design-system.md) · [Interoperability](concepts/interoperability.md) · [Projections](concepts/projections.md)
+
+## Current direction (2026-11-03)
+
+- First stabilize the useful self-hosted ecosystem; app stores and managed SaaS are later considerations ([sequencing](architecture.md#strategic-sequencing)).
+- [Enceladus](modules/enceladus.md): training module agreed; existing Gymless is an unintegrated starting point with audit blockers. Further APK development is not a current priority.
+- [Lyra Books](modules/lyra.md#books-physical-and-digital): physical and digital copies belong to one media domain; implementation remains Planned. Existing Movies/TV tracking remains the implemented baseline.
 
 ## Reading order
 

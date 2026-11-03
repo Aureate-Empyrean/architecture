@@ -14,7 +14,7 @@ hermes://conversation/<uuid>
 argus://photo/<uuid>
 atlas://place/<uuid>     atlas://area/<uuid>     atlas://route/<uuid>
 chronos://event/<uuid>
-lyra://track/<uuid>
+lyra://track/<uuid>     lyra://movie/<uuid>     lyra://episode/<uuid>
 ```
 
 A **relation** connects two references:
@@ -59,6 +59,10 @@ Responsibilities:
 ## Example: why discovery must be permission-aware
 
 A Janus item (e.g. a Login) may reference a Meridian person: `janus://login/<uuid> belongs_to -> meridian://person/<uuid>`. Meridian must not receive secret material merely because of this, and must also not automatically be able to answer "does Janus hold a credential belonging to this person?", because that fact, or even the credential's label, may itself be sensitive. A backlink query is therefore authorized like any other read: only contexts explicitly permitted to know that the relation exists may discover it. See [Janus](../modules/janus.md).
+
+## Implementation (Nexus Entity References)
+
+The implemented grammar is `nexus:v1:<module-id>:<resource-type>:<uuid>` (Nexus `docs/cross-module-references.md`); the `scheme://type/uuid` forms above remain illustrative. Relations are namespaced by the creating module (`chronos.about`), visible only to their creator and explicit readers, and rebuilt from owner enumeration. Trashed and redirected states are not yet expressible on the wire. The Open questions below remain open where the implementation made a local choice.
 
 ## Planned direction
 
