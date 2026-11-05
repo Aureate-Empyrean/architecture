@@ -1,6 +1,6 @@
 # Design System and Visual Identity
 
-The shared visual language of the ecosystem, the rule for how individual modules carry their own accent identity, and the shared foundation every official application builds on. Canonical files: [`design/tokens.css`](../design/tokens.css) (token set v2) and [`design/foundation.css`](../design/foundation.css) (foundation v1). Decisions: [ADR 0008](../decisions/0008-shared-design-tokens.md), [ADR 0012](../decisions/0012-design-system-v2.md).
+The shared visual language of the ecosystem, the rule for how individual modules carry their own accent identity, and the shared foundation every official application builds on. Canonical files: [`design/tokens.css`](../design/tokens.css) (token set v2) and [`design/foundation.css`](../design/foundation.css) (foundation v1). Contributor guide: [`design/README.md`](../design/README.md). Decisions: [ADR 0008](../decisions/0008-shared-design-tokens.md), [ADR 0012](../decisions/0012-design-system-v2.md).
 
 ## Concept
 

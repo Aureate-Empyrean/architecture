@@ -321,7 +321,7 @@ Education                          Employment
 
 ## Implementation status
 
-As of 2026-11-05: Meridian 0.3.1, in `meridian/` (port 17333, schema 4). This section reports what exists; it changes no decision above. The repository's `README.md` is the entry point, with `docs/RELATIONSHIPS.md`, `docs/TIMELINE.md` and `docs/DESIGN.md`.
+As of 2026-11-05: Meridian 0.3.1, in `meridian/` (port 17333, schema 4). Production 0.3.1 was deployed and verified on 2026-11-06 with data preserved. This section reports what exists; it changes no decision above. The repository's `README.md` is the entry point, with `docs/RELATIONSHIPS.md`, `docs/TIMELINE.md` and `docs/DESIGN.md`.
 
 | V1 scope item | Status |
 |---|---|

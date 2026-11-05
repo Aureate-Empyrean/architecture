@@ -2,7 +2,7 @@
 
 Where each part of the ecosystem actually stands. The status labels in the [README](README.md) classify decisions; this page reports implementation. **Implementation repositories are authoritative for details**, and this page should be updated when a version or status changes.
 
-Snapshot: 2026-11-05. "Verified" means re-checked in that snapshot; other entries come from each repository's own documentation and were not re-run.
+Snapshot: 2026-11-05; production Meridian 0.3.1 verified 2026-11-06. "Verified" means re-checked in that snapshot; other entries come from each repository's own documentation and were not re-run.
 
 | Label | Meaning |
 |---|---|
@@ -41,7 +41,7 @@ the public boundary note in [Zeus and Dev Orchestrator](modules/zeus.md).
 | Installation | Nexus | Mnemosyne | Chronos | Lyra | Meridian | Argus | Source |
 |---|---|---|---|---|---|---|---|
 | Local test (`aetest`) | 0.1.9 | 1.2.3 | 0.1.1 | 0.1.1 | 0.3.1 | 0.1.0 | Verified |
-| Production | 0.1.9 | 1.2.3 | 0.1.1 | 0.1.1 | 0.3.0 | not installed | Deployment records of 2026-11-03 and 2026-11-05; not re-checked |
+| Production | 0.1.9 | 1.2.3 | 0.1.1 | 0.1.1 | 0.3.1 | not installed | Deployment records of 2026-11-03, 2026-11-05 and 2026-11-06; Meridian 0.3.1 verified after update |
 
 ## Cross-module integrations
 
