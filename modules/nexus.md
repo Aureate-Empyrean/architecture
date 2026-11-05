@@ -27,6 +27,7 @@ Responsibilities that are established or expected eventually:
 - projection query forwarding between modules (domain-ignorant; [projections](../concepts/projections.md))
 - per-module outbound network grants (`network.egress`, [ADR 0010](../decisions/0010-module-network-egress.md))
 - optional synchronization infrastructure for local-first modules (Planned; see [local-first-and-sync](../concepts/local-first-and-sync.md))
+- remote-access orchestration and device management for a private network (Planned, long-term; [Remote Access](#remote-access-planned-long-term))
 
 ## Does not own
 
@@ -43,9 +44,21 @@ Responsibilities that are established or expected eventually:
 - Collectors send data to modules via Nexus APIs/events ([collectors](../concepts/collectors.md)).
 - Nexus indexes references between resources ([cross-module-references](../concepts/cross-module-references.md)).
 - Nexus provides blob/file primitives ([storage-and-files](../concepts/storage-and-files.md)) and orchestrates backup ([backups](../concepts/backups.md)).
-- [Janus](janus.md): may synchronize encrypted vault state for authorized devices; Janus works without Nexus.
+- [Janus](janus.md): Janus works without Nexus. Nexus may host Janus's encrypted snapshot store or opaque ciphertext backups if that option is chosen (Open, [ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)), and may show a launcher link to a Janus Web Vault on its own origin ([ADR 0016](../decisions/0016-janus-independent-web-client.md), Proposed). It never serves, proxies, embeds or updates Janus code and never owns Janus vault data.
 - [Enceladus](enceladus.md) (Planned integration): registration, permission scopes and projection forwarding only; workout rules, records and history remain in Enceladus.
 - Common integration surface for community modules ([interoperability](../concepts/interoperability.md)).
+
+## Navigation history and deep links (local pilot, 2026-11-05)
+
+A default-off pilot exists in the Nexus and Mnemosyne working trees; it is not an ecosystem requirement or a production deployment. The Nexus server process must receive `NEXUS_NAVIGATION_HISTORY=1`; the checked-in Compose configuration does not forward it, so `.env` alone cannot enable it.
+
+- **Ownership.** Nexus owns the top-level browser URL, History API writes and the opaque application-frame lifecycle. A participating module owns its domain route codec, normalization, rendering, save/conflict behavior and UX. Nexus treats a route reference as data and never uses it as an API or proxy fetch target.
+- **Session fencing.** Frame loads are bound by challenge, session and monotonically increasing revision. Client intents are serialized and stale or superseded messages are rejected rather than automatically rebased.
+- **Adoption boundary.** There is no automatic migration. A module needs its own route adapter, callbacks, save guards and real-app tests; granting `ui.application` alone does not make it supported. Mnemosyne is the only worked example, and the SDK, snapshot schema and module adoption remain pilot contracts.
+- **Draft copies.** Participating modules may send bounded checkpoints to the trusted parent page. These live in the parent tab's `sessionStorage`, are scoped to origin, tab, owner and frame binding, are not encrypted, and are neither server data nor part of Nexus/module backups. They are recovery copies, not a durable-save or authorization mechanism; Janus must not use this channel.
+- **Status.** Recorded local browser evidence covers Nexus, Mnemosyne and unchanged Chronos over loopback HTTP. Other browsers, physical mouse input, BFCache, container/image lifecycle, session expiry, deployment proxy/auth/CSP behavior and quota/timeout failure combinations remain open production gates.
+
+Activation, rollback, wire messages, SDK limits and the adoption checklist are in the [Nexus navigation-history guide](https://github.com/Aureate-Empyrean/empyrean-nexus/blob/main/docs/navigation-history.md); Mnemosyne's codec and recovery behavior are in its [navigation notes](https://github.com/Aureate-Empyrean/mnemosyne/blob/main/docs/NAVIGATION_HISTORY.md).
 
 ## Established decisions
 
@@ -62,7 +75,21 @@ Responsibilities that are established or expected eventually:
 - Permissions constrain components, not only users; installed modules are not trusted by default ([principals-and-permissions](../concepts/principals-and-permissions.md)).
 - Nexus owns the ecosystem locale preference; modules own their translatable messages ([localization](../concepts/localization.md)).
 
+## Remote Access (Planned, long-term)
+
+Decided as direction in [ADR 0018](../decisions/0018-nexus-remote-access.md); not implemented.
+
+- **Experience.** Install the Aureate Empyrean mobile application, open Settings → Remote Access in Nexus, scan the pairing QR code, authorize the enrollment explicitly, and reach Nexus and the authorized modules over a private encrypted network.
+- **Ownership.** Nexus owns orchestration, enrolled devices, revocation and access policy. It is ecosystem infrastructure for all authorized modules, not a Janus integration.
+- **No exposure.** No manual port forwarding; neither Nexus nor module HTTP endpoints are exposed publicly; no Aureate-operated cloud is required.
+- **Separate layers.** Network enrollment, Nexus authentication and module authorization stay separate: reaching Nexus over the private network still requires signing in, and modules still follow Nexus permissions. Nexus network pairing and [Janus](janus.md) vault-device pairing are separate operations, and Remote Access must not weaken Janus's independent trust boundary.
+- **No implied trust.** A private network does not make a compromised host trustworthy.
+- **Technology direction.** A Tailscale/WireGuard-style overlay, keeping the option of a self-hosted control plane (Headscale or equivalent). Not a provider commitment.
+- **Before implementation.** Android and iOS VPN integration, permissions and distribution limits; pairing protocol; access-policy model; DNS/TLS for remote names; control-plane placement and metadata; revocation semantics (listed in the ADR).
+
 ## Planned direction
+
+Much of this list now exists in a first form; see [implementation status](../implementation-status.md) and the Nexus repository's documentation. Shared blob storage exists only as a bounded primitive ([storage-and-files](../concepts/storage-and-files.md#current-implementation-2026-11)).
 
 - Module registry and lifecycle management.
 - Versioned public APIs and a lightweight event mechanism.
@@ -79,5 +106,6 @@ Responsibilities that are established or expected eventually:
 - How the reference index stays consistent with module-owned data (push, pull, or both).
 - Storage and at-rest protection of service/integration credentials ([secrets](../concepts/secrets.md#open-questions)).
 - Which of the responsibilities above split into separate Nexus services versus one deployable.
-- How Nexus stores and versions encrypted, opaque sync state, and how devices are authorized/revoked.
+- How Nexus stores and versions encrypted, opaque sync state, and how devices are authorized/revoked; for Janus, whether Nexus hosts the snapshot store at all ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)).
+- Remote Access design questions ([ADR 0018](../decisions/0018-nexus-remote-access.md)): mobile VPN integration, pairing protocol, access policy, control-plane placement, revocation.
 - Multi-user: what changes for identity, permissions, and data ownership.

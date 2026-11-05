@@ -59,6 +59,31 @@ Dated items intersecting a date range, for calendar-style consumers such as [Chr
 
 Rules: items are complete for the requested range when `next_cursor` is null; providers return deterministic order; a consumer that receives the final page may replace its derived items for that provider and range.
 
+## `photo-library` version 1
+
+Status: Planned contract, implemented by the provider Argus 0.1.0 and tested by calling the provider directly; no consumer exists yet, so it has not run through Nexus. Lets the owner choose a photo inside another module.
+
+Query: `{"limit": 1–40}` (default 24). Items, newest first, active photos only:
+
+```json
+{"id": "<uuid>", "reference": "nexus:v1:argus:photo:<uuid>", "title": "", "width": 3000, "height": 2000, "taken_at": null, "created_at": "2026-11-05T18:00:00Z", "thumbnail": "data:image/webp;base64,…"}
+```
+
+`width` and `height` describe the picture as viewed (after EXIF orientation). `next_cursor` continues the list. No originals, filenames, cameras or location.
+
+## `photo-renditions` version 1
+
+Status: as `photo-library`. Delivers rendered images of known photos, as `data:` URLs because module pages may load only those.
+
+Query: `{"items": [{"id": "<uuid>", "size": 128, "crop": {"x": 0.25, "y": 0, "w": 0.5, "h": 0.75}}]}`, at most 40 items.
+
+- Without `crop`, the whole picture is fitted in a square: `size` 320, 1024 or 1600.
+- With `crop`, a square crop at `size` 64, 128, 256 or 512. Coordinates are 0–1 relative to the picture as viewed, and square in pixels.
+
+One reply item per requested item, in order, with `status`: `available` (with `src`, `size`, `rendered`), `trashed`, `deleted`, `not_found`, `invalid`, `unavailable` (the original cannot be read) or `deferred` (the response budget is used up; ask again). Consumers must render a fallback for every status other than `available`.
+
+Rendered images are derived data under the [derived-data rule](interoperability.md#derived-data-and-projection): a consumer may cache them only as non-authoritative, invalidatable data. Holding a photo's reference grants nothing; access rests on the reviewed projection scope.
+
 ## Providers and consumers (2026-11)
 
 | Module | Provides | Reads |
@@ -66,6 +91,7 @@ Rules: items are complete for the requested range when `next_cursor` is null; pr
 | Lyra 0.1 | `dated-items` (selected episode air dates and movie release dates) | — |
 | Mnemosyne 1.2 | `dated-items` (Task deadlines, all-day) | — |
 | Chronos 0.1 | — | `lyra`/`dated-items`, `mnemosyne`/`dated-items` |
+| Argus 0.1 | `photo-library`, `photo-renditions` | — |
 
 ## Planned direction
 

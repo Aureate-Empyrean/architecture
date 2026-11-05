@@ -1,6 +1,6 @@
 # Module Contract
 
-The minimum a module must provide to participate in the ecosystem. This is a list of required areas, not a plugin framework, and not a wire format. The existing Nexus implementation and its Example Module are the reference for protocol version 0; where they diverge from this document, the difference is resolved explicitly (see [README](../README.md)).
+The minimum a module must provide to participate in the ecosystem. This is a list of required areas, not a plugin framework, and not a wire format. The existing Nexus implementation and its Example Module are the reference for **Module Protocol v1**; where they diverge from this document, the difference is resolved explicitly (see [README](../README.md)).
 
 Requirements apply to modules connected to a Nexus installation. How standalone local-first clients (e.g. [Janus](../modules/janus.md)) relate to the contract is Open ([local-first-and-sync](local-first-and-sync.md)).
 
@@ -25,6 +25,12 @@ Further metadata (localization, [localization](localization.md)) is Planned.
 |---|---|
 | **Projections** | Projection contracts it *provides* (e.g. `dated-items`) and exact module/projection scopes it *reads*, reviewed by the owner. Providers serve `POST /empyrean/v1/projections/<name>` and decide per requester what to disclose. See [projections](projections.md) and [ADR 0011](../decisions/0011-projection-queries.md). |
 | **Outbound network** | The `network.egress` capability when a declared integration needs the Internet, with in-module SSRF protection for user-supplied destinations. See [ADR 0010](../decisions/0010-module-network-egress.md). |
+
+## Implemented wire forms and local extensions (2026-11-05)
+
+- **Module Protocol v1** is the current manifest/protocol generation (`protocol: 1` in manifests). This document states required responsibilities; the Nexus repository's implementation documentation is authoritative for schemas, endpoint shapes and version negotiation.
+- **Browser navigation support is not part of the contract.** The current pilot advertises `navigation.versions` through the existing application bridge's `context` result and negotiates a separate `empyrean-navigation-v1` message channel. It is a default-off local extension, not a manifest field, capability grant or new protocol version. A module that does not implement it keeps legacy navigation.
+- **Planned responsibilities stay distinct from implemented wire forms.** The required areas above describe what a participating module must eventually provide; an area being listed here does not mean a released, externally versioned schema exists. Where an implementation detail is missing, the gap is Open rather than implied.
 
 ## Principles
 

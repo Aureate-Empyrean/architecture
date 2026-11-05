@@ -49,6 +49,15 @@ Shared capabilities that are not domain modules:
 
 Some capabilities may exist as **Nexus services** rather than modules (the file explorer/shared storage is the main candidate). Not every capability must be a module.
 
+### Private development tooling — implementation note
+
+Implementation note (2026-11-05): [Zeus and Dev Orchestrator](modules/zeus.md) are private
+internal development tooling, separate from Astra and from the public module family. They
+are not production-ready and there is no Exodus installation. Their source, topology,
+operating policy and evidence are maintained only in restricted private repositories and
+are intentionally not described in this public architecture repository. This status note
+does not change the established decisions below.
+
 ## Established decisions
 
 ### Core ownership rule
@@ -108,6 +117,7 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 - Internal port allocation follows the project's existing convention (not defined here).
 - Single-user first; multi-user may come later.
 - Remote access requires no Aureate-operated cloud. Private overlay/VPN access is the preferred direction for personal remote access; Tailscale is the current recommended onboarding option, but the ecosystem does not depend on it as a vendor and other secure approaches remain possible.
+- **Planned, long-term:** Nexus-owned [Remote Access](modules/nexus.md#remote-access-planned-long-term): QR enrollment of the Aureate Empyrean mobile application in a Tailscale/WireGuard-style private network, with the option of a self-hosted control plane (Headscale or equivalent), no port forwarding and no public endpoints. Network enrollment never replaces Nexus authentication or module authorization, and is separate from Janus vault-device pairing ([ADR 0018](decisions/0018-nexus-remote-access.md)).
 - Collectors and mobile clients that can lose access to Nexus buffer permitted data locally and deliver it later rather than silently losing it ([collectors.md](concepts/collectors.md)).
 
 ### Strategic sequencing
@@ -116,15 +126,17 @@ Some capabilities may exist as **Nexus services** rather than modules (the file 
 
 **Planned, later consideration:** standalone mobile/app-store distribution or a managed SaaS may be evaluated only after that foundation is useful and stable. This is not a program to turn every module into a mobile app now. Pricing, platforms, operations and release dates are **Open**; paid distribution, if pursued, must preserve self-hosting, open-source portability and the existing principles.
 
-Janus's independently delivered client remains an established security requirement ([ADR 0009](decisions/0009-janus-client-delivery.md)), not a distribution experiment to defer or replace with a Nexus-served web client. Nexus must never serve, embed or update executable Janus client code.
+Janus's independently delivered client remains an established security requirement ([ADR 0009](decisions/0009-janus-client-delivery.md)), not a distribution experiment to defer or replace with a Nexus-served web client. Nexus must never serve, embed or update executable Janus client code. A Janus Web Vault is no exception, including the existing local milestone: it must run from its own origin under its own delivery trust model ([ADR 0017](decisions/0017-janus-devices-sync-and-clients.md); [ADR 0016](decisions/0016-janus-independent-web-client.md), Proposed).
 
 ### Application boundary
 
 - Nexus is the central control plane and homepage of the ecosystem. Installed modules are **full applications**, not permanent pages embedded in Nexus's management sidebar.
-- Illustratively (paths are not fixed): `/` is the Nexus control center; `/modules/mnemosyne/` is the full Mnemosyne application. Entering a module does not leave Nexus management chrome permanently consuming the module UI. A module owns its own navigation and product UX.
+- Path roles are distinct, though exact paths are not fixed: `/` is the Nexus control center; `/app/modules/<id>` is the Nexus route that hosts a module application; `/modules/<id>/...` is the owner-authenticated gateway document loaded inside the module frame. Module-owned domain routes below that point are data to Nexus, not routes Nexus interprets or proxies. Entering a module does not leave Nexus management chrome permanently consuming the module UI. A module owns its own navigation and product UX.
 - Nexus remains underneath as infrastructure: authentication, permissions, lifecycle/module management, routing/gateway, references/backlinks, events, shared storage where applicable, notifications, updates and APIs.
-- A common application/module switcher may provide navigation between Nexus and installed modules; its design is Open.
-- Local-first clients (e.g. Janus) are not necessarily served by Nexus. Janus clients are standalone applications released independently of Nexus, because Nexus-delivered client code is a security threat ([ADR 0009](decisions/0009-janus-client-delivery.md)).
+- A common application/module switcher may provide navigation between Nexus and installed modules; its design is Open. The current implementation links modules through existing `/app/modules/<id>` routes; no general switcher exists.
+- Local-first clients (e.g. Janus) are not necessarily served by Nexus. Janus clients (desktop development build and a local Web Vault milestone today; browser extension and mobile planned) are released independently of Nexus, because Nexus-delivered client code is a security threat ([ADR 0009](decisions/0009-janus-client-delivery.md), [ADR 0017](decisions/0017-janus-devices-sync-and-clients.md)). Janus does not use the module iframe, navigation or draft-channel mechanisms described here.
+
+**Implementation note (2026-11-05):** a default-off local Nexus + Mnemosyne pilot implements part of this boundary. Nexus owns the top-level browser URL and History API writes; the module owns domain route parsing, normalization, rendering, save and conflict behavior. The frame is opaque and session/challenge/revision fenced. This is a local pilot, not a production rollout or an all-module migration, and the production gates and exact wire details live in the [Nexus navigation guide](https://github.com/Aureate-Empyrean/empyrean-nexus/blob/main/docs/navigation-history.md), not in this document.
 
 ### Updates
 
@@ -137,7 +149,7 @@ Janus's independently delivered client remains an established security requireme
 ### Local-first modules
 
 - Local-first operation is a pattern available to modules where it makes product sense; not every module is local-first. Nexus is optional synchronization/interoperability for such modules, not a mandatory runtime dependency. Janus is the first module for which this is an explicit requirement. See [local-first-and-sync.md](concepts/local-first-and-sync.md).
-- Secret material remains owned by Janus. Nexus may synchronize encrypted Janus state; the intended security property is that it needs no plaintext vault access to do so. See [janus.md](modules/janus.md).
+- Secret material remains owned by Janus. A synchronization server (Nexus or an independent Janus host; Open) may store encrypted Janus snapshots; it needs no plaintext vault contents, master password or decryption keys. See [janus.md](modules/janus.md) and [ADR 0017](decisions/0017-janus-devices-sync-and-clients.md).
 
 ### Naming
 

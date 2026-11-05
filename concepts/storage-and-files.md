@@ -23,6 +23,12 @@ one image blob
 - Permanently deleting a resource that references a blob must follow shared-storage ownership/reference rules and never blindly delete a blob still referenced elsewhere (first stated for [Mnemosyne Trash](../modules/mnemosyne.md#trash)). Modules using shared storage report which blobs they use ([module-contract](module-contract.md)), so blob usage is never known only to Nexus. No global garbage-collection algorithm is chosen (Open, below).
 - Restore does not trigger blob deletion before blob usage has been reconciled ([resource lifecycle](resource-identity-and-lifecycle.md#restore)).
 
+## Current implementation (2026-11)
+
+Nexus implements a bounded shared blob primitive (`blobs.write`, `blobs.read`; Mnemosyne attachments use it): files up to 1 MiB, readable only by a module that uploaded them, with no usage reporting and no garbage collection, so blobs are never deleted. There is no file explorer.
+
+That cannot hold a photo library, so Argus keeps media in its own volume behind one adapter, without changing photo identities ([ADR 0019](../decisions/0019-argus-interim-media-storage.md)). Its internal content addressing is a local choice and does not settle the questions below.
+
 ## Planned direction
 
 - Investigate **content-addressed storage** and deduplication: `SHA-256(file) -> blob`, with multiple logical resources referencing the same blob.

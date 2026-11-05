@@ -11,6 +11,8 @@ Aureate Empyrean may hold a large portion of a user's personal digital history. 
 - Do not invent proprietary compression algorithms.
 - Already-compressed media (JPEG, modern video, compressed audio) must not waste significant CPU on ineffective recompression.
 
+**Janus implementation note (2026-11-05).** Current Janus clients provide encrypted item export/import; the Web Vault also keeps previous/kept encrypted generations in IndexedDB and can replace a vault, and desktop exposes previous-generation recovery. These are local recovery mechanisms, not a general snapshot-file verify/restore picker, ecosystem backup, synchronization service or recovery-key/password-reset implementation. See [Janus](../modules/janus.md#clients) and the [handoff](https://github.com/Aureate-Empyrean/janus/blob/main/docs/HANDOFF_2026-11-05.md).
+
 ## Planned direction
 
 Desired properties:
@@ -43,6 +45,7 @@ Nexus provides backup/export/restore infrastructure; modules participate by expo
 
 - Module contract for data that Nexus cannot or should not read (e.g. encrypted Janus state): how it is exported, whether it is included opaquely, and how integrity is checked without plaintext.
 - Recovery vs. confidentiality for Janus: key-loss recovery is essential for a password manager but must not undermine vault confidentiality. This tension is unresolved and requires dedicated security design.
+- How encrypted snapshots that Janus's synchronization server keeps for offline devices and recovery ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)) relate to ecosystem backups: they are not a backup by themselves, and both must stay ciphertext-only.
 - Standalone local-first clients that never connect to Nexus are not covered by Nexus backups; how they back up and restore is undefined ([local-first-and-sync.md](local-first-and-sync.md)).
 - Archive format specification and versioning, and whether it is "tar + zstd + X" or something else.
 - Encryption scheme and key management (passphrase, key files), and recovery story.

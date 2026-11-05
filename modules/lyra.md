@@ -1,6 +1,6 @@
 # Lyra
 
-Lyra's role and ownership boundary are established. Its first **implemented** domain is screen media, Movies and Television (`lyra/`, v0.1.0, Nexus ≥ 0.1.5; [ADR 0013](../decisions/0013-chronos-and-lyra-v1-boundaries.md)); the Music product specification is not yet written. Status labels in this document classify decisions.
+Lyra's role and ownership boundary are established. Its first **implemented** domain is screen media, Movies and Television (`lyra/`, v0.1.1, Nexus ≥ 0.1.8; [ADR 0013](../decisions/0013-chronos-and-lyra-v1-boundaries.md)); the Music product specification is not yet written. Status labels in this document classify decisions.
 
 Lyra is Aureate Empyrean's **multimedia platform**: the user's personal library for media they consume. Its long-term purpose: **multimedia library and playback: music first; movies, TV, books, audiobooks later.** **Music** is its first and currently most-developed domain *architecturally*; Movies and Television are implemented first because they could be delivered without playback infrastructure. This does not reorder the long-term model. The name has a dual association: the lyre as an instrument, and Lyra as a constellation, which fits the celestial identity of the ecosystem.
 
@@ -131,11 +131,11 @@ Lyra decides which dates it provides to Chronos through the [`dated-items`](../c
 
 Items: `lyra.episode-air` (title "Series · S1E3 · Name", grouped by Series) and `lyra.movie-release` (with the release type). Lyra publishes the hint event `lyra.dated-items.changed` (empty payload) when a refresh or a sharing setting changes projected dates. Chronos Events that reference a Lyra resource (`chronos.about`, shared with Lyra) appear on the title as "Planned in Chronos".
 
-### Implementation status (0.1.0, 2026-11-02)
+### Implementation status (0.1.1, 2026-11-05)
 
-Implemented as described above and verified against a mocked TMDB and, through Nexus 0.1.5, with fixture data in a Docker Compose installation (projection to Chronos, backlinks, resolution, updates). A live TMDB request has not been verified (no credential was available). Not implemented: music, books, audiobooks, playback, acquisition, *arr, streaming providers.
+0.1.0 was implemented as described above and verified against a mocked TMDB and, through Nexus 0.1.5, with fixture data in a Docker Compose installation (projection to Chronos, backlinks, resolution, updates). A live TMDB request has not been verified (no credential was available). 0.1.1 declares the application icon and requires Nexus 0.1.8 or later; the repository documentation records no other 0.1.1 change, and this documentation pass did not rerun the suite. Not implemented: music, books, audiobooks, playback, acquisition, *arr, streaming providers.
 
-### Module contract (v0.1.0)
+### Module contract (v0.1.1)
 
 Identity `lyra`, port 16333, capabilities `ui.application`, `storage.data`, `network.egress`, `events.publish`, `references.read`, `references.resolve`; resolve scope `chronos`/`event`; provides projection `dated-items`; Entity References v2; backup v1 (SQLite snapshot, credential excluded); health at `/health`.
 

@@ -35,10 +35,23 @@ Current direction:
 - Purpose is the user's own library and known-person organization, **not identifying arbitrary strangers**.
 - Argus owns its media-management implementation and user experience; it is not a frontend to another complete application such as Immich. Mature components and standards (e.g. FFmpeg, image/video codecs, focused recognition libraries) are reused where appropriate ([ADR 0005](../decisions/0005-official-modules-own-product-implementations.md)).
 
+- A photo selected as a profile image is not evidence that it depicts someone: selecting one creates no `depicts` relation.
+- Until shared storage can hold photos, Argus keeps media in its own volume behind one adapter, with photo identity independent of storage ([ADR 0019](../decisions/0019-argus-interim-media-storage.md)). A blob is deleted only when no Argus photo uses it.
+
+## Implementation status (2026-11-05)
+
+Argus 0.1.0, in `argus/`: port 18333, on the local test installation only. Details and the next steps are in that repository's `docs/STATUS.md` and `docs/ARGUS.md`.
+
+- **Implemented and tested:** private upload with content validation and configurable limits, intact originals, basic metadata, thumbnails, crops rendered from the original, Trash and purge with reference-aware confirmation, resolver, the [`photo-library` and `photo-renditions` projections](../concepts/projections.md), backup v1 (at most 256 MiB).
+- **Known defect:** the Settings screen cannot save inside the Nexus sandbox; the API can.
+- **Work in progress:** the Meridian profile-image integration is designed but not built.
+- **Not implemented:** albums, video, bulk import, recognition, `depicts`, Atlas and Chronos links.
+
 ## Planned direction
 
-- Library ingestion, metadata extraction, browsing.
+- Library ingestion at scale, and richer metadata and browsing.
 - Face grouping and user-confirmed linking to Meridian people.
+- Moving media to shared storage once it can hold them.
 
 ## Open questions
 

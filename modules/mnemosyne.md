@@ -41,6 +41,8 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 - **Astra** (Planned): with a Note open, the Astra side panel can reason about it or related knowledge the user permits; Mnemosyne decides what context Astra receives, and changes are proposals the user commits ([astra](astra.md)).
 - **Design system**: Mnemosyne uses the shared design language with a purple/violet module accent ([design-system](../concepts/design-system.md)).
 
+**Navigation history (local pilot, 2026-11-05).** In the default-off Nexus pilot, Mnemosyne Workspace, view, Note/Task/Project/Collection and drawer selections restore through Nexus-owned browser history and deep links. The module retains authority for its route codec, rendering, autosave and conflict rules; Nexus only carries a validated route reference and retains the frame. Draft checkpoints are tab-local copies in the trusted Nexus parent's `sessionStorage`; they are not durable saves, encrypted storage, server data or part of backups, and a crash, cleared storage or very recent unacknowledged edit is not guaranteed recoverable. This is not an all-module migration or production rollout. See [Mnemosyne navigation notes](https://github.com/Aureate-Empyrean/mnemosyne/blob/main/docs/NAVIGATION_HISTORY.md) and the [Nexus contract](https://github.com/Aureate-Empyrean/empyrean-nexus/blob/main/docs/navigation-history.md).
+
 ## Long-term model
 
 Everything in this section is Established at the conceptual level unless labeled Planned or Open. Exact schemas, editor libraries and algorithms are Open.

@@ -53,3 +53,7 @@ What becomes easier, what becomes harder, what is now required of other document
 | [0013](0013-chronos-and-lyra-v1-boundaries.md) | Chronos and Lyra v1 boundaries: owned resources, external providers and derived calendar data |
 | [0014](0014-liquid-glass-surfaces.md) | Liquid-glass surfaces and per-application atmosphere |
 | [0015](0015-training-books-and-delivery-sequencing.md) | Training ownership, Lyra Books and self-hosted sequencing |
+| [0016](0016-janus-independent-web-client.md) | Janus web client on an independent origin (Proposed) |
+| [0017](0017-janus-devices-sync-and-clients.md) | Janus product direction: independent devices, encrypted snapshot sync and a family of clients |
+| [0018](0018-nexus-remote-access.md) | Nexus Remote Access: private-network enrollment owned by Nexus (long-term) |
+| [0019](0019-argus-interim-media-storage.md) | Argus keeps media in its own volume until shared storage can hold it |

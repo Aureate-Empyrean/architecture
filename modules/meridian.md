@@ -319,6 +319,33 @@ Education                          Employment
 - Whether generated PDFs become managed files/Documents resources or are simply downloaded.
 - Digital signing or document verification, if ever needed.
 
+## Implementation status
+
+As of 2026-11-05: Meridian 0.3.1, in `meridian/` (port 17333, schema 4). This section reports what exists; it changes no decision above. The repository's `README.md` is the entry point, with `docs/RELATIONSHIPS.md`, `docs/TIMELINE.md` and `docs/DESIGN.md`.
+
+| V1 scope item | Status |
+|---|---|
+| Person, Organization and Group entities, `@me` | Implemented and tested |
+| Relationships with temporal validity, derived inverses, custom types | Implemented and tested |
+| Many-to-many temporal Group membership | Implemented and tested |
+| Facts, contact information, online accounts | Implemented and tested |
+| Employment | Implemented and tested |
+| Provenance, multiple sources per record | Implemented and tested for relationships, memberships and events. Other records keep one import source |
+| Confidence vocabulary, partial dates | Implemented and tested |
+| Life Events | Implemented and tested as native events with several participants and roles. Differences below |
+| Derived timeline | Implemented and tested for People, Organizations, Groups and all of Meridian |
+| Education, Interests and Preferences, Interactions | Not implemented |
+| Outbound cross-module references | Not implemented |
+| Representative image reference | Work in progress; designed, not built ([Argus](argus.md#implementation-status-2026-11-05)) |
+
+Beyond the V1 cut: vCard import and the Celestial Graph view. These parts of "Planned later" and "Open" now exist as implemented views, with no second data model: the graphical timeline, Organization and Group timelines, and a Meridian-wide timeline.
+
+Differences from this document's model:
+
+- **Life Events** have dates without a time of day, no place reference and no attachments, and are called "events" in the code. The document's model has date-time and place fields ("exact schema is future work").
+- **Resources:** only `person` is declared to Nexus, so Organizations and Groups cannot yet be referenced by other modules.
+- **Database:** SQLite in the module's data volume, not PostgreSQL. The reasoning of [ADR 0013](../decisions/0013-chronos-and-lyra-v1-boundaries.md) applies: Module Protocol v1 cannot run a database service per module.
+
 ## V1 boundary
 
 **Planned** implementation scope, not a redefinition of the product. Everything outside V1 remains part of Meridian's intended architecture ("not in V1" never means "not part of Meridian"). The cut aims at the smallest coherent Meridian that proves rich entity modeling, history, provenance, relationships, Groups, interoperability, and one-source-of-truth/multiple-views. It can be revised.

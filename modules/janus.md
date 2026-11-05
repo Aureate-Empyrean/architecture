@@ -13,20 +13,20 @@ Janus must work as a fully useful standalone application on a device without Emp
 1. install Janus on a phone or computer,
 2. create a local encrypted vault,
 3. use it indefinitely offline,
-4. optionally connect the device to a Nexus installation later,
-5. synchronize encrypted vault data between authorized devices when connectivity exists.
+4. optionally enroll further devices and a synchronization server later,
+5. synchronize encrypted vault snapshots between authorized devices when connectivity exists.
 
 ```
-                Empyrean Nexus
-                encrypted sync
+          synchronization server (optional; location Open)
+            stores encrypted snapshots only
                       |
           -------------------------
           |           |           |
-        Phone       Laptop      Desktop
-       local DB    local DB    local DB
+        Phone       Laptop      Desktop / browser
+     local vault  local vault    local vault
 ```
 
-Each device stays usable offline; changes synchronize when connectivity returns. Nexus synchronization is an optional enhancement, never a runtime dependency for accessing the user's own vault. See [local-first-and-sync](../concepts/local-first-and-sync.md).
+Each authorized device keeps its own locally encrypted vault and unlocks it independently, including offline; no device needs another to be present (the phone is not needed to unlock Janus on a PC). In the intended model, changes synchronize when connectivity returns; no synchronization code exists today, and the current clients are local-only. Synchronization is an optional enhancement, never a runtime dependency for accessing the user's own vault. Where the synchronization server runs (a ciphertext store hosted by Nexus, or an independent Janus host) is Open ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)); either way it holds ciphertext only and Nexus does not own Janus vault data. See [local-first-and-sync](../concepts/local-first-and-sync.md).
 
 The long-term model below is the architecture. The [V1 boundary](#v1-boundary) is an implementation subset, not a redefinition; later capabilities are deferred, not rejected.
 
@@ -49,8 +49,10 @@ The long-term model below is the architecture. The [V1 boundary](#v1-boundary) i
 
 - **Meridian**: `janus://… belongs_to -> meridian://person/<uuid>` (or `meridian://organization/<uuid>`). See [References and context](#references-and-context).
 - **Nexus** (optional):
-  - Synchronization infrastructure for encrypted vault state.
-  - Backup infrastructure that may store and transport Janus state. For both sync and backup, Nexus should not need plaintext vault contents.
+  - Possibly the host of the encrypted snapshot store, if that option is chosen over an independent Janus host ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md); Open).
+  - Backup infrastructure that may store and transport Janus state as opaque ciphertext. For both sync and backup, Nexus should not need plaintext vault contents.
+  - A launcher link to a Janus Web Vault on its own origin, and optionally owner-authorized, non-secret status ([ADR 0016](../decisions/0016-janus-independent-web-client.md), Proposed). Nexus never serves, proxies, embeds or updates Janus code.
+  - [Remote Access](nexus.md#remote-access-planned-long-term) (Planned, long-term) may make a Janus host reachable over a private network. That is network reachability only: it never enrolls a device in a vault or vouches for Janus code ([ADR 0018](../decisions/0018-nexus-remote-access.md)).
   - Reference model: Janus participates in cross-module references, but the mechanism for *sensitive* Janus references is Open. It is not established that Janus relations are published to the normal Nexus reference index.
 - **Shared storage**: encrypted attachments; the confidentiality boundary must be preserved.
 - **Backups**: see [backups](../concepts/backups.md).
@@ -80,7 +82,9 @@ Required properties (Established):
 - "Encrypt the database" is not a sufficient security design.
 - **Janus holds user vault secrets, not service/integration credentials.** Credentials that Nexus or a connector must use while the user is absent and Janus is locked (OAuth refresh tokens, connector credentials, machine credentials) are a separate category ([secrets](../concepts/secrets.md), [ADR 0004](../decisions/0004-janus-custody-and-secret-classes.md)). A user may keep a personal copy of such a credential in Janus, but Janus is not its runtime source.
 
-**Client delivery threat (decided: [ADR 0009](../decisions/0009-janus-client-delivery.md)).** If Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified client code that captures secrets during unlock. "Nexus never sees plaintext" does not by itself protect against a compromised Nexus that controls client delivery. How Janus clients are delivered and updated is part of the [security design](janus-security-design.md) threat model; Janus clients are therefore standalone applications released independently of Nexus (Tauri 2 with a Rust core, Windows first); Nexus never serves or updates Janus code. Release signing is required before real use; its mechanism is Open.
+**Client delivery threat (decided: [ADR 0009](../decisions/0009-janus-client-delivery.md)).** If Nexus serves or updates executable Janus client code, a compromised Nexus could deliver modified client code that captures secrets during unlock. "Nexus never sees plaintext" does not by itself protect against a compromised Nexus that controls client delivery. How Janus clients are delivered and updated is part of the [security design](janus-security-design.md) threat model; Janus clients are therefore released independently of Nexus, and Nexus never serves, proxies, embeds or updates Janus code. The desktop client (Tauri 2 with a Rust core, Windows first) is the higher-assurance client. Release signing is required before real use for every client; its mechanism is Open.
+
+**Web Vault delivery (Planned; [ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md), delivery model Proposed in [ADR 0016](../decisions/0016-janus-independent-web-client.md)).** A local Web Vault milestone exists, but its signed hosting and delivery pipeline do not. A browser vault loads its code each time it starts. Whoever controls delivery of that code (its server, files, TLS key or build pipeline) can deliver code that captures the master password at the next unlock, even though the vault is encrypted locally. Hosting it on an origin Nexus cannot control removes Nexus as one path to this; it does not remove the risk. The Web Vault does not provide the trust guarantees of a signed native client.
 
 No security marketing claims ("zero knowledge", "military grade", "unbreakable", "industry-standard encryption" and similar) are made. Precise terminology waits for a reviewed design.
 
@@ -88,14 +92,14 @@ No security marketing claims ("zero knowledge", "military grade", "unbreakable",
 
 Janus supports a **master-password-based unlock model**. The master password unlocks the user's vault. It is not an export/share password, not by definition a Nexus account password, not something disclosed to Nexus, and not a universal password reused for other Janus workflows.
 
-Future unlock methods (Planned) may include device/platform mechanisms such as biometric or system-credential unlock, provided they preserve the vault security model. Derivation and key-wrapping mechanics are Open.
+Master-password unlock is the foundation (Established, [ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)). Optional **biometric and PIN unlock** are Planned for supported devices. They protect locally stored key material through the platform's security mechanisms; a short PIN is not equivalent to a high-entropy encryption key and is never used as one, it only gates platform-protected key material. Each platform's capabilities and limits are documented with its client. Derivation and key-wrapping mechanics are Open.
 
 ### Recovery model
 
 Intended long-term philosophy (Planned; mechanisms Open):
 
-- **Recovery key**: when establishing a vault, Janus should support generating separate recovery material that the user stores independently of the vault. It must not require Nexus/Aureate Empyrean to retain a plaintext master secret or universal decryption backdoor.
-- **Trusted-device recovery**: an already-authorized trusted device should eventually be able to participate in recovering access or authorizing a new device, without the server possessing plaintext vault contents.
+- **Recovery key**: a separate recovery key is a planned recovery mechanism ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)). The user stores it independently of the vault. Recovery must not depend on Nexus/Aureate Empyrean retaining a plaintext master secret or universal decryption secret.
+- **Device pairing and trusted-device recovery**: QR-code pairing is the preferred convenience workflow for enrolling a new device. Pairing requires an authenticated, end-to-end encrypted key transfer and explicit authorization on an existing trusted device; **scanning a QR code is not authentication**. A trusted device may also participate in recovering access, without the server possessing plaintext vault contents. Janus vault pairing is unrelated to enrolling a device in Nexus [Remote Access](nexus.md#remote-access-planned-long-term).
 - **Failure case**: if the user has lost master-password access, recovery material and all recovery-capable trusted devices, the vault may be cryptographically unrecoverable. The UX should eventually communicate this clearly and without fearmongering.
 
 Recovery representation, constructions and protocols require security review. The tension between recovery and confidentiality is explicitly not resolved by this document.
@@ -108,7 +112,7 @@ Janus uses purpose-specific item types and workflows rather than treating every 
 - **Payment Card**: cardholder, number, expiration, security code, PIN if the user chooses to store it, billing/context information, custom sensitive fields. A card is a card record, not a renamed Login.
 - **Identity / Sensitive Document**: passport, national ID, driver's licence and similar; document number, name, issuing authority/country, issue/expiration dates, relevant structured fields, encrypted attachments/scans. Jurisdiction-specific schemas are not enumerated. Janus may store these because its domain includes sensitive identity records; Meridian still owns the general Person profile.
 - **Wi-Fi Credential**: SSID, password/key, security type, connection/context fields.
-- **TOTP / authentication seed**: secure storage of TOTP material and local generation of current codes, with standards-compatible behavior. A TOTP secret is secret material; copying/autofilling generated codes is Planned.
+- **TOTP / authentication seed**: secure storage of TOTP material and local generation of current codes, with standards-compatible behavior. A TOTP secret is secret material. Copying a generated one-time code is available in the current local clients; automatic autofill/filling of codes remains Planned.
 - **Passkey** (long-term): belongs to the authentication domain. Storage, synchronization and export are not trivial; platform integration, standards, portability and cryptographic handling are Open.
 - **API Secret**: API keys, access tokens, client secrets, other application/service credentials.
 - **SSH Key**: private/public key material and metadata. No key-generation algorithms or formats are chosen here.
@@ -157,7 +161,7 @@ Encrypted history for sensitive values where useful (e.g. a previous Login passw
 
 ### Locking
 
-Manual "Lock now", configurable automatic locking after inactivity, locking on appropriate application/session/device events, clear locked/unlocked state, and (Planned) biometric/system-credential-assisted unlock where safe. **Locking must actually protect access to decrypted vault material, not merely hide UI elements.** Timeout defaults and platform behavior are product/Open decisions.
+Manual "Lock now", configurable automatic locking after inactivity, locking on appropriate application/session/device events, clear locked/unlocked state, and (Planned) biometric/PIN-assisted unlock where the platform can protect the key material. Manual locking, automatic locking and protection of decrypted material in memory are mandatory for every client. **Locking must actually protect access to decrypted vault material, not merely hide UI elements.** Timeout defaults and platform behavior are product/Open decisions.
 
 ### Deletion and Trash
 
@@ -183,9 +187,22 @@ Hosted one-time secret links are not a current requirement. The intended directi
 
 Janus participates in the ecosystem backup architecture without weakening its confidentiality model. A general Nexus/Empyrean backup must not require decrypting Janus vault contents, and Janus ciphertext plus the required metadata/recovery information should round-trip through backup and restore. The exact backup/key interaction is Open pending security design. See [backups](../concepts/backups.md).
 
-### Nexus sync
+### Synchronization
 
-Janus clients may synchronize encrypted state through Nexus (Planned). Required property: Nexus performs the synchronization role without plaintext vault contents. Multi-device use, conflict resolution, device authorization and revocation, trusted-device enrollment, offline edits, ciphertext/version synchronization and interaction with recovery are Planned/Open pending dedicated design. No synchronization cryptographic protocol is designed here.
+Planned ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)). The initial direction is **encrypted vault snapshots**; per-item change synchronization may be reconsidered later. Established requirements: the synchronization server may persist encrypted snapshots for offline devices and recovery; it never requires plaintext vault contents, the master password or vault-decryption keys; snapshots are versioned and writes are protected against silent overwrites; conflicting offline changes are preserved and resolved safely. Where the server runs, rollback protection, device authorization and revocation, metadata exposure and recovery semantics are Open and need dedicated security design. No synchronization cryptographic protocol is designed here.
+
+### Clients
+
+All clients share compatible vault formats and synchronization behavior ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)). The desktop development build and a local Web Vault milestone exist; neither is signed, deployed or approved for real secrets.
+
+| Client | Role | Status |
+|---|---|---|
+| Desktop | Rust core in a Tauri 2 shell; offline, local custody, independently signed releases ([ADR 0009](../decisions/0009-janus-client-delivery.md)); the higher-assurance client. | Unsigned development build; unreviewed |
+| Web Vault | Standalone browser vault on the Rust/WebAssembly core, local encrypted storage and offline use where the browser supports it. Not served, proxied or updated by Nexus; own delivery trust model ([ADR 0016](../decisions/0016-janus-independent-web-client.md), Proposed); delivery risk described under [Security and custody model](#security-and-custody-model). | Local Milestone 1 development application (separate UI/worker, encrypted IndexedDB, six item kinds); no signed hosting, release verification or deployment approval |
+| Browser Extension | Autofill, password generation, login capture, convenient vault access; independently installed and verified package; never exposes vault contents indiscriminately to pages. Threat model and relation to the other clients are Open. | Planned, early high priority |
+| Mobile | Native clients with secure local storage, platform-assisted unlock, system autofill and device pairing where supported; not required to be online for desktop access. | Long-term |
+
+**Implementation note (2026-11-05).** Web Vault Milestone 1 exists as a local development application: a separate static UI and Rust/WASM worker, encrypted IndexedDB with previous/kept copies, six item kinds, locking, search, encrypted backup/replace and previewed imports. It is not the earlier `poc/` feasibility prototype and is not hosted, signed or deployment-approved. TOTP codes are generated and can be copied in the current clients; browser autofill does not exist. Encrypted synchronization, device pairing, recovery keys, server authentication, signed delivery and the browser extension remain unimplemented. The cryptography and formats are unreviewed; this note does not promote them into the security design. Details and blockers are in the [Janus architecture checkpoint](https://github.com/Aureate-Empyrean/janus/blob/main/docs/ARCHITECTURE.md) and [handoff](https://github.com/Aureate-Empyrean/janus/blob/main/docs/HANDOFF_2026-11-05.md).
 
 ### Interaction model
 
@@ -215,12 +232,13 @@ Janus clients may synchronize encrypted state through Nexus (Planned). Required 
 
 **Early follow-up (high priority, not tied to release numbers)**
 
-- **Browser autofill**, treated as an early follow-up rather than an indefinite distant idea if it cannot safely fit V1.
+- **Browser extension with autofill**, treated as an early follow-up rather than an indefinite distant idea if it cannot safely fit V1.
+- **Web Vault**, first as a local-only client on the existing Rust/WebAssembly core with synthetic test data (a local milestone exists; signed delivery, hosting and product hardening remain).
 - Android/mobile autofill.
 - Expanded migration/import.
 - Credential health; privacy-preserving breach checking.
-- Trusted-device enrollment/recovery.
-- Nexus ciphertext sync.
+- QR device pairing and trusted-device recovery.
+- Encrypted snapshot synchronization.
 
 **Later**
 
@@ -233,8 +251,14 @@ V1 is separable from autofill, sync and passkeys: none of them is required for a
 - Janus is the local-first encrypted vault for credentials, secrets, authentication material, payment information and sensitive identity records; broader than a password manager.
 - Janus is not a general notes app; Secure Notes exist for secret/sensitive information, and Mnemosyne owns general notes.
 - **A Janus client must remain useful when Nexus is unavailable**: Nexus offline, no network, out of reach of a self-hosted server, or the user chooses never to use Nexus. Locally available vault data stays accessible according to the device's normal authentication/security policy.
-- Nexus is optional for Janus synchronization; offline changes are eligible for later synchronization if the user configures Nexus sync.
-- Nexus should not need plaintext vault contents, or the user's master password, to synchronize Janus.
+- Synchronization is optional; offline changes are eligible for later synchronization if the user configures it.
+- No synchronization server (Nexus or otherwise) needs plaintext vault contents, the user's master password or vault-decryption keys.
+- Each authorized device keeps its own locally encrypted vault and unlocks it independently, including offline; no device depends on another being present ([ADR 0017](../decisions/0017-janus-devices-sync-and-clients.md)).
+- Encrypted snapshots are the initial synchronization direction; snapshots are versioned, writes are protected against silent overwrites, and conflicting offline changes are preserved.
+- Device pairing needs an authenticated, end-to-end encrypted key transfer and explicit approval on a trusted device; a QR scan alone is not authentication.
+- A short PIN is never treated as a high-entropy key; biometric and PIN unlock only gate platform-protected key material.
+- Nexus never serves, proxies, embeds or updates Janus client code, including a Web Vault; the Web Vault's delivery risk is documented and it is not presented as equal to a signed native client.
+- Nexus Remote Access and Janus vault-device pairing are separate operations; network reachability grants nothing in Janus ([ADR 0018](../decisions/0018-nexus-remote-access.md)).
 - User vault secrets (Janus) and service/integration credentials are distinct categories; Janus is not the runtime source for unattended integrations.
 - Aureate Empyrean infrastructure holds no universal recovery secret or backdoor; the vault may be unrecoverable if all unlock/recovery means are lost.
 - Sensitive plaintext is exposed only where an explicit user workflow needs it; secrets do not leak into Nexus metadata, logs, events, search indexes, notifications, URLs or reference metadata.
@@ -257,12 +281,14 @@ V1 is separable from autofill, sync and passkeys: none of them is required for a
 
 Product scope; UI is deliberately unspecified.
 
-- Multi-device encrypted synchronization through Nexus; device pairing and revocation; trusted-device enrollment and recovery.
+- Multi-device encrypted snapshot synchronization; QR device pairing and revocation; trusted-device enrollment and recovery.
 - Recovery key generation.
+- Clients: Web Vault (local milestone exists; signed delivery and hosting remaining), browser extension (early), desktop (existing development build), native mobile (long-term), sharing one vault format.
+- Biometric and PIN unlock on supported platforms.
 - Breadth of item types listed above (passkeys later).
 - Browser autofill (early follow-up); Android/mobile autofill.
 - Password generation and strength assessment; credential health; privacy-preserving breach checking.
-- Biometric/system-credential-assisted unlock where safe; clipboard timeout/clearing.
+- Clipboard timeout/clearing.
 - Secret history; encrypted attachments.
 - Portable secure item transfer.
 - A documented, portable, encrypted vault export format readable by independent tooling.
@@ -278,8 +304,9 @@ All of the following require dedicated security design; none is decided. The ful
 - Recovery-key design and recovery/key-loss design; trusted-device recovery protocol.
 
 **Devices and sync**
-- Device pairing/enrollment/revocation protocol; sync protocol and conflict resolution.
-- How Nexus stores and versions encrypted sync state.
+- Device pairing/enrollment/revocation protocol, including how a QR code binds two devices; what revocation means for snapshots a revoked device already holds.
+- Snapshot sync protocol, conflict representation and resolution; rollback protection against a server presenting an older valid snapshot.
+- Where the synchronization server runs (Nexus-hosted ciphertext store or independent Janus host), how it stores and versions snapshots, and what metadata it sees (vault identifier, revision, size, timing).
 - Secure sharing between users/devices.
 
 **Ownership and references**
@@ -294,7 +321,9 @@ All of the following require dedicated security design; none is decided. The ful
 
 **Platform and features**
 - Passkey architecture; biometric/system unlock; TOTP secret handling; decrypted-memory lifecycle; clipboard handling/clearing; secure local storage.
-- Browser-extension and Android-autofill threat models and architecture.
+- Browser-extension and Android-autofill threat models and architecture; whether the extension keeps its own vault replica or connects to an installed client.
+- Web Vault delivery trust model: hosting unit, release signing and verification, storage-service authentication ([ADR 0016](../decisions/0016-janus-independent-web-client.md)); browser storage eviction and memory behavior on phones.
+- PIN and biometric key protection per platform.
 - Breach-check privacy protocol and provider/dataset.
 - Encrypted transfer format and file extension; import handling of plaintext source exports; password-strength estimator.
 - How a standalone Janus client (which has no Nexus) relates to the module registry/lifecycle in [Nexus](nexus.md).

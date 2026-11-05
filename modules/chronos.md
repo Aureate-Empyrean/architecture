@@ -4,7 +4,7 @@
 
 The time, calendar and event domain: the user's calendars, their events, and a calendar view of dated information other modules choose to share. The calendar itself is the primary surface, answering *what is happening today, what is coming up, and where each entry comes from*.
 
-Implementation: `chronos/` (v0.1.0, Nexus ≥ 0.1.5). Decisions: [ADR 0013](../decisions/0013-chronos-and-lyra-v1-boundaries.md), [ADR 0011](../decisions/0011-projection-queries.md), [ADR 0010](../decisions/0010-module-network-egress.md).
+Implementation: `chronos/` (v0.1.1, Nexus ≥ 0.1.8). Decisions: [ADR 0013](../decisions/0013-chronos-and-lyra-v1-boundaries.md), [ADR 0011](../decisions/0011-projection-queries.md), [ADR 0010](../decisions/0010-module-network-egress.md).
 
 ## Owns
 
@@ -62,7 +62,7 @@ Resolution policy: an Event discloses its label, start and all-day flag only to 
 
 ## Projections (derived calendar data)
 
-- Chronos reads the [`dated-items`](../concepts/projections.md#dated-items-version-1) projection from providers it was granted (v0.1.0: `lyra`, `mnemosyne`). Each provider is a **source** with Chronos-owned settings: enabled, color, show completed.
+- Chronos reads the [`dated-items`](../concepts/projections.md#dated-items-version-1) projection from providers it was granted (since v0.1.0: `lyra`, `mnemosyne`). Each provider is a **source** with Chronos-owned settings: enabled, color, show completed.
 - Reconciliation: for the window −90 … +400 days, Chronos fetches every page; only after a complete, successful fetch does it replace that source's derived entries. Failures keep entries and mark the source stale with the error. Reconciliation runs every 15 minutes, on demand, and shortly after hint events (`lyra.dated-items.changed`, `mnemosyne.resource.changed`).
 - Derived entries keep the owner's reference, kind, certainty and status, and are visually distinct (provenance mark, "date may change" for tentative/estimated). Opening one leads to the owner. "Plan in calendar" creates a native Event with a `chronos.about` relation.
 - **Lyra**: what is shared is chosen in Lyra ([Lyra](lyra.md#calendar-sharing)); Chronos decides whether the source is shown.
@@ -70,7 +70,7 @@ Resolution policy: an Event discloses its label, start and all-day flag only to 
 
 ### Enceladus (Planned; not implemented)
 
-[Enceladus](enceladus.md) owns training planning rules, weekly schedules, date exceptions, sessions and history. Chronos initially presents a read-only, date-scoped projection with deep links to the owner; it neither edits nor independently expands training rules. Exact `dated-items` mapping and occurrence identity remain Open. Enceladus retains simple schedule/date editing and full history without Chronos. Source registration, scope grants and deep-link navigation still require implementation; this source is not part of Chronos v0.1.0.
+[Enceladus](enceladus.md) owns training planning rules, weekly schedules, date exceptions, sessions and history. Chronos initially presents a read-only, date-scoped projection with deep links to the owner; it neither edits nor independently expands training rules. Exact `dated-items` mapping and occurrence identity remain Open. Enceladus retains simple schedule/date editing and full history without Chronos. Source registration, scope grants and deep-link navigation still require implementation; this source is not part of Chronos v0.1.1.
 
 ## Integrations
 
@@ -80,13 +80,13 @@ Resolution policy: an Event discloses its label, start and all-day flag only to 
 - **Atlas**, **Argus**, **Hermes**: references to Events (e.g. `argus:photo related_to chronos:event`) through the generic mechanism.
 - **Nexus**: notifications for reminders (Planned; reminders are not implemented).
 
-## Module contract (v0.1.0)
+## Module contract (v0.1.1)
 
 Identity `chronos`, port 15333, capabilities `ui.application`, `storage.data`, `network.egress`, `events.subscribe`, `references.create`, `references.read`, `references.resolve`, `projections.read`; Entity References v2 with enumeration; backup v1 (SQLite snapshot); health at `/health`.
 
-## Implementation status (0.1.0, 2026-11-02)
+## Implementation status (0.1.1, 2026-11-05)
 
-Implemented and verified as described above, with Nexus 0.1.5, Lyra 0.1.0 and Mnemosyne 1.2.0 in a Docker Compose installation: native events, import, a real public subscription, Lyra and Mnemosyne projections, planning with references, backlinks and reconciliation. Not implemented: reminders, two-way sync, CalDAV, `.ics` export, "this and following" edits, Meridian dates.
+0.1.0 was implemented and verified as described above, with Nexus 0.1.5, Lyra 0.1.0 and Mnemosyne 1.2.0 in a Docker Compose installation: native events, import, a real public subscription, Lyra and Mnemosyne projections, planning with references, backlinks and reconciliation. 0.1.1 declares the application icon and requires Nexus 0.1.8 or later; the repository documentation records no other 0.1.1 change, and this documentation pass did not rerun the suite. Not implemented: reminders, two-way sync, CalDAV, `.ics` export, "this and following" edits, Meridian dates.
 
 ## Established decisions
 

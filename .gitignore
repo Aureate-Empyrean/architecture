@@ -1,0 +1,8 @@
+# Local environment and editor metadata
+.env
+.env.*
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
