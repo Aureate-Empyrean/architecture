@@ -4,6 +4,8 @@
 
 This document records the architectural direction agreed on that date and the deployment information reported after the previous documentation snapshot. It is the handoff for a later Claude Code session to synchronize canonical architecture documents, module specifications, implementation status and relevant READMEs. This task changes only this checkpoint; it does not implement application functionality or synchronize other documentation.
 
+**Continuation, November 7, 2026.** Extended after initial creation with owner-approved Android, cross-platform, distribution, module lifecycle, manual-update, mandatory pre-update backup and snapshot-retention decisions. Earlier decisions remain in force except where a previously provisional choice is explicitly resolved below.
+
 ## 1. Authority, status and scope
 
 Use the repository's status vocabulary:
@@ -16,6 +18,8 @@ Use the repository's status vocabulary:
 
 Section 10 separately records **reported implementation and deployment facts**. The future mobile runtime, general ecosystem synchronization, complete NBM capability and shared Recovery Engine described here are target architecture, not claims about today's release.
 
+Approval of the Android product architecture is not evidence that its custom runtime is technically feasible or secure. The Android module runtime, module marketplace and target automated backup/recovery system are not claimed to exist. Proposed implementation approaches and unresolved mechanisms remain distinct from approved requirements and deployed functionality.
+
 For the subjects explicitly addressed here, this checkpoint takes precedence over older statements that conflict with the November 7 decisions. All other established decisions remain in force. In particular, preserve module domain ownership, a domain-ignorant Nexus, stable UUID resource identities, permission-aware references, least privilege, inspectable updates and Janus's independent security boundary.
 
 ### Relationship to existing decisions
@@ -26,6 +30,7 @@ For the subjects explicitly addressed here, this checkpoint takes precedence ove
 - Docker Compose, the gateway and today's browser UI contracts describe the existing server implementation. They do not select the future mobile runtime or packaging.
 - [ADR 0007](decisions/0007-postgresql-default-database.md) remains the server relational-database preference, with its existing exceptions. It neither requires a shared application database nor decides mobile storage.
 - Janus's independent clients, code-delivery trust boundary and module-specific product direction in [ADR 0017](decisions/0017-janus-devices-sync-and-clients.md) remain intact. The unified AE application preference does not authorize Nexus to serve, proxy, embed or update executable Janus client code.
+- The continuation resolves the backup-before-update policy left Open in [updates](concepts/updates.md) and [backups](concepts/backups.md): every module update requires a verified recoverable backup. It also strengthens the initial update policy from unattended updates not being the default to no automatic module updates. Current implementation behavior is recorded separately in section 10.
 
 ## 2. Product vision: Nexus is AE Core
 
@@ -39,7 +44,7 @@ A user must be able to install Aureate Empyrean on a supported mobile device wit
 
 - A unified AE home screen and module launcher.
 - A gallery of available modules.
-- One-tap installation or activation, subject to platform distribution constraints.
+- One-tap module availability, subject to platform distribution constraints. For the approved Android architecture this means physical installation/removal, not merely activation of executable code bundled with Nexus; distribution mechanisms are distinguished below.
 - Local module lifecycle management.
 - Shared navigation, identity, permissions, references and integration capabilities.
 - Local storage and offline operation.
@@ -47,7 +52,55 @@ A user must be able to install Aureate Empyrean on a supported mobile device wit
 
 Modules remain logically independent, each with its own domain model, data ownership and lifecycle. Sharing one application or runtime does not make Nexus the owner of People, Places, Events, Notes or other module objects.
 
-**Open.** Mobile frameworks, packaging, distribution and runtime technology are undecided. Do not assume that every mobile operating system permits dynamic installation of native executable code. Installation may need to mean activation of an already distributed module or another platform-compatible mechanism; no mechanism is selected here.
+### Android architecture — approved direction
+
+**Established. Kotlin + Jetpack Compose is the preferred Android technology.** Android must provide a genuinely native UI, not a WebView wrapper. **Nexus is the only required and user-visible Android application.** Individual AE modules must be physically installable and removable within Nexus; do not bundle every module's executable code into the initial Nexus installation. Disabled and uninstalled are distinct states.
+
+Android Nexus will provide a custom module runtime and module manager. Installed modules retain independent domain ownership and local storage, operate offline without an external server, and integrate locally through Nexus contracts. These are approved product requirements, not a validated runtime design. Runtime implementation requires prototyping and security validation before its feasibility or safety can be claimed.
+
+The earlier all-mobile framework uncertainty is resolved for Android's preferred stack only. Exact native package format and loading strategy remain Open. The initial implementation must not be designed around iOS distribution constraints, while avoiding gratuitous barriers to possible future iOS support. Do not assume dynamic native-code installation is available on every mobile operating system.
+
+Janus's previously recorded independent code-delivery and custody boundary remains binding. The general single-application Android direction does not by itself approve loading Janus into the ordinary module runtime or weakening its isolation. How any future Android Janus experience satisfies both product direction and that stronger boundary requires explicit security design; no new Janus delivery mechanism is selected here.
+
+### Shared foundations, platform-specific implementations
+
+**Established.** Share domain contracts, data formats, interoperability rules and reusable business logic where practical, with platform-specific implementations. Avoid unnecessary duplication of domain logic.
+
+| Platform | Approved implementation direction |
+|---|---|
+| Android | Native Kotlin/Compose UI, local-first module runtime, local storage and local integration. |
+| Linux/self-hosted | Existing web UI and independent backend services, modular deployment and independent service lifecycle. |
+
+Identical executable module packages across Android and Linux are **not required**. Shared foundations do not mean replacing the Linux service model with the Android runtime or requiring web UI on Android. The exact approach to business-logic reuse remains subject to practical design.
+
+### Android distribution strategy
+
+**Established direction; delivery implementation is Planned.** Preserve two potential channels, preferably from one Android codebase with distribution adapters/build variants rather than two independently maintained applications.
+
+| Channel | Priority and requirements |
+|---|---|
+| **Independent Edition** | Main initial development target; distributed independently, initially through APK releases. Intended to support independently downloadable native module packages, installed, removed and manually updated inside Nexus. Runtime validation must cover authenticity, integrity, compatibility and permissions. Security isolation remains unresolved. |
+| **Google Play Edition** | Deferred until AE is ready for broader public distribution. May use Google Play Feature Delivery or another compliant mechanism, must respect Google Play executable-code distribution restrictions, and may offer less module-distribution flexibility and different module-update behavior. |
+
+Do not implement or maintain the Google Play variant yet. A single runtime shared across both distribution models is a preference to validate, not established technical feasibility. Neither Google Play nor F-Droid acceptance is guaranteed. Feature Delivery is a possible future approach, not a selected or validated solution. Any future Play-specific update behavior must be reconciled with the explicit-approval policy below rather than silently bypassing it.
+
+### Module lifecycle — approved behavior
+
+**Established behavior; not a claim of complete implementation on any platform.**
+
+| Action | Runtime and code | Data and integration consequences |
+|---|---|---|
+| **Hide** | Remove from the Nexus home screen; keep installed and operational. | Services and integrations remain available. Hiding is not disabling. |
+| **Disable** | Completely stop runtime activity, services, background jobs and integrations; retain executable code. | Preserve data, configuration and references. Other modules see it as unavailable. Re-enable only after compatibility checks. |
+| **Uninstall** | Physically remove executable module code. | Ask whether to preserve or delete module data; **preserve by default**. Destructive deletion requires explicit confirmation. Never automatically delete another module's data or silently erase cross-module references. |
+
+The uninstall choice does not make deletion implicit: it refines the existing separation between module removal and an explicitly confirmed destructive data action. Required technical dependencies must be evaluated separately. **Optional integrations must never block Disable or Uninstall.** Nexus may warn about affected modules and references, but unavailable references remain identifiable and recoverable where possible. Detailed installation/reinstallation workflows and required-dependency handling remain Open.
+
+### Manual updates and coordinated compatibility
+
+**Established. All module updates require explicit user approval; no automatic module updates in the initial architecture.** Nexus may display available updates and offer a manually approved **Update All** operation. Existing review, capability comparison and explicit approval of new privileges remain required.
+
+If a module requires a newer Nexus version, offer a coordinated Nexus-plus-module update for explicit approval. Verify compatibility with other installed modules, protect the relevant Nexus and module state with the mandatory backups in section 6, and update Nexus before the dependent module. Do not update unrelated modules without necessity and consent. Abort safely when dependencies cannot be satisfied. Exact dependency/version negotiation and recovery orchestration still require design.
 
 ## 3. Basic local operation and offline interoperability
 
@@ -116,7 +169,27 @@ Use appropriate consistent snapshot mechanisms rather than blindly copying activ
 
 The target model is **one logical ecosystem backup with selective restore**, while permitting independent module snapshots and future incremental storage. This is a logical recovery unit, not a decision that every backup must be one physical file.
 
-Local/offline backups must be supported. No vendor cloud is required. Backup package format, storage layout, encryption/key management, retention details, incremental mechanisms and cross-module consistency strategy remain **Open**. Examples in older documents, such as tar plus zstd, are not selected formats by this checkpoint.
+Local/offline backups must be supported. No vendor cloud is required. Backup package format, storage layout, encryption/key management, ordinary scheduled-backup retention details, incremental mechanisms and cross-module consistency strategy remain **Open**. The approved pre-update retention rules below constrain their eventual implementation. Examples in older documents, such as tar plus zstd, are not selected formats by this checkpoint.
+
+### Mandatory pre-update backup
+
+**Established, non-negotiable. Before EVERY module update, Nexus must create and verify a recoverable backup of all relevant module data.** This includes patches and UI-only changes; there is no exemption based on the apparent size or scope of the update.
+
+Required coverage includes module databases, configuration, attachments and media, relevant module-owned files and metadata, and any additional state needed for recovery. Coordinated Nexus-plus-module updates must protect relevant Nexus state as well as the dependent module's state. Verify available storage before creating mandatory backups and block the update when a required backup cannot be safely created.
+
+Backups must be consistent, integrity-checked and recoverable, using proper database snapshot mechanisms. **The update must not start if backup creation or verification fails.** A checksum alone does not establish recoverability; the precise verification procedure remains to be designed. Janus backup participation remains subject to section 8's optional ciphertext-only boundary; this requirement grants no access to plaintext or keys and permits no backup-failure bypass for a Nexus-managed update.
+
+Recovery design must distinguish **code rollback** from **data rollback**. Reverting executable code does not prove that migrated data is compatible, and restoring old data must not silently destroy changes made after an update. The shared Recovery Engine must account for these cases; exact rollback and migration mechanisms remain Open.
+
+### Pre-update snapshot retention
+
+**Established.** Pre-update snapshots have a user-configurable snapshot count and/or retention period. Users can protect/pin individual snapshots, which are excluded from automatic cleanup. Explicit deletion of a protected snapshot requires confirmation.
+
+Automatic cleanup must never remove the last usable recovery point for a module. Storage checks and cleanup must not weaken the mandatory-backup gate: block the update if a safe required backup cannot be created. Exact cleanup sequencing and recovery-point eligibility require design.
+
+**Proposed default, awaiting confirmation:** five snapshots per module. The configurable-retention requirement is approved; this numerical default is not final.
+
+Pre-update snapshot retention is distinct from ordinary scheduled-backup retention. Pinning, last-recovery-point protection and configurable policies are requirements, not claims that retention automation already exists.
 
 ## 7. Shared recovery architecture
 
@@ -183,6 +256,17 @@ Every MVP must provide at least one complete, useful end-to-end workflow. Do not
 
 Meridian remains the owner's strongest current functional priority. The exact implementation roadmap and milestones are **Open**, not finalized by this sequence. Mobile/local-first architecture and synchronization implications must be considered before producing many more server-only modules that would require extensive redesign. This does not mandate implementing every future infrastructure capability before advancing Meridian.
 
+### Platform priorities
+
+**Established order:**
+
+1. Existing Linux/self-hosted ecosystem.
+2. Native Android Nexus and modules.
+3. Google Play Edition when the product is ready for public distribution.
+4. iOS deferred indefinitely pending demand and economic justification.
+
+This priority order does not finalize dates or the detailed implementation roadmap. Do not design the initial implementation around iOS distribution constraints, and avoid gratuitously preventing later support.
+
 ## 10. Reported implementation and deployment context
 
 **Reported facts, distinct from future architecture.** These updates postdate the earlier status snapshot. Sources are the workspace [navigation deployment report](../DEPLOYMENT_NAVIGATION_2026-11-07.md), dated November 7, 2026 at 13:35 UTC, and the owner's subsequent report supplied for this checkpoint. This documentation task did not rerun application suites, inspect production or deploy anything.
@@ -211,30 +295,39 @@ The Nexus implementation guide [lifecycle-and-recovery.md](../empyrean-nexus/doc
 
 Those foundations must not be described as the complete NBM target, a deployed AERU or an implemented shared Recovery Engine. Likewise, browser draft checkpoints are tab-local recovery copies, not durable saved data or ecosystem backups. Deployment-time backup copies do not demonstrate the future cross-module consistent-snapshot design.
 
+The current server implementation's configurable backup-before-update hook does not establish compliance with the continuation's mandatory verified-backup requirement for every update. The Android runtime/manager, downloadable native module distribution, marketplace, coordinated updater and target automated backup/recovery and retention system remain future work. The continuation records no new application deployment or test results.
+
 ## 11. Open technical decisions
 
 All choices below require later design. Requirements above constrain the outcomes without selecting mechanisms.
 
 | Area | Open questions |
 |---|---|
-| Mobile implementation | Framework, supported-platform details, packaging and distribution. |
-| Module availability | Platform-compliant installation versus activation mechanism. |
-| Local execution | Module runtime, isolation and sandboxing; enforcement of permissions between co-installed modules. |
+| Android module packaging | Exact native module package format and dynamic loading strategy for Kotlin/DEX/Compose modules. Kotlin/Compose is the preferred stack; the loader is not selected. |
+| Android local execution | Secure isolation within one application and enforcement of cross-module permissions; full prototype validation and testing strategy. |
+| Independent Edition trust | Module signing, publisher trust and authenticity-validation model. |
+| Contract compatibility | Versioning of shared domain/module contracts and compatibility negotiation. |
+| Google Play Edition | Technical feasibility, compliant delivery mechanism, update semantics and whether one runtime can serve both editions; migration between Independent and Play editions. |
+| Module admission and installation | Whether third-party modules will ever be permitted in the Android runtime; detailed installation/reinstallation workflows and required technical dependencies. Existing ecosystem community-interoperability principles do not settle Android code admission. |
 | Mobile persistence | Physical database topology and storage-engine selection. |
 | Synchronization | Transport, protocol and hub behavior; optional peer-to-peer evaluation later. |
 | Device trust | Identity, pairing, authentication, encryption, key management and revocation. |
 | Reconciliation | Conflict resolution, deletion propagation and recovery semantics. |
-| Backup representation | Package format/versioning, storage, encryption, key recovery, retention and incremental storage details. |
+| Backup representation | Package format/versioning, storage, encryption, key recovery, recoverability verification, ordinary scheduled retention and incremental storage details. Pre-update retention requirements are approved; the suggested five-snapshot default awaits confirmation. |
 | Snapshot coordination | Consistency across module databases, Nexus state, files and references. |
 | Recovery delivery | Shared engine implementation, compatibility/migration policy and platform-specific Nexus/AERU interfaces. |
 | Transition | Detailed migration from today's server-based architecture while preserving data and implementation truth. |
-| Execution plan | Exact roadmap, priorities beyond the stated Meridian emphasis, milestones and release dates. |
+| Execution plan | Exact roadmap, milestones and release dates within the approved platform order and Meridian emphasis. |
 
 Do not turn an example, a current server implementation detail or a previously proposed mechanism into a new established ecosystem decision.
+
+**Security validation boundary.** Dynamically loaded code inside one Android application must not be described as having Android-level sandbox isolation. A manifest alone does not enforce security. Prototype and validate runtime feasibility, isolation, permission enforcement and trust mechanisms before claiming safe module execution. No detailed prototype/testing strategy or distribution-store acceptance is approved by implication.
 
 ## 12. Future documentation synchronization — Claude Code handoff
 
 **Planned follow-up; not performed here.** Inspect the actual repository state, uncommitted work, implementation sources and release/deployment reports before editing. Preserve the distinction between local source, tested behavior, deployed versions and production verification. Reconcile conflicts explicitly; do not rewrite implementation truth to match the long-term vision.
+
+Claude Code should also propagate the continuation's decisions into canonical documentation, particularly Nexus, module lifecycle, local-first/mobile architecture, interoperability, backup/recovery and deployment planning. Resolve stale all-mobile framework uncertainty, activation-only Android proposals, automatic-update assumptions and optional pre-update backup policy while preserving earlier decisions and current implementation facts. Document distribution variants as future work and keep Janus's stronger boundary explicit.
 
 | Documents to review | Intended synchronization |
 |---|---|
@@ -243,6 +336,7 @@ Do not turn an example, a current server implementation detail or a previously p
 | [concepts/module-contract.md](concepts/module-contract.md), [interoperability](concepts/interoperability.md), [cross-module references](concepts/cross-module-references.md), [projections](concepts/projections.md), [permissions](concepts/principals-and-permissions.md), [resource lifecycle](concepts/resource-identity-and-lifecycle.md) | Local offline interoperability, permission-aware contracts, stable identities and independent data ownership; distinguish requirements from implemented wire forms. |
 | [design/module-ui-contract.md](design/module-ui-contract.md) and Nexus UI/runtime specifications | Preserve today's browser bridge/sandbox truth; clarify future mobile runtime requirements without selecting packaging or extending pilot contracts by implication. |
 | [concepts/backups.md](concepts/backups.md), [storage and files](concepts/storage-and-files.md), Nexus `docs/lifecycle-and-recovery.md` and `docs/deployment.md` | NBM, complete/partial backups, actual-file coverage, consistent snapshots, shared Recovery Engine and independent AERU; retain current limitations. Create dedicated recovery specifications if needed after inspection. |
+| [concepts/updates.md](concepts/updates.md), lifecycle specifications and deployment planning | Manual-only module updates, coordinated Nexus-first compatibility checks, mandatory verified backups for every update, code versus data rollback, pre-update snapshot retention, and distinct Hide/Disable/Uninstall behavior. |
 | [concepts/local-first-and-sync.md](concepts/local-first-and-sync.md) | Broaden local-first scope, same-device offline integration and optional synchronization; preserve module-specific Janus direction. Review whether a dedicated mobile/local-first architecture document should be created; none exists as a dedicated mobile architecture document in the inspected tree. |
 | [modules/janus.md](modules/janus.md), [Janus security design](modules/janus-security-design.md), relevant Janus ADRs and implementation security documents | Optional opaque encrypted backup, no plaintext or decryption keys in Nexus, independent protection layers and unlock; preserve independent client delivery and security-review status. |
 | Relevant module specifications, especially [Meridian](modules/meridian.md), [Chronos](modules/chronos.md), [Atlas](modules/atlas.md) and [Mnemosyne](modules/mnemosyne.md) | Reflect future local workflows and integration requirements while retaining each module's actual implementation maturity and unfinished features. |
