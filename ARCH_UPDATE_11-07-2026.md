@@ -6,6 +6,8 @@ This document records the architectural direction agreed on that date and the de
 
 **Continuation, November 7, 2026.** Extended after initial creation with owner-approved Android, cross-platform, distribution, module lifecycle, manual-update, mandatory pre-update backup and snapshot-retention decisions. Earlier decisions remain in force except where a previously provisional choice is explicitly resolved below.
 
+**Synchronization continuation, November 7, 2026.** Section 4 now records approved independent per-module synchronization, protocol-based compatibility, field-level conflict detection and consolidated multi-device conflict resolution. These resolve earlier architectural uncertainty without selecting wire protocols or claiming implementation.
+
 ## 1. Authority, status and scope
 
 Use the repository's status vocabulary:
@@ -133,11 +135,86 @@ The local Nexus integration/runtime capability is distinct from a mandatory exte
 - Offline changes remain available locally and synchronize when connectivity returns after synchronization has been configured.
 - **Synchronization and backup are separate systems.** Synchronization does not replace recoverable backups.
 
-**Open.** The ecosystem synchronization transport and protocol, device identity, pairing, authentication, encryption and key management, conflict resolution, deletion propagation and recovery model require design. Do not select a protocol or implementation in this checkpoint.
+### Independent per-module synchronization
+
+**Established: Independent Per-Module Synchronization.** Nexus coordinates synchronization infrastructure; each module owns its domain data and synchronization semantics and synchronizes only its own data. Every module synchronizes independently and maintains its own synchronization state, progress, pending changes, errors and last successful synchronization information.
+
+A synchronization failure or incompatibility in one module must not stop unrelated modules. Nexus must not synchronize the entire ecosystem as one indivisible operation. This differs deliberately from the single logical ecosystem backup model in section 6: backup coordination does not make synchronization an ecosystem-wide transaction.
+
+Every installed module remains locally usable without synchronization. Offline changes must be retained; incompatible changes remain pending; failed synchronization must be recoverable. Synchronization must never silently discard user data and must not require all paired devices to be online simultaneously.
+
+### Installation requirements and references
+
+**Established.** A module's data synchronizes between devices only when the corresponding module is installed on both devices, subject to pairing, authentication, permissions and protocol compatibility.
+
+| Installation | Installed modules | Synchronization outcome |
+|---|---|---|
+| Paired server | Meridian, Chronos, Atlas, Argus | Only modules also installed on the Android device participate in synchronization with that device. |
+| Android device | Meridian, Chronos | Only Meridian and Chronos synchronize; Atlas and Argus data are not downloaded merely because they exist on the server. |
+
+If Atlas is subsequently installed on Android, Nexus automatically initiates its initial synchronization with the compatible Atlas installation on the paired server, respecting the same trust, permission and compatibility checks. No manual import is required. Automatic initial synchronization after authorized setup is distinct from an automatic module installation or update; the manual-update policy remains unchanged. Installation is a prerequisite, not permission to bypass the Disable behavior in section 2.
+
+References do not trigger installation or synchronization of their target modules. If a Meridian record references an Atlas Place but Atlas is absent on Android:
+
+- Preserve the reference identifier; do not delete or silently invalidate it.
+- Do not automatically install Atlas or download Atlas data.
+- Display the referenced resource as unavailable when necessary.
+- Optionally offer the user the ability to install Atlas.
+
+An absent optional module is not a synchronization failure. A reference is not authorization to access its target. Preserve the existing permission-aware resolution and stable-identity rules.
+
+### Safe backward compatibility
+
+**Established.** Synchronization compatibility depends on supported synchronization protocols, not equality of application version numbers. Nexus versions and individual module versions may differ between devices; do not require simultaneous updates of every device or module.
+
+Nexus transport and module data synchronization protocols are independently versioned. When possible, negotiate the newest mutually supported compatible protocol. Newer implementations should retain backward compatibility where safe and practical, but compatibility must be verified rather than assumed.
+
+Unknown fields and unsupported changes must never be silently discarded. If compatibility cannot be established, pause synchronization for the affected module, preserve local data and pending changes, and resume when compatibility becomes available. Do not stop unrelated compatible modules. Exact protocol definitions, negotiation metadata and unsupported-data representation remain Open.
+
+### Field-level conflict detection and safe merging
+
+**Established.** Detect conflicts at field level, not by treating an entire database row as conflicting merely because records differ across devices. Use a common ancestor/base revision and revision/change tracking to distinguish concurrent modifications from sequential updates.
+
+| Meridian contact field | Common base | Android change | Server change | Automatically merged result |
+|---|---|---|---|---|
+| Surname | Novák | Unchanged | Novotný | Novotný |
+| Phone | 0900 111 222 | 0900 333 444 | Unchanged | 0900 333 444 |
+
+These independent field modifications merge automatically without a conflict dialog, provided the result respects module integrity constraints. Three-way merging or an equivalent causally correct mechanism should be considered; no algorithm or revision metadata format is selected here.
+
+A genuine conflict exists when concurrent changes cannot be safely merged. For example, Android changes a surname to Kováč while the server changes the same surname to Novotný from the same earlier revision. This requires user resolution. Nexus must not arbitrarily choose the latest timestamp or overwrite one value.
+
+Collections, relationships, attachments, deletion and complex structured objects require module-defined merge semantics. Field-level merging must never violate cross-field invariants or data integrity constraints; differing fields alone do not prove that combining them is safe. Modules own these domain rules, not Nexus.
+
+### Consolidated Conflict Window
+
+**Established.** Collect genuine unresolved conflicts in one consolidated **Conflict Window**, rather than opening a separate popup for each conflict. Display affected modules, records, fields and competing values; allow individual resolutions and present a clear summary before applying them.
+
+Preserve unaffected changes, and do not block unrelated module synchronization while conflicts remain pending. The device initiating synchronization is the preferred conflict-resolution interface: the user makes decisions there, but its data receives no automatic precedence. Detailed layout and interaction design remain Open.
+
+This shared interface must preserve module permission and confidentiality boundaries. In particular, it does not authorize Nexus to receive Janus plaintext or decryption keys; any Janus conflict presentation and merging must satisfy its independently reviewed security design. An encrypted snapshot transport does not by itself decide conflict-detection granularity or grant access to vault contents.
+
+### Three or more competing revisions
+
+**Established.** Support conflicts involving more than two concurrent versions. Track the full set of competing revisions even if the UI presents pairwise choices. For Android value A, server value B and laptop value C, an interface may compare A against B, compare the selected candidate against C, then ask the user to confirm the final value.
+
+Do not permanently commit intermediate pairwise selections before all currently known competing revisions have been evaluated. The resulting revision must causally supersede all resolved revisions so rejected values do not reappear as new conflicts. A device that was offline may later introduce additional concurrent changes requiring further resolution; resolving all known candidates is not proof that no unknown candidate exists.
+
+### Concurrent conflict resolution
+
+**Established.** Two devices may try to resolve the same conflict simultaneously. Prevent one resolution from silently overwriting another through appropriate revision validation, concurrency control or an equivalent mechanism. If the underlying conflict state changes before a resolution commits, detect the change and request reconciliation.
+
+Do not assume a permanently available central server or global lock. This safety requirement does not add direct peer-to-peer synchronization to the initial scope or select a concurrency mechanism.
+
+### Remaining design work and module-specific boundaries
+
+**Open.** Exact synchronization transport; device identity and pairing implementation; authentication, encryption and key management; revision metadata and change-log storage; tombstones and deletion propagation; complex-data merge semantics; retry and batching; storage limits and change-log compaction; multi-device convergence guarantees; detailed Conflict Window UI; and synchronization recovery mechanisms require design. The approved causal and data-preservation requirements constrain that work without finalizing these mechanisms.
 
 Direct peer-to-peer synchronization without a hub is not an initial-version requirement. It may be evaluated later.
 
-This general ecosystem uncertainty does not revoke Janus's existing module-specific product direction: independent local encrypted vaults, encrypted snapshot synchronization and explicitly authorized pairing remain its intended model under ADR 0017. Its cryptographic mechanisms still require design and review. Neither Janus pairing nor private-network enrollment automatically defines ecosystem synchronization identity or authorization.
+These synchronization requirements do not revoke Janus's existing module-specific product direction: independent local encrypted vaults, encrypted snapshot synchronization and explicitly authorized pairing remain its intended model under ADR 0017. Its cryptographic mechanisms still require design and review. Neither Janus pairing nor private-network enrollment automatically defines ecosystem synchronization identity or authorization. How Janus satisfies field-level conflict requirements through its ciphertext-only transport remains security-design work, not permission for Nexus to inspect secrets.
+
+**Implementation status: Planned.** The synchronization and conflict-resolution architecture in this section is an approved requirement set, not implemented functionality or a report of passing synchronization tests.
 
 ## 5. Database architecture and ownership
 
@@ -306,13 +383,13 @@ All choices below require later design. Requirements above constrain the outcome
 | Android module packaging | Exact native module package format and dynamic loading strategy for Kotlin/DEX/Compose modules. Kotlin/Compose is the preferred stack; the loader is not selected. |
 | Android local execution | Secure isolation within one application and enforcement of cross-module permissions; full prototype validation and testing strategy. |
 | Independent Edition trust | Module signing, publisher trust and authenticity-validation model. |
-| Contract compatibility | Versioning of shared domain/module contracts and compatibility negotiation. |
+| Contract compatibility | Exact versioning and negotiation metadata for shared domain/module contracts. Synchronization already requires independently versioned Nexus transport/module data protocols and verified safe backward compatibility as specified in section 4. |
 | Google Play Edition | Technical feasibility, compliant delivery mechanism, update semantics and whether one runtime can serve both editions; migration between Independent and Play editions. |
 | Module admission and installation | Whether third-party modules will ever be permitted in the Android runtime; detailed installation/reinstallation workflows and required technical dependencies. Existing ecosystem community-interoperability principles do not settle Android code admission. |
 | Mobile persistence | Physical database topology and storage-engine selection. |
-| Synchronization | Transport, protocol and hub behavior; optional peer-to-peer evaluation later. |
+| Synchronization | Exact transport, wire protocols and hub behavior; revision metadata/change-log storage, retry/batching, storage limits and compaction, multi-device convergence guarantees and detailed UI. Independent per-module synchronization and causal safety requirements are approved; optional peer-to-peer evaluation remains later. |
 | Device trust | Identity, pairing, authentication, encryption, key management and revocation. |
-| Reconciliation | Conflict resolution, deletion propagation and recovery semantics. |
+| Reconciliation | Module-defined merge semantics for complex data, tombstones/deletion propagation, synchronization recovery and exact concurrency-control mechanisms. Field-level detection, the consolidated Conflict Window, multi-revision tracking and protection against concurrent resolution overwrites are approved in section 4. |
 | Backup representation | Package format/versioning, storage, encryption, key recovery, recoverability verification, ordinary scheduled retention and incremental storage details. Pre-update retention requirements are approved; the suggested five-snapshot default awaits confirmation. |
 | Snapshot coordination | Consistency across module databases, Nexus state, files and references. |
 | Recovery delivery | Shared engine implementation, compatibility/migration policy and platform-specific Nexus/AERU interfaces. |
@@ -328,6 +405,8 @@ Do not turn an example, a current server implementation detail or a previously p
 **Planned follow-up; not performed here.** Inspect the actual repository state, uncommitted work, implementation sources and release/deployment reports before editing. Preserve the distinction between local source, tested behavior, deployed versions and production verification. Reconcile conflicts explicitly; do not rewrite implementation truth to match the long-term vision.
 
 Claude Code should also propagate the continuation's decisions into canonical documentation, particularly Nexus, module lifecycle, local-first/mobile architecture, interoperability, backup/recovery and deployment planning. Resolve stale all-mobile framework uncertainty, activation-only Android proposals, automatic-update assumptions and optional pre-update backup policy while preserving earlier decisions and current implementation facts. Document distribution variants as future work and keep Janus's stronger boundary explicit.
+
+For the synchronization continuation, propagate section 4 into the appropriate canonical local-first/sync, Nexus, module-contract, interoperability, reference/lifecycle, permissions and module specifications. Record independent per-module progress/failure, installation-gated initial sync, reference preservation, protocol compatibility, causal field merging and consolidated multi-device conflict handling. Keep mechanisms still Open explicit, preserve Janus confidentiality, and do not mark synchronization or conflict resolution implemented. This checkpoint remains a temporary decision record.
 
 | Documents to review | Intended synchronization |
 |---|---|
