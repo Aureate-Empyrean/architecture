@@ -1,0 +1,153 @@
+{
+  "date": "2026-11-10",
+  "evidence": "GitHub remote refs and local Git ancestry; no application tests/deployment measurement",
+  "candidates": [
+    {
+      "repo": "chronos",
+      "remote_main": "d1183919a9ba7a4546af6598ec4faf2b9c31df42",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "0ebb2d1ea8277b5abc1bf18ff16af6076577613a",
+      "local_branch": "release/p1-navigation",
+      "candidates": [
+        {
+          "candidate": "fe359d41adc939a5dbbb08ef6af99de03a8154be",
+          "subject": "docs: describe concurrent edit protection and set version 0.7.0",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "d1183919a9ba7a4546af6598ec4faf2b9c31df42"
+        },
+        {
+          "candidate": "284d3ec92df0626e3c7a2860ae99d4c26961157f",
+          "subject": "docs: describe Trash and set version 0.6.0",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "d1183919a9ba7a4546af6598ec4faf2b9c31df42"
+        }
+      ]
+    },
+    {
+      "repo": "lyra",
+      "remote_main": "cd71386c8b2429c61257187c067dc52aa0093cbf",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "8f03579b3188c11aca6bce9bebb36a79a3379e00",
+      "local_branch": "release/p1-navigation",
+      "candidates": [
+        {
+          "candidate": "a3704aafc0a18f46b4a9ea99cb3508a563311870",
+          "subject": "fix: reject stale Lyra personal-library writes",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "cd71386c8b2429c61257187c067dc52aa0093cbf"
+        },
+        {
+          "candidate": "075b72c5bac447d16f9a659f89c5616063c497f2",
+          "subject": "fix: keep Lyra library search local by default",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "cd71386c8b2429c61257187c067dc52aa0093cbf"
+        }
+      ]
+    },
+    {
+      "repo": "argus",
+      "remote_main": "680d9c3aa5446742c39f7f46e9cb3835e50d4ff1",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "39115abeab9e5b6e66558b1b94982ad9530ef4ec",
+      "local_branch": "feature/argus-gallery",
+      "candidates": [
+        {
+          "candidate": "ed13228f63e27c4b04eae2f872029c95b2b25ad0",
+          "subject": "Verify Argus Full Restore originals and retain recovery state",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "680d9c3aa5446742c39f7f46e9cb3835e50d4ff1"
+        },
+        {
+          "candidate": "39115abeab9e5b6e66558b1b94982ad9530ef4ec",
+          "subject": "Make Argus a gallery-first photo application (0.4.0)",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "680d9c3aa5446742c39f7f46e9cb3835e50d4ff1"
+        }
+      ]
+    },
+    {
+      "repo": "atlas",
+      "remote_main": "116be54602400be60634db3d24e761b1e75f78c3",
+      "remote_subject": "chore: add release provenance and harden repository rules",
+      "local_head": "2cc8d50aae044f2dc622f5e9208fd36ba625b40e",
+      "local_branch": "feature/atlas-ui-motion",
+      "candidates": [
+        {
+          "candidate": "2cc8d50aae044f2dc622f5e9208fd36ba625b40e",
+          "subject": "Fix Atlas layouts and add motion (0.6.0)",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "116be54602400be60634db3d24e761b1e75f78c3"
+        },
+        {
+          "candidate": "355f81826b61e58214bbbd96a09a96edfe72e888",
+          "subject": "List Meridian addresses in the Library and answer address searches (0.5.0)",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "116be54602400be60634db3d24e761b1e75f78c3"
+        }
+      ]
+    },
+    {
+      "repo": "meridian",
+      "remote_main": "d5679e20008a2e958a126dca5483212d86408bcc",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "4859618c909b480c3e90346671701bad3c3fefaf",
+      "local_branch": "feature/meridian-atlas-qol",
+      "candidates": [
+        {
+          "candidate": "4859618c909b480c3e90346671701bad3c3fefaf",
+          "subject": "Add address search and record reuse to the contact editor (0.12.0)",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "d5679e20008a2e958a126dca5483212d86408bcc"
+        }
+      ]
+    },
+    {
+      "repo": "empyrean-nexus",
+      "remote_main": "acac73768abe4069ee31c3aa810d1bb75b67bb5b",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "1b40d96235add6f437b5ed6ca1337fd3d95b3c05",
+      "local_branch": "feature/argus-gallery-nav-tests",
+      "candidates": [
+        {
+          "candidate": "1e1fa31167db7ca85a1681a246b874313b1ccf7c",
+          "subject": "test: clean up Chronos fixtures after universal navigation runs",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "acac73768abe4069ee31c3aa810d1bb75b67bb5b"
+        },
+        {
+          "candidate": "1b40d96235add6f437b5ed6ca1337fd3d95b3c05",
+          "subject": "Follow the Argus viewer in the navigation journey",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "acac73768abe4069ee31c3aa810d1bb75b67bb5b"
+        }
+      ]
+    },
+    {
+      "repo": "mnemosyne",
+      "remote_main": "c751dc25cf234b42fe5ec706545ac78318bee76a",
+      "remote_subject": "docs: record release provenance",
+      "local_head": "293752894fe355df247e8a5044af9dac19147a56",
+      "local_branch": "release/p1-navigation",
+      "candidates": [
+        {
+          "candidate": "293752894fe355df247e8a5044af9dac19147a56",
+          "subject": "docs: record 1.5.1 release provenance",
+          "candidate_in_remote_main": false,
+          "remote_main_in_candidate": true,
+          "merge_base": "c751dc25cf234b42fe5ec706545ac78318bee76a"
+        }
+      ]
+    }
+  ]
+}
