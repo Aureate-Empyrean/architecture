@@ -4,24 +4,24 @@
   "candidates": [
     {
       "repo": "chronos",
-      "remote_main": "d1183919a9ba7a4546af6598ec4faf2b9c31df42",
+      "remote_main": "7bc245c2453d2affd15f22208e43d844927b69eb",
       "remote_subject": "docs: record release provenance",
-      "local_head": "0ebb2d1ea8277b5abc1bf18ff16af6076577613a",
+      "local_head": "5d8a033f6d07f2de2de415f29ec8cd9f4a44b08e",
       "local_branch": "release/p1-navigation",
       "candidates": [
         {
-          "candidate": "fe359d41adc939a5dbbb08ef6af99de03a8154be",
+          "candidate": "aba2ed61fd9caad72f3a76d7607793b41871d83e",
           "subject": "docs: describe concurrent edit protection and set version 0.7.0",
           "candidate_in_remote_main": false,
           "remote_main_in_candidate": true,
-          "merge_base": "d1183919a9ba7a4546af6598ec4faf2b9c31df42"
+          "merge_base": "7bc245c2453d2affd15f22208e43d844927b69eb"
         },
         {
-          "candidate": "284d3ec92df0626e3c7a2860ae99d4c26961157f",
+          "candidate": "f5e33bcb81c2a750770925ced3ea1e889b8f515a",
           "subject": "docs: describe Trash and set version 0.6.0",
           "candidate_in_remote_main": false,
           "remote_main_in_candidate": true,
-          "merge_base": "d1183919a9ba7a4546af6598ec4faf2b9c31df42"
+          "merge_base": "7bc245c2453d2affd15f22208e43d844927b69eb"
         }
       ]
     },
@@ -96,17 +96,17 @@
     },
     {
       "repo": "meridian",
-      "remote_main": "d5679e20008a2e958a126dca5483212d86408bcc",
+      "remote_main": "17ade7ebfe408c4f41b1499a79c487b0970f4cbd",
       "remote_subject": "docs: record release provenance",
-      "local_head": "4859618c909b480c3e90346671701bad3c3fefaf",
+      "local_head": "e80b4026b1775209bcc833cfee6f2b4041ef6a24",
       "local_branch": "feature/meridian-atlas-qol",
       "candidates": [
         {
-          "candidate": "4859618c909b480c3e90346671701bad3c3fefaf",
+          "candidate": "e80b4026b1775209bcc833cfee6f2b4041ef6a24",
           "subject": "Add address search and record reuse to the contact editor (0.12.0)",
           "candidate_in_remote_main": false,
           "remote_main_in_candidate": true,
-          "merge_base": "d5679e20008a2e958a126dca5483212d86408bcc"
+          "merge_base": "17ade7ebfe408c4f41b1499a79c487b0970f4cbd"
         }
       ]
     },
@@ -135,17 +135,17 @@
     },
     {
       "repo": "mnemosyne",
-      "remote_main": "c751dc25cf234b42fe5ec706545ac78318bee76a",
+      "remote_main": "df58a17a0f83a7338f3ab8d716c0fd0b3ee4f9a5",
       "remote_subject": "docs: record release provenance",
-      "local_head": "293752894fe355df247e8a5044af9dac19147a56",
+      "local_head": "6858230d737a62ad34275709e5f60a60943692b3",
       "local_branch": "release/p1-navigation",
       "candidates": [
         {
-          "candidate": "293752894fe355df247e8a5044af9dac19147a56",
+          "candidate": "6858230d737a62ad34275709e5f60a60943692b3",
           "subject": "docs: record 1.5.1 release provenance",
           "candidate_in_remote_main": false,
           "remote_main_in_candidate": true,
-          "merge_base": "c751dc25cf234b42fe5ec706545ac78318bee76a"
+          "merge_base": "df58a17a0f83a7338f3ab8d716c0fd0b3ee4f9a5"
         }
       ]
     }

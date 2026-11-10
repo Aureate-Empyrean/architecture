@@ -63,3 +63,5 @@ Each commit directly appends to the recorded prior default-branch HEAD without f
 The setup Issue is used only as an existing comment location for future selector START/STOP/HANDOFF; no selector is active merely because these docs were published. An owner-authorized bounded run continues to the next eligible Issue automatically; a task-specific or documentation-only request does not authorize unrelated product tasks. If ownership is ambiguous, no new task is selected.
 
 This report names the exact functional documentation commits above. The separate report-publication commit is recorded in the accompanying publication receipt to avoid a self-referential commit hash.
+
+> Note: commit identifiers for Chronos, Meridian and Mnemosyne in this record predate the 2026-11-10 history rewrite. Each repository's `docs/RELEASES.md` lists the current identifiers.
