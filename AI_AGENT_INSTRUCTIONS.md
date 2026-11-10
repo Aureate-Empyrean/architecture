@@ -35,13 +35,13 @@ No unauthorized merges, deployments, production access, destructive operations, 
 Generate a short task-specific prompt using verified facts and links instead of copying entire chats:
 
 > **Objective:** one bounded result and user-visible behavior.
-+> **Verified context:** issue URL/ID, exact repository/base/candidate SHAs, current behavior, evidence source/date; distinguish observed, reported and unknown.
-+> **Scope:** permitted repositories/files/interfaces, deliverables and exclusions; dependency milestones and active ownership.
-+> **Constraints:** privacy/data ownership, compatibility/schema, frozen files, environment limits and authorization boundary.
-+> **Execution:** confirm assignment and dirty state; create isolated worktree; inspect existing implementation before changing it; implement the smallest complete change and preserve completed ancestors.
-+> **Testing:** relevant focused/regression commands and synthetic fixtures, target platforms, failure/recovery/privacy cases; inspect harness defaults before running; no shared/live services without authorization.
-+> **Acceptance:** concrete checkable results, exact required terminal milestone and remaining owner/platform gates.
-+> **Reporting:** exact commit/base, changed behavior/paths, commands and pass/fail/skip counts, limitations, migration/rollback, artifact links, next state/blocker. Do not claim merge or deployment from source completion.
+> **Verified context:** issue URL/ID, exact repository/base/candidate SHAs, current behavior, evidence source/date; distinguish observed, reported and unknown.
+> **Scope:** permitted repositories/files/interfaces, deliverables and exclusions; dependency milestones and active ownership.
+> **Constraints:** privacy/data ownership, compatibility/schema, frozen files, environment limits and authorization boundary.
+> **Execution:** confirm assignment and dirty state; create isolated worktree; inspect existing implementation before changing it; implement the smallest complete change and preserve completed ancestors.
+> **Testing:** relevant focused/regression commands and synthetic fixtures, target platforms, failure/recovery/privacy cases; inspect harness defaults before running; no shared/live services without authorization.
+> **Acceptance:** concrete checkable results, exact required terminal milestone and remaining owner/platform gates.
+> **Reporting:** exact commit/base, changed behavior/paths, commands and pass/fail/skip counts, limitations, migration/rollback, artifact links, next state/blocker. Do not claim merge or deployment from source completion.
 
 For review-only tasks, replace implementation with inspecting the existing candidate and producing a bounded report. Never generate a coding prompt that recreates completed work.
 
