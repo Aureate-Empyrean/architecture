@@ -6,6 +6,14 @@ GitHub Issues are canonical across independent application repositories. Archite
 
 29 newly published issues replace the original 43 proposals; the pre-existing Nexus defect is also labelled into the same queue (30 total, one completed setup). Completed Chronos/Lyra/Argus work is preserved as candidate-review tasks, not assigned again for implementation. [All 162 original capability rows](CAPABILITY_CHECKLIST.csv) remain coverage evidence; legacy IDs map via [draft disposition](DRAFT_DISPOSITION.md). The [old parallel design](future-parallel-automation.md) is dormant.
 
+## Planning and execution entrypoints
+
+- [Shared AI agent instructions](../AI_AGENT_INSTRUCTIONS.md): sole-selector execution, administration safety, approval boundaries and evidence rules.
+- [Owner planning and agent procedures](OWNER_AGENT_WORKFLOW.md): conversational planning handoff, autonomous start, live progress and safe stop/handoff.
+- [Three concise prompt templates](PROMPT_TEMPLATES.md): planning, implementation and review/integration; provider-agnostic.
+
+Root AGENTS.md files point to the authenticated canonical standard from independently cloned repositories. No orchestration/controller/Actions system was added. Informal ideas are not permission to publish/execute Issues. No product task was started by this documentation update.
+
 ## Next three eligible tasks
 
 - [WP00: Establish transport and release evidence without changing services](https://github.com/Aureate-Empyrean/architecture/issues/6) — Aureate-Empyrean/architecture; P0; ready and unassigned at activation. Recheck live state before assignment.
