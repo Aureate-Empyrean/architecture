@@ -2,7 +2,7 @@
 
 The owner decides what AE should become. ChatGPT helps develop those decisions. GitHub Issues records approved work. Implementation agents execute it. No special ChatGPT integration/API, dashboard, service or extra orchestrator is required.
 
-Read [shared instructions](../AI_AGENT_INSTRUCTIONS.md), [prompt templates](PROMPT_TEMPLATES.md), and the [current V1 inventory](README.md). Module tasks live in their application repositories; architecture owns ecosystem/cross-repository/architectural tasks. Live Issues override stale progress snapshots; all 162 historical capability rows remain coverage evidence, not 162 Issues.
+Read [shared instructions](../AI_AGENT_INSTRUCTIONS.md), [prompt templates](PROMPT_TEMPLATES.md), and the [current V1 inventory](README.md). Module tasks live in their application repositories; architecture owns ecosystem/cross-repository/architectural tasks. Live Issues override stale progress snapshots; every original capability ID and legacy draft alias has an explicit disposition in [BACKLOG_MAP.json](BACKLOG_MAP.json). Historical audits remain evidence, not active queues. Future/undecided Issues cannot enter the V1 execution query; clear their owner decisions and record accepted scope before relabeling.
 
 ## Start autonomous backlog execution
 
@@ -23,7 +23,7 @@ Only one autonomous selector is permitted. Assignment/comments are not atomic lo
 
 ## Check current V1 progress
 
-Use [all open V1 Issues](https://github.com/issues?q=org%3AAureate-Empyrean%20is%3Aissue%20is%3Aopen%20label%3Aae%3Av1) or [ready and unassigned](https://github.com/issues?q=org%3AAureate-Empyrean%20is%3Aissue%20is%3Aopen%20label%3Aae%3Av1%20label%3Astatus%3Aready%20no%3Aassignee). Add `label:priority:p0` (through p4), or `label:status:blocked|implemented|validated|integrated|deployed` with one actual status at a time. Search exact labels, not the literal pipe-separated example. Closed completed work is queried separately with `is:closed`; not-planned/duplicate closures are not successful implementation.
+Use [all open V1 Issues](https://github.com/issues?q=org%3AAureate-Empyrean%20is%3Aissue%20is%3Aopen%20label%3Aae%3Av1) or [ready and unassigned](https://github.com/issues?q=org%3AAureate-Empyrean%20is%3Aissue%20is%3Aopen%20label%3Aae%3Av1%20label%3Astatus%3Aready%20no%3Aassignee). Add `label:priority:p0` (through p4), or `label:status:blocked|backlog|in-progress|review` with one actual status at a time. Implementation/validation/integration/deployment are separate Issue evidence milestones. Search exact labels, not the literal pipe-separated example. Closed completed work is queried separately with `is:closed`; not-planned/duplicate closures are not successful implementation.
 
 For CLI access, a read-only query is:
 

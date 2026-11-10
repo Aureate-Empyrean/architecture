@@ -2,6 +2,8 @@
 
 This repository is the canonical architecture and specification source for the Aureate Empyrean ecosystem. It contains **no application code**.
 
+**Actionable work lives in [GitHub Issues across the organization](https://github.com/issues?q=org%3AAureate-Empyrean%20is%3Aissue%20is%3Aopen).** Use the [backlog entrypoint](v1/README.md) and [capability/disposition mapping](v1/BACKLOG_MAP.json). Specifications and decisions remain here; historical audits/checkpoints are evidence, not competing active queues. Local unpublished decisions require ownership reconciliation before incorporation.
+
 Architecture should not live only in AI conversations or in individual implementation repositories. Humans and AI coding agents should read the relevant documents here before working on any Aureate Empyrean repository. If an implementation repository contradicts this repository, either the implementation or this repository is wrong; resolve it explicitly (see [decisions/](decisions/README.md)) rather than letting them drift.
 
 Aureate Empyrean is an open-source, self-hosted, privacy-first ecosystem of interoperable personal software.
