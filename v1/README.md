@@ -8,6 +8,7 @@ GitHub Issues are canonical across independent application repositories. Archite
 
 ## Planning and execution entrypoints
 
+- [Workflow verification and exact documentation commits](WORKFLOW_VERIFICATION_2026-11-10.md).
 - [Shared AI agent instructions](../AI_AGENT_INSTRUCTIONS.md): sole-selector execution, administration safety, approval boundaries and evidence rules.
 - [Owner planning and agent procedures](OWNER_AGENT_WORKFLOW.md): conversational planning handoff, autonomous start, live progress and safe stop/handoff.
 - [Three concise prompt templates](PROMPT_TEMPLATES.md): planning, implementation and review/integration; provider-agnostic.
