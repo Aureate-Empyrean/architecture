@@ -4,7 +4,7 @@
 
 GitHub Issues are canonical across independent application repositories. Architecture holds ecosystem/cross-repository/architectural tasks only. This page and local JSON are publication snapshots; current issue labels, assignees, dependencies, evidence and comments determine live state. No controller, leases, fencing or Actions orchestration is installed.
 
-29 issues replace the original 43 proposals. Completed Chronos/Lyra/Argus work is preserved as candidate-review tasks, not assigned again for implementation. [All 162 original capability rows](CAPABILITY_CHECKLIST.csv) remain coverage evidence; legacy IDs map via [draft disposition](DRAFT_DISPOSITION.md). The [old parallel design](future-parallel-automation.md) is dormant.
+29 newly published issues replace the original 43 proposals; the pre-existing Nexus defect is also labelled into the same queue (30 total, one completed setup). Completed Chronos/Lyra/Argus work is preserved as candidate-review tasks, not assigned again for implementation. [All 162 original capability rows](CAPABILITY_CHECKLIST.csv) remain coverage evidence; legacy IDs map via [draft disposition](DRAFT_DISPOSITION.md). The [old parallel design](future-parallel-automation.md) is dormant.
 
 ## Next three eligible tasks
 
@@ -54,7 +54,7 @@ Use `ae:v1`, `priority:p0..p4`, `status:*`, `module:*` and `kind:*` consistently
 
 ## Confirmed and blocked
 
-GitHub CLI access and write permissions were confirmed; the separate connector still returns 404 for AE. All organization issues/PRs/branches were reconciled before creation. One pre-existing open defect remains canonical: [Nexus backup SemVer/PEP 440 mismatch](https://github.com/Aureate-Empyrean/empyrean-nexus/issues/1). It is linked from recovery work; no duplicate was created. That older issue includes historical statements requiring recheck against current source.
+GitHub CLI access and write permissions were confirmed; the separate connector still returns 404 for AE. All organization issues/PRs/branches were reconciled before creation. One pre-existing open defect remains canonical: [Nexus backup SemVer/PEP 440 mismatch](https://github.com/Aureate-Empyrean/empyrean-nexus/issues/1). It is linked from recovery work and labelled into the same queue; no duplicate was created. Its V1 triage explicitly blocks implementation pending current-source reproduction and a reviewed range-policy decision. That older issue includes historical statements requiring recheck against current source.
 
 Remote main ancestry and local candidate SHAs are recorded in [candidate reconciliation](CANDIDATE_RECONCILIATION.json). Chronos, Lyra, Argus, Meridian/Atlas and Nexus candidates are not in their current remote main branches. Local application branches/tags/files were preserved. No application candidate was pushed, merged or deployed by backlog activation. Tests in the prior reports were not rerun.
 
